@@ -420,7 +420,7 @@ public class Utills {
     }
 
     public static void writeFile(String content, Context context) {
-        Log.e("Time Change", " " + content.replace("\n", ""));
+        Log.d("Time Change", " " + content.replace("\n", ""));
 
 
         content = "\n\n" + content;

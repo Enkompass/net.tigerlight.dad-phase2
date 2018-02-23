@@ -261,7 +261,7 @@
     <string name="dialog_contact_added_msg">You have added a contact that will receive your Alerts.</string>
 
     <string name="dialog_test_mode_title">Entering Test Mode</string>
-    <string name="dialog_test_mode_msg">Test Mode truns off contacts &amp; crowd alerts.\n Start Test with device or app. \n Test Mode exits when off, completed, or leaving app.\n \n  A successful test sends you an email, an SMS message and a notification to the app. \n This tests your device and the complete delivery process, the only difference between the test and sending a real alert is where the Alert messages are delivered. </string>
+    <string name="dialog_test_mode_msg">Test Mode turns off contacts &amp; crowd alerts.\n Start Test with device or app. \n Test Mode exits when off, completed, or leaving app.\n \n  A successful test sends you an email, an SMS message and a notification to the app. \n This tests your device and the complete delivery process, the only difference between the test and sending a real alert is where the Alert messages are delivered. </string>
     <string name="dialog_test_mode_pos_btn">Test Mode On</string>
     <string name="dialog_test_mode_neg_btn">Cancel Test Mode</string>
 
@@ -319,7 +319,7 @@
     <string name="TAG_PIN_CAN_NOT_GET">Pin cannot be generate yet. Please try again later.</string>
     <string name="TAG_GPS_MSG">Gps enabled.</string>
     <string name="TAG_GPS_ONLINE">Enable Gps in order to go online.</string>
-    <string name="TAG_WELLCOME">Wellcome</string>
+    <string name="TAG_WELCOME">Welcome</string>
     <string name="TAG_LOGOUT_CONFIRMATION">Logout Confirmation</string>
     <string name="TAG_LOGOUT_CONFIRMATION_DES">When you logout All of your account information will be purged from this device. You will be required to Login again to use your account. Your contacts and previous alerts are stored on our servers and will be restored on your next login.</string>
     <string name="TAG_PWD_EMAIL_EROR">Email or password is incorrect.</string>
@@ -360,7 +360,7 @@
     <string name="TAG_SV">Swedish</string>
     <string name="TAG_Choose_Language">Choose Language</string>
     <string name="default_english"><u>English</u></string>
-    <string name="build_no">51 build:5.1.0 </string>
+    <string name="build_no">%1$d build:%2$s </string>
     <string name="TAG_ENG">English</string>
     <string name="TAG_TEST_MODE_ON">Test Mode has been turned on</string>
     <string name="TAG_TEST_MODE_OFF">Test Mode has been turned off</string>

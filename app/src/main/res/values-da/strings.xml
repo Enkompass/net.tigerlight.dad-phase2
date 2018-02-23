@@ -319,7 +319,7 @@
     <string name="TAG_PIN_CAN_NOT_GET">Pin kan ikke generere endnu. Prøv igen senere.</string>
     <string name="TAG_GPS_MSG">Gps aktiveret.</string>
     <string name="TAG_GPS_ONLINE">Aktiver Gps for at gå online.</string>
-    <string name="TAG_WELLCOME">Velkommen</string>
+    <string name="TAG_WELCOME">Velkommen</string>
     <string name="TAG_LOGOUT_CONFIRMATION">Log ud Bekræftelse</string>
     <string name="TAG_LOGOUT_CONFIRMATION_DES">Hvis du logger ud vil alle kontooplysninger blive slettet fra denne enhed. Du vil blive bedt om at logge ind igen for at bruge din konto. Dine kontakter og tidligere advarsler gemmes på vores servere og vil blive genoprettet ved dit næste login.</string>
     <string name="TAG_PWD_EMAIL_EROR">E-mail eller adgangskode er forkert.</string>

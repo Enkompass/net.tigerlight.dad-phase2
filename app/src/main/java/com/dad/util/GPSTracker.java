@@ -1,5 +1,7 @@
 package com.dad.util;
 
+import com.dad.registration.util.Constant;
+
 import android.app.AlertDialog;
 import android.app.Service;
 import android.content.Context;
@@ -82,6 +84,10 @@ public class GPSTracker extends Service implements LocationListener {
                         }
                     }
                 }
+
+                Preference.getInstance().savePreferenceData(Constant.COMMON_LATITUDE, String.valueOf(location.getLatitude()));
+                Preference.getInstance().savePreferenceData(Constant.COMMON_LONGITUDE, String.valueOf(location.getLongitude()));
+                Preference.getInstance().savePreferenceData(Constant.COMMON_ACCURACY, (int) location.getAccuracy());
             }
 
         } catch (Exception e) {

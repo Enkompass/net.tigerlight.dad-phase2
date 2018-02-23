@@ -8,6 +8,8 @@ public class WsConstants {
     public final static int CONNECTION_TIMEOUT = 30;
     public final static int SUCCESS_1 = 1;
 
+    public static final String DOMAIN = "https://elasticbean.defensealertdevice.com/";
+    //public static final String DOMAIN = "http://52.33.140.142:8080/";
     /* Live URL	*/
     //    public static final String MAIN_URL = "http://defensealertdevice.com/admin/";
     /* Staging URL	*/
@@ -16,10 +18,12 @@ public class WsConstants {
 //    public static final String MAIN_URL = "https://services.defensealertdevice.com:8080/TigerServlet?";
 
     //this is live url    http://services.defensealertdevice.com/  -2.33.140.142
-    public static final String MAIN_URL = "http://52.33.140.142:8080/TigerServlet?";
-//    public static final String MAIN_URL = " http://develop.defensealertdevice.com/";
-    public static final String IMAGE_MAIN_URL = "http://52.33.140.142:8080/TigerServlet/FileTransfer?";
+    //public static final String MAIN_URL = "http://52.33.140.142:8080/TigerServlet?";
+    //public static final String MAIN_URL = " http://develop.defensealertdevice.com/";
+    public static final String MAIN_URL = DOMAIN + "TigerServlet?";
 
+    //public static final String IMAGE_MAIN_URL = "http://52.33.140.142:8080/TigerServlet/FileTransfer?";
+    public static final String IMAGE_MAIN_URL = DOMAIN + "/FileTransfer1?";
     public static final String IMAGE_MAIN_URL_AMAZONE = "http://tigerlight.images.s3-website-us-west-2.amazonaws.com/user_image_";
 
 
@@ -74,6 +78,7 @@ public class WsConstants {
     public final String PARAMS_LATITUDE = "latitude";
     public final String PARAMS_LANGUAGE = "language";
     public final String PARAMS_HOURS = "hours";
+    public final String PARAMS_ACCURACY = "accuracy";
 
     public final String PARAMS_ = "";
 

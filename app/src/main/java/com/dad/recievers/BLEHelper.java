@@ -1,18 +1,19 @@
 package com.dad.recievers;
 
+import com.dad.LocationBroadcastServiceNew;
+import com.dad.blework.BleService;
+import com.dad.home.BaseFragment;
+import com.dad.registration.activity.MainActivity;
+import com.dad.registration.fragment.ContactFragment;
+import com.dad.util.Constants;
+import com.dad.util.Preference;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.util.Log;
-
-import com.dad.LocationBroadcastServiceNew;
-import com.dad.blework.BleService;
-import com.dad.home.BaseFragment;
-import com.dad.registration.activity.MainActivity;
-import com.dad.registration.fragment.ContactFragment;
-import com.dad.util.Preference;
 
 import java.util.Arrays;
 import java.util.UUID;
@@ -111,10 +112,10 @@ public class BLEHelper {
                 //Log.e("serial number", "Serial Number is " + serialNumber);
 
                 String UUIDHex = convertBytesToHex(Arrays.copyOfRange(scanRecord, 9, 25));
-                Log.d("UUID", UUIDHex);
+                //Log.d("UUID", UUIDHex);
 
 
-                if (UUIDHex.equalsIgnoreCase("FD8C0AA6D40411E5AB30625662870761")) {
+                if (UUIDHex.equalsIgnoreCase(Constants.NEW_UUID)) {
 
 
                     Log.d("tigerlight", "found");
@@ -129,24 +130,25 @@ public class BLEHelper {
                     // Bytes 27 and 28 of the advertisement packet represent
                     // the minor
                     int minor = ((scanRecord[27] & 0xFF) << 8) | (scanRecord[28] & 0xFF);
-                    Log.e("TAG", "device" + device + " Serial Number is " + serialNumber + " major" + major + " minor" + minor + " rssi" + rssi);
-                    Preference.getInstance().savePreferenceData("new_uuid", String.valueOf(UUIDHex));
-                    Preference.getInstance().savePreferenceData("new_major", String.valueOf(major));
-                    Preference.getInstance().savePreferenceData("new_minor", String.valueOf(minor));
+                    /*Log.d("TAG", "device" + device + " Serial Number is " + serialNumber + " major" + major + " minor" + minor + " rssi" + rssi + "label: " + device.getName());*/
+                    Preference.getInstance().savePreferenceData(Constants.Preferences.Keys.NEW_UUID_KEY, String.valueOf(UUIDHex));
+                    Preference.getInstance().savePreferenceData(Constants.Preferences.Keys.NEW_MAJOR_KEY, String.valueOf(major));
+                    Preference.getInstance().savePreferenceData(Constants.Preferences.Keys.NEW_MINOR_KEY, String.valueOf(minor));
 
 
                     if (msg.contains(ContactFragment.TEST_UUID) || msg.contains(ContactFragment.TEST_UUID)) {
                         bleService.sendPushNotification();
-                        Log.d("ss", "2");
+                        //Log.d("ss", "2");
 
                     }
 
 
                 }
 
-                if (UUIDHex.equalsIgnoreCase("E2C56DB5DFFB48D2B060D0F5A71096E0")) {
+                if (UUIDHex.equalsIgnoreCase(Constants.OLD_UUID) && Constants.LAIRD_BEACON_LABEL.equals(device.getName())) {
+                //if (UUIDHex.equalsIgnoreCase(Constants.OLD_UUID)) {
 
-                    Log.d("tigerlight", "found");
+                    Log.d("Laird iBeacon", "found");
                     //if (UUIDHex.equals(GELO_UUID)) {
                     // Bytes 25 and 26 of the advertisement packet represent
                     // the major value
@@ -155,10 +157,10 @@ public class BLEHelper {
                     // Bytes 27 and 28 of the advertisement packet represent
                     // the minor value
                     int minor = ((scanRecord[27] & 0xFF) << 8) | (scanRecord[28] & 0xFF);
-                    Log.e("TAG", "device" + device + " Serial Number is " + serialNumber + " major" + major + " minor" + minor + " rssi" + rssi);
-                    Preference.getInstance().savePreferenceData("old_uuid", String.valueOf(UUIDHex));
-                    Preference.getInstance().savePreferenceData("old_major", String.valueOf(major));
-                    Preference.getInstance().savePreferenceData("old_minor", String.valueOf(minor));
+                    /*Log.d("TAG", "device" + device + " Serial Number is " + serialNumber + " major" + major + " minor" + minor + " rssi" + rssi);*/
+                    Preference.getInstance().savePreferenceData(Constants.Preferences.Keys.OLD_UUID_KEY, String.valueOf(UUIDHex));
+                    Preference.getInstance().savePreferenceData(Constants.Preferences.Keys.OLD_MAJOR_KEY, String.valueOf(major));
+                    Preference.getInstance().savePreferenceData(Constants.Preferences.Keys.OLD_MINOR_KEY, String.valueOf(minor));
 
                     if (msg.contains(ContactFragment.TEST_UUID_PREVIOUS) || msg.contains(ContactFragment.TEST_UUID_PREVIOUS)) {
                         bleService.sendPushNotification();
@@ -170,7 +172,10 @@ public class BLEHelper {
 
             }
 
+
+
         };
+
 
     }
 
@@ -204,11 +209,11 @@ public class BLEHelper {
                 //Log.e("serial number", "Serial Number is " + serialNumber);
 
                 String UUIDHex = convertBytesToHex(Arrays.copyOfRange(scanRecord, 9, 25));
-                Log.d("UUID", UUIDHex);
+                //Log.d("UUID", UUIDHex);
 
 
                 if (IsFirst) {
-                    if (UUIDHex.equalsIgnoreCase("FD8C0AA6D40411E5AB30625662870761")) {
+                    if (UUIDHex.equalsIgnoreCase(Constants.NEW_UUID)) {
                         IsFirst = false;
 
 
@@ -224,11 +229,11 @@ public class BLEHelper {
                         // Bytes 27 and 28 of the advertisement packet represent
                         // the minor
                         int minor = ((scanRecord[27] & 0xFF) << 8) | (scanRecord[28] & 0xFF);
-                        Log.e("TAG", "device" + device + " Serial Number is " + serialNumber + " major" + major + " minor" + minor + " rssi" + rssi);
+                        Log.d("TAG", "device" + device + " Serial Number is " + serialNumber + " major" + major + " minor" + minor + " rssi" + rssi);
 
-                        Preference.getInstance().savePreferenceData("uuid", String.valueOf(UUIDHex));
-                        Preference.getInstance().savePreferenceData("major", String.valueOf(major));
-                        Preference.getInstance().savePreferenceData("minor", String.valueOf(minor));
+                        Preference.getInstance().savePreferenceData(Constants.Preferences.Keys.UUID_KEY, String.valueOf(UUIDHex));
+                        Preference.getInstance().savePreferenceData(Constants.Preferences.Keys.MAJOR_KEY, String.valueOf(major));
+                        Preference.getInstance().savePreferenceData(Constants.Preferences.Keys.MINOR_KEY, String.valueOf(minor));
 
                         getActivity().startActivity(new Intent(getActivity(), MainActivity.class));
 
@@ -238,7 +243,8 @@ public class BLEHelper {
 
                 if (IsFirst) {
 
-                    if (UUIDHex.equalsIgnoreCase("E2C56DB5DFFB48D2B060D0F5A71096E0")) {
+                    if (UUIDHex.equalsIgnoreCase(Constants.OLD_UUID) && Constants.LAIRD_BEACON_LABEL.equals(device.getName())) {
+                    //if (UUIDHex.equalsIgnoreCase(Constants.OLD_UUID)) {
 
                         IsFirst = false;
                         Preference.getInstance().mSharedPreferences.getString("IsSecond", "true");
@@ -256,11 +262,11 @@ public class BLEHelper {
                         // Bytes 27 and 28 of the advertisement packet represent
                         // the minor value
                         int minor = ((scanRecord[27] & 0xFF) << 8) | (scanRecord[28] & 0xFF);
-                        Log.e("TAG", "device" + device + " Serial Number is " + serialNumber + " major" + major + " minor" + minor + " rssi" + rssi);
+                        Log.d("TAG", "device" + device + " Serial Number is " + serialNumber + " major" + major + " minor" + minor + " rssi" + rssi);
 
-                        Preference.getInstance().savePreferenceData("uuid", String.valueOf(UUIDHex));
-                        Preference.getInstance().savePreferenceData("major", String.valueOf(major));
-                        Preference.getInstance().savePreferenceData("minor", String.valueOf(minor));
+                        Preference.getInstance().savePreferenceData(Constants.Preferences.Keys.UUID_KEY, String.valueOf(UUIDHex));
+                        Preference.getInstance().savePreferenceData(Constants.Preferences.Keys.MAJOR_KEY, String.valueOf(major));
+                        Preference.getInstance().savePreferenceData(Constants.Preferences.Keys.MINOR_KEY, String.valueOf(minor));
 
                         getActivity().startActivity(new Intent(getActivity(), MainActivity.class));
 

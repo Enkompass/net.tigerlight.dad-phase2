@@ -1,5 +1,18 @@
 package com.dad;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+
+import com.dad.recievers.BLEHelper;
+import com.dad.registration.util.Constant;
+import com.dad.registration.util.Utills;
+import com.dad.settings.webservices.WsCallUpdateLocation;
+import com.dad.util.Constants;
+import com.dad.util.Preference;
+
 import android.annotation.SuppressLint;
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
@@ -17,17 +30,6 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.widget.Toast;
-
-import com.dad.recievers.BLEHelper;
-import com.dad.registration.util.Constant;
-import com.dad.registration.util.Utills;
-import com.dad.settings.webservices.WsCallUpdateLocation;
-import com.dad.util.Preference;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
 
 import static android.bluetooth.BluetoothAdapter.ACTION_DISCOVERY_FINISHED;
 import static android.bluetooth.BluetoothAdapter.ACTION_DISCOVERY_STARTED;
@@ -50,17 +52,22 @@ public class LocationBroadcastServiceNew extends Service implements GoogleApiCli
      */
     public static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS = UPDATE_INTERVAL_IN_MILLISECONDS / 2;
 
+    /**
+     * The smallest distance to check for a new location
+     */
+    public static final float DEFAULT_SMALLEST_DISPLACEMENT_DISTANCE_IN_METERS = 100f;
+
     private GoogleApiClient googleApiClient;
     private AsyncTaskUpdateLocation asyncTaskUpdateLocation;
 
+    private float mSmallestDisplacementValue = DEFAULT_SMALLEST_DISPLACEMENT_DISTANCE_IN_METERS;
 
     //private SocketClient socketClient;
-
 
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.e(TAG, "onCreate");
+        Log.d(TAG, "onCreate");
 
         IntentFilter filter2 = new IntentFilter();
         filter2.addAction(ACTION_DISCOVERY_STARTED);
@@ -76,19 +83,24 @@ public class LocationBroadcastServiceNew extends Service implements GoogleApiCli
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.e(TAG, "onStartCommand");
+        Log.d(TAG, "onStartCommand");
 //        Utills.writeFile("\n\n" + "AT " + new Date() + "   " + "Service has been started ", this);
+        mSmallestDisplacementValue = DEFAULT_SMALLEST_DISPLACEMENT_DISTANCE_IN_METERS;
+        if (intent != null)
+        {
+            mSmallestDisplacementValue = intent.getFloatExtra(Constants.Extras.SMALLEST_DISPLACEMENT_VALUE, DEFAULT_SMALLEST_DISPLACEMENT_DISTANCE_IN_METERS);
+        }
+
         return super.onStartCommand(intent, flags, startId);
-
     }
-
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
-        Log.e(TAG, "onDestroy");
+
+        Log.d(TAG, "onDestroy");
         stopLocationUpdates();
         unregisterReceiver(mBroadcastReceiver2);
+        super.onDestroy();
     }
 
     @Nullable
@@ -100,7 +112,7 @@ public class LocationBroadcastServiceNew extends Service implements GoogleApiCli
     @Override
     public void onTaskRemoved(Intent rootIntent) {
         super.onTaskRemoved(rootIntent);
-        Log.e(TAG, "onTaskRemoved");
+        Log.d(TAG, "onTaskRemoved");
     }
 
     private synchronized void buildGoogleApiClient() {
@@ -117,6 +129,11 @@ public class LocationBroadcastServiceNew extends Service implements GoogleApiCli
     public void onConnected(Bundle connectionHint) {
 
 //        Utills.writeFile("\n\n" + "AT " + new Date() + "   " + "onConnected ", this);
+        startListeningForLocationRequests();
+    }
+
+    private void startListeningForLocationRequests()
+    {
         final LocationRequest locationRequest = createLocationRequest();
         LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
     }
@@ -124,7 +141,7 @@ public class LocationBroadcastServiceNew extends Service implements GoogleApiCli
     @Override
     public void onConnectionSuspended(int cause) {
 //        Utills.writeFile("\n\n" + "AT " + new Date() + "   " + "onConnectionSuspended", this);
-        Log.e(TAG, "Connection to Google API suspended");
+        Log.d(TAG, "Connection to Google API suspended");
         googleApiClient.connect();
     }
 
@@ -139,38 +156,41 @@ public class LocationBroadcastServiceNew extends Service implements GoogleApiCli
 
     @Override
     public void onLocationChanged(Location location) {
-
-
         sendLocationUpdate(location);
     }
 
     private LocationRequest createLocationRequest() {
-
-
         final LocationRequest locationRequest = new LocationRequest();
         locationRequest.setInterval(1000);
 //        locationRequest.setFastestInterval(1000);
-        locationRequest.setSmallestDisplacement(100);
+        locationRequest.setSmallestDisplacement(mSmallestDisplacementValue);
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        /*Log.d(TAG, String.format(Locale.US, "createLocationRequest: smallestDisplacement = %1$f, interval = %2$d", locationRequest.getSmallestDisplacement(), locationRequest.getInterval()));*/
+
         return locationRequest;
     }
 
 
     private void stopLocationUpdates() {
 //        Utills.writeFile("\n\n" + "AT " + new Date() + "   " + "stopLocationUpdates", this);
-        LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, this);
-        googleApiClient.disconnect();
+        if (googleApiClient.isConnected())
+        {
+            //Log.d(TAG, "Stopping Location Updates");
+            LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, this);
+            googleApiClient.disconnect();
+        }
     }
 
     private void sendLocationUpdate(final Location location) {
         if (location != null) {
             callLocationUpdateService(location.getLatitude(), location.getLongitude());
-            Log.e("loglat", "sendLocationUpdate()----------Location sent" + "lat:" + location.getLatitude() + "long:" + location.getLongitude());
+            Log.d(TAG, "sendLocationUpdate()----------Location sent" + "lat:" + location.getLatitude() + "long:" + location.getLongitude() + ", accuracy: " + location.getAccuracy());
 //            final String cName = getCountryName(location.getLatitude(), location.getLongitude());
 //            Preference.getInstance().savePreferenceData(Constant.C_CODE, cName);
 
             Preference.getInstance().savePreferenceData(Constant.COMMON_LATITUDE, String.valueOf(location.getLatitude()));
             Preference.getInstance().savePreferenceData(Constant.COMMON_LONGITUDE, String.valueOf(location.getLongitude()));
+            Preference.getInstance().savePreferenceData(Constant.COMMON_ACCURACY, (int) location.getAccuracy());
 
 //            String cName = Utills.getCountryName(this, Preference.getInstance().mSharedPreferences.getString(Constant.COMMON_LONGITUDE, ""), Preference.getInstance().mSharedPreferences.getString(Constant.COMMON_LONGITUDE, ""));
 //            Preference.getInstance().savePreferenceData(Constant.C_CODE, cName);
@@ -222,7 +242,7 @@ public class LocationBroadcastServiceNew extends Service implements GoogleApiCli
             super.onPostExecute(aVoid);
             if (!isCancelled()) {
                 if (wsCallUpdateLocation.isSuccess()) {
-                    Log.e("@@@", "" + latitude + "long:" + longitude + "userid:" + Preference.getInstance().mSharedPreferences.getString(Constant.USER_ID, ""));
+                    Log.d("@@@", "" + latitude + "long:" + longitude + "userid:" + Preference.getInstance().mSharedPreferences.getString(Constant.USER_ID, ""));
 //                    Utills.writeFile("\n\n" + "AT " + new Date() + "   " + "updated service:lat=" + latitude + "log=" + longitude, LocationBroadcastServiceNew.this);
 
                 } else {

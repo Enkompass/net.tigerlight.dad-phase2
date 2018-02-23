@@ -1,5 +1,15 @@
 package com.dad.registration.adapter;
 
+import com.dad.R;
+import com.dad.registration.fragment.AlertFragment;
+import com.dad.registration.util.Constant;
+import com.dad.util.BitMapHelper;
+import com.dad.util.Preference;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -16,15 +26,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.dad.R;
-import com.dad.registration.fragment.AlertFragment;
-import com.dad.util.BitMapHelper;
-import com.dad.util.Preference;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -52,14 +53,16 @@ public class AlertAdapter extends BaseAdapter {
     private final String TAG_ALERT_TYPE = "alertType";
     private final String TAG_latitude = "latitude";
     private final String TAG_longitude = "longitude";
+    private final String TAG_EMAIL = "email";
     private Context context;
-    private ArrayList<Integer> typeList = new ArrayList<>();
-    private ArrayList<String> addressList = new ArrayList<>();
-    private ArrayList<String> nameList = new ArrayList<>();
-    private ArrayList<String> pathList = new ArrayList<>();
-    private ArrayList<String> dateTimeList = new ArrayList<>();
-    private ArrayList<String> lat = new ArrayList<>();
-    private ArrayList<String> longi = new ArrayList<>();
+    private ArrayList<Integer> typeList = new ArrayList();
+    private ArrayList<String> addressList = new ArrayList();
+    private ArrayList<String> nameList = new ArrayList();
+    private ArrayList<String> pathList = new ArrayList();
+    private ArrayList<String> dateTimeList = new ArrayList();
+    private ArrayList<String> mEmailList = new ArrayList();
+    private ArrayList<String> lat = new ArrayList();
+    private ArrayList<String> longi = new ArrayList();
     final Preference preference = Preference.getInstance();
     String imgUrl = "http://tigerlight.images.s3-website-us-west-2.amazonaws.com/";
 
@@ -69,15 +72,14 @@ public class AlertAdapter extends BaseAdapter {
     private AlertFragment alertFragment;
     private JSONObject jsonobject;
     private int i = 0;
-
+    private String mCurrentEmail = "";
+    private int mColor = -1;
 
     public AlertAdapter(Context context, AlertFragment alertFragment, JSONArray jsonArray) {
         this.context = context;
-        typeList = new ArrayList<>();
-        nameList = new ArrayList<>();
-        addressList = new ArrayList<>();
-
         this.alertFragment = alertFragment;
+
+        mCurrentEmail = preference.mSharedPreferences.getString(Constant.KEY_EMAIL, "");
 
         for (int i = 0; i < jsonArray.length(); i++) {
 
@@ -88,13 +90,14 @@ public class AlertAdapter extends BaseAdapter {
             String dateTime = null;
             String latitude = null;
             String longitude = null;
+            String email = null;
 
             try {
                 jsonobject = (JSONObject) jsonArray.get(i);
                 type = jsonobject.optInt(TAG_ALERT_TYPE);
                 name = jsonobject.optString(TAG_USER_NAME);
                 address = jsonobject.optString(TAG_ADDRESS);
-
+                email = jsonobject.optString(TAG_EMAIL);
                 try {
 //                    Log.d("hope",new String(jsonobject.optString(TAG_ADDRESS).getBytes("UTF-8"), "UTF-8"));
                     Log.d("hope", new String(jsonobject.optString(TAG_ADDRESS).getBytes("ISO-8859-1"), "UTF-8"));
@@ -117,6 +120,7 @@ public class AlertAdapter extends BaseAdapter {
                 dateTimeList.add(dateTime);
                 lat.add(latitude);
                 longi.add(longitude);
+                mEmailList.add(email);
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -322,27 +326,33 @@ public class AlertAdapter extends BaseAdapter {
 //                .into(ivPickAlert);
         setImageInThread((ImageView) convertView.findViewById(R.id.elementPicAlert), pathList.get(position), position);
 
-        if (typeList.get(position) == 0) {
-            name.setTextColor(ContextCompat.getColor(context, R.color.color_alert_orange));
-            addressView.setTextColor(ContextCompat.getColor(context, R.color.color_alert_orange));
-            dateTimeView.setTextColor(ContextCompat.getColor(context, R.color.color_alert_orange));
-
-        } else if (typeList.get(position) == 1) {
-            name.setTextColor(ContextCompat.getColor(context, R.color.color_alert_red));
-            addressView.setTextColor(ContextCompat.getColor(context, R.color.color_alert_red));
-            dateTimeView.setTextColor(ContextCompat.getColor(context, R.color.color_alert_red));
-
-        } else if (typeList.get(position) == 2) {
-            name.setTextColor(ContextCompat.getColor(context, R.color.color_alert_green));
-            addressView.setTextColor(ContextCompat.getColor(context, R.color.color_alert_green));
-            dateTimeView.setTextColor(ContextCompat.getColor(context, R.color.color_alert_green));
-
-        } else if (typeList.get(position) == 3 || typeList.get(position) == 4) {
-            name.setTextColor(ContextCompat.getColor(context, R.color.color_alert_blue));
-            addressView.setTextColor(ContextCompat.getColor(context, R.color.color_alert_blue));
-            dateTimeView.setTextColor(ContextCompat.getColor(context, R.color.color_alert_blue));
-
+        switch (typeList.get(position))
+        {
+            case 0:
+            {
+                mColor = (mEmailList.get(position).equals(mCurrentEmail)) ? R.color.color_alert_purple : R.color.color_alert_orange;
+                break;
+            }
+            case 1:
+            {
+                mColor = R.color.color_alert_red;
+                break;
+            }
+            case 2:
+            {
+                mColor = R.color.color_alert_green;
+                break;
+            }
+            default:
+            {
+                mColor = R.color.color_alert_blue;
+                break;
+            }
         }
+
+        name.setTextColor(ContextCompat.getColor(context, mColor));
+        addressView.setTextColor(ContextCompat.getColor(context, mColor));
+        dateTimeView.setTextColor(ContextCompat.getColor(context, mColor));
 
         return convertView;
     }

@@ -1,5 +1,33 @@
 package com.dad.registration.fragment;
 
+import com.dad.R;
+import com.dad.home.BaseFragment;
+import com.dad.recievers.BLEHelper;
+import com.dad.registration.activity.MainActivity;
+import com.dad.registration.adapter.RecieveElementAdapter;
+import com.dad.registration.util.Constant;
+import com.dad.registration.util.Utills;
+import com.dad.settings.webservices.WsCallDeleteContact;
+import com.dad.settings.webservices.WsCallGetAlertCount;
+import com.dad.settings.webservices.WsCallGetAllContacts;
+import com.dad.settings.webservices.WsCallSendDanger;
+import com.dad.settings.webservices.WsResetCount;
+import com.dad.swipemenulistview.SwipeMenu;
+import com.dad.swipemenulistview.SwipeMenuCreator;
+import com.dad.swipemenulistview.SwipeMenuItem;
+import com.dad.swipemenulistview.SwipeMenuListView;
+import com.dad.util.BitMapHelper;
+import com.dad.util.CheckForeground;
+import com.dad.util.Constants;
+import com.dad.util.NetworkAvailability;
+import com.dad.util.Preference;
+import com.dad.util.Util;
+import com.dad.util.WsConstants;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
@@ -26,33 +54,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.dad.R;
-import com.dad.home.BaseFragment;
-import com.dad.recievers.BLEHelper;
-import com.dad.registration.activity.MainActivity;
-import com.dad.registration.adapter.RecieveElementAdapter;
-import com.dad.registration.util.Constant;
-import com.dad.registration.util.Utills;
-import com.dad.settings.webservices.WsCallDeleteContact;
-import com.dad.settings.webservices.WsCallGetAlertCount;
-import com.dad.settings.webservices.WsCallGetAllContacts;
-import com.dad.settings.webservices.WsCallSendDanger;
-import com.dad.settings.webservices.WsResetCount;
-import com.dad.swipemenulistview.SwipeMenu;
-import com.dad.swipemenulistview.SwipeMenuCreator;
-import com.dad.swipemenulistview.SwipeMenuItem;
-import com.dad.swipemenulistview.SwipeMenuListView;
-import com.dad.util.BitMapHelper;
-import com.dad.util.CheckForeground;
-import com.dad.util.NetworkAvailability;
-import com.dad.util.Preference;
-import com.dad.util.Util;
-import com.dad.util.WsConstants;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.Calendar;
 import java.util.TimeZone;
@@ -562,9 +563,9 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
     private static final int REQUEST_ENABLE_BT = 1;
     // Stops scanning after 10 seconds.
     private static final long SCAN_PERIOD = 10000;
-    public static String TEST_UUID_PREVIOUS = "E2C56DB5DFFB48D2B060D0F5A71096E0";
+    public static String TEST_UUID_PREVIOUS = Constants.OLD_UUID;
 
-    public static String TEST_UUID = "FD8C0AA6D40411E5AB30625662870761";
+    public static String TEST_UUID = Constants.NEW_UUID;
 
 //    private void scanLeDevice(final boolean enable) {
 //        if (enable) {
@@ -649,7 +650,7 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
         // double lat = ((MainActivity) getActivity()).getLatitude();
         String lat = Preference.getInstance().mSharedPreferences.getString(Constant.COMMON_LATITUDE, "0.01");
         String log = Preference.getInstance().mSharedPreferences.getString(Constant.COMMON_LONGITUDE, "0.01");
-
+        int accuracy = Preference.getInstance().mSharedPreferences.getInt(Constant.COMMON_ACCURACY, 0);
 
         //        AsyncTaskSendPush(double latitude, double longitude String timezoneID)
 //        {
@@ -670,7 +671,7 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
         protected Void doInBackground(Void... params) {
 
             wsCallSendDanger = new WsCallSendDanger(getActivity());
-            wsCallSendDanger.executeService(Double.parseDouble(lat), Double.parseDouble(log), timezoneID);
+            wsCallSendDanger.executeService(Double.parseDouble(lat), Double.parseDouble(log), timezoneID, accuracy);
             return null;
         }
 

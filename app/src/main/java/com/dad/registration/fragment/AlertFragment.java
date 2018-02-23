@@ -1,26 +1,6 @@
 package com.dad.registration.fragment;
 
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.Fragment;
-import android.app.ProgressDialog;
-import android.content.DialogInterface;
-import android.graphics.drawable.ColorDrawable;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.os.Handler;
-import android.support.v4.content.ContextCompat;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.CompoundButton;
-import android.widget.Switch;
-import android.widget.TextView;
-import android.widget.Toast;
-
+import com.dad.LocationBroadcastServiceNew;
 import com.dad.R;
 import com.dad.home.BaseFragment;
 import com.dad.registration.adapter.AlertAdapter;
@@ -36,6 +16,7 @@ import com.dad.swipemenulistview.SwipeMenu;
 import com.dad.swipemenulistview.SwipeMenuCreator;
 import com.dad.swipemenulistview.SwipeMenuItem;
 import com.dad.swipemenulistview.SwipeMenuListView;
+import com.dad.util.Constants;
 import com.dad.util.Preference;
 import com.dad.util.Util;
 
@@ -43,10 +24,38 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.Fragment;
+import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.graphics.drawable.ColorDrawable;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.os.Handler;
+import android.support.v4.content.ContextCompat;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.CompoundButton;
+import android.widget.Switch;
+import android.widget.TextView;
+import android.widget.Toast;
+
 /**
  * AlertFragment : all alert listing
  */
 public class AlertFragment extends BaseFragment implements AdapterView.OnItemClickListener, CompoundButton.OnCheckedChangeListener {
+
+    private static final String TAG = AlertFragment.class.getSimpleName();
 
     private TextView tvSendDanger;
     private TextView tvEmptyAlert;
@@ -69,6 +78,7 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
     private AsyncCrowdAlertModeOff asyncTaskCrowdAlertOff;
     private AsyncTaskResetCount asyncTaskResetCount;
     public static int count = 0;
+    private boolean mIsSentAlertReceiverRegistered = false;
 
     private DashBoardWithSwipableFragment dashBoardWithSwipableFragment;
 
@@ -101,73 +111,9 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
         }
 
         swTestMode = (Switch) view.findViewById(R.id.fragment_alert_swTestMode);
-        if (Preference.getInstance().mSharedPreferences.getBoolean(Constant.IS_TEST_MODEE, false)) {
-            swTestMode.setChecked(true);
-        } else {
-            swTestMode.setChecked(false);
+        //updateTestModeSwitch();
 
-        }
-
-
-        swTestMode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (b) {
-                    final Dialog dialog = new Dialog(getActivity(), R.style.AppDialogTheme);
-                    dialog.setContentView(R.layout.custom_dialog_test_mode);
-                    final TextView tvTitle = (TextView) dialog.findViewById(R.id.dialog_tvTitle);
-                    final TextView tvMessage = (TextView) dialog.findViewById(R.id.dialog_tvMessage);
-                    final TextView tvPosButton = (TextView) dialog.findViewById(R.id.dialog_tvPosButton);
-                    final TextView tvNegButton = (TextView) dialog.findViewById(R.id.dialog_tvNegButton);
-
-
-                    tvTitle.setText(getString(R.string.dialog_test_mode_title));
-                    tvMessage.setText(getString(R.string.dialog_test_mode_msg));
-                    tvPosButton.setText(getString(R.string.dialog_test_mode_pos_btn));
-                    tvNegButton.setText(getString(R.string.dialog_test_mode_neg_btn));
-
-                    tvPosButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            dialog.dismiss();
-                            Preference.getInstance().savePreferenceData(Constant.IS_TEST_MODEE, true);
-                            swTestMode.setChecked(true);
-                            Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_TEST_MODE_ON), getString(R.string.ok), "", false, false);
-//                            callTestModeService();
-
-
-//                            Toast.makeText(getActivity(), "positive", Toast.LENGTH_SHORT).show();
-
-                        }
-                    });
-
-                    tvNegButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            Preference.getInstance().savePreferenceData(Constant.IS_TEST_MODEE, false);
-                            dialog.dismiss();
-//                            Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_TEST_MODE_OFF), getString(R.string.ok), "", false, false);
-                            swTestMode.setChecked(false);
-
-
-//                            Toast.makeText(getActivity(), "Negative", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-
-                    dialog.show();
-
-
-                } else {
-
-                    Preference.getInstance().savePreferenceData(Constant.IS_TEST_MODEE, false);
-                    Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_TEST_MODE_OFF), getString(R.string.ok), "", false, false);
-                }
-
-            }
-        });
-
-
-//        if (Preference.getInstance().mSharedPreferences.getBoolean(Constant.IS_TEST_MODEE, false)) {
+//        if (Preference.getInstance().mSharedPreferences.getBoolean(Constant.IS_TEST_MODE, false)) {
 //            swTestMode.setChecked(true);
 //        } else {
 //            swTestMode.setChecked(false);
@@ -177,7 +123,7 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
 
         tvSendDanger.setOnClickListener(this);
         swCrowdALert.setOnCheckedChangeListener(this);
-//        swTestMode.setOnClickListener(this);
+        //swTestMode.setOnCheckedChangeListener(mTestModeOnCheckChangeListener);
         lvAlerts.setOnItemClickListener(this);
         lvAlerts.setEmptyView(tvEmptyAlert);
         isEditing = false;
@@ -196,6 +142,30 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
     }
 
     @Override
+    public void onAttach(Context context)
+    {
+        super.onAttach(context);
+
+        if (!mIsSentAlertReceiverRegistered)
+        {
+            context.registerReceiver(mAlertSentReceiver, new IntentFilter(Constants.Actions.SENT_ALERT_ACTION));
+            mIsSentAlertReceiverRegistered = true;
+        }
+    }
+
+    @Override
+    public void onDetach()
+    {
+        super.onDetach();
+
+        if (mIsSentAlertReceiverRegistered)
+        {
+            getActivity().unregisterReceiver(mAlertSentReceiver);
+            mIsSentAlertReceiverRegistered = false;
+        }
+    }
+
+    @Override
     public void trackScreen() {
     }
 
@@ -209,13 +179,11 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
 
         switch (v.getId()) {
             case R.id.fragment_alert_tvSendDanger:
-                if (Preference.getInstance().mSharedPreferences.getBoolean(Constant.IS_TEST_MODEE, false)) {
+                if (Preference.getInstance().mSharedPreferences.getBoolean(Constant.IS_TEST_MODE, false)) {
                     callTestModeService();
 
                 } else {
                     callSenDangerServiceRecievingListScreen();
-                    new PushForCrowdAlert().start();
-
                 }
                 break;
 
@@ -245,7 +213,7 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
 //                        @Override
 //                        public void onClick(View view) {
 //                            dialog.dismiss();
-//                            Preference.getInstance().savePreferenceData(Constant.IS_TEST_MODEE, true);
+//                            Preference.getInstance().savePreferenceData(Constant.IS_TEST_MODE, true);
 //                            swTestMode.setChecked(true);
 //                            callTestModeService();
 //                        }
@@ -253,7 +221,7 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
 //                    tvNegButton.setOnClickListener(new View.OnClickListener() {
 //                        @Override
 //                        public void onClick(View view) {
-//                            Preference.getInstance().savePreferenceData(Constant.IS_TEST_MODEE, false);
+//                            Preference.getInstance().savePreferenceData(Constant.IS_TEST_MODE, false);
 //                            dialog.dismiss();
 //
 //                            swTestMode.setChecked(false);
@@ -331,6 +299,67 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
         }
     }
 
+    private CompoundButton.OnCheckedChangeListener mTestModeOnCheckChangeListener = new CompoundButton.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+            if (b) {
+                final Dialog dialog = new Dialog(getActivity(), R.style.AppDialogTheme);
+                dialog.setContentView(R.layout.custom_dialog_test_mode);
+                final TextView tvTitle = (TextView) dialog.findViewById(R.id.dialog_tvTitle);
+                final TextView tvMessage = (TextView) dialog.findViewById(R.id.dialog_tvMessage);
+                final TextView tvPosButton = (TextView) dialog.findViewById(R.id.dialog_tvPosButton);
+                final TextView tvNegButton = (TextView) dialog.findViewById(R.id.dialog_tvNegButton);
+
+
+                tvTitle.setText(getString(R.string.dialog_test_mode_title));
+                tvMessage.setText(getString(R.string.dialog_test_mode_msg));
+                tvPosButton.setText(getString(R.string.dialog_test_mode_pos_btn));
+                tvNegButton.setText(getString(R.string.dialog_test_mode_neg_btn));
+
+                tvPosButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dialog.dismiss();
+                        updateTestModeValue(true);
+                        Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_TEST_MODE_ON), getString(R.string.ok), "", false, false);
+//                            callTestModeService();
+
+
+//                            Toast.makeText(getActivity(), "positive", Toast.LENGTH_SHORT).show();
+
+                    }
+                });
+
+                tvNegButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Preference.getInstance().savePreferenceData(Constant.IS_TEST_MODE, false);
+                        dialog.dismiss();
+//                            Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_TEST_MODE_OFF), getString(R.string.ok), "", false, false);
+                        Preference.getInstance().mSharedPreferences.edit().putBoolean(Constant.IS_TEST_MODE, false);
+                        updateTestModeSwitch();
+//                            Toast.makeText(getActivity(), "Negative", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                dialog.show();
+
+
+            } else {
+
+                Preference.getInstance().savePreferenceData(Constant.IS_TEST_MODE, false);
+                Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_TEST_MODE_OFF), getString(R.string.ok), "", false, false);
+            }
+
+        }
+    };
+
+    @Override
+    public void onViewStateRestored(Bundle savedInstanceState)
+    {
+        super.onViewStateRestored(savedInstanceState);
+        updateTestModeSwitch();
+    }
 
     @Override
     public void onDestroy() {
@@ -534,29 +563,18 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
                 .commit();
     }
 
-
-    private class PushForCrowdAlert extends Thread {
-        @Override
-        public void run() {
-            String userId = Preference.getInstance().mSharedPreferences.getString(Constant.USER_ID, "");
-//            new ServerResponseHelper().requestToPushForCrowdAlert(getLatitude() + "", getLongitude() + "", userId, timezoneID);
-
-            callSenDangerServiceRecievingListScreen();
-        }
-    }
-
     private void callSenDangerServiceRecievingListScreen() {
         if (Utills.isInternetConnected(getActivity())) {
             if (asyncTaskSendPush != null && asyncTaskSendPush.getStatus() == AsyncTask.Status.PENDING) {
-                asyncTaskSendPush.execute();
+                //asyncTaskSendPush.execute();
+                sendAlert(asyncTaskSendPush);
             } else if (asyncTaskSendPush == null || asyncTaskSendPush.getStatus() == AsyncTask.Status.FINISHED) {
                 asyncTaskSendPush = new AsyncTaskSendPush();
-                asyncTaskSendPush.execute();
+                sendAlert(asyncTaskSendPush);
             }
         } else {
             Utills.displayDialogNormalMessage(getString(R.string.app_name), getString(R.string.TAG_INTERNET_AVAILABILITY), getActivity());
         }
-
     }
 
     private void callResetCount() {
@@ -570,7 +588,6 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
         } else {
             Utills.displayDialogNormalMessage(getString(R.string.app_name), getString(R.string.TAG_INTERNET_AVAILABILITY), getActivity());
         }
-
     }
 
     private class AsyncTaskResetCount extends AsyncTask<Void, Void, Void> {
@@ -580,8 +597,6 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-//
-
         }
 
         @Override
@@ -590,7 +605,6 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
             wsResetCount.executeService();
             return null;
         }
-
 
         @Override
         protected void onPostExecute(Void aVoid) {
@@ -604,8 +618,6 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
                 }
             }
         }
-
-
     }
 
 
@@ -615,23 +627,19 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
         //double lat = ((MainActivity) getActivity()).getLatitude();
         String lat = Preference.getInstance().mSharedPreferences.getString(Constant.COMMON_LATITUDE, "0.01");
         String log = Preference.getInstance().mSharedPreferences.getString(Constant.COMMON_LONGITUDE, "0.01");
+        int accuracy = Preference.getInstance().mSharedPreferences.getInt(Constant.COMMON_ACCURACY, 0);
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            progressDialog = ProgressDialog.show(getActivity(), "", getString(R.string.TAG_Loading));
-            progressDialog.show();
-
-
         }
 
         @Override
         protected Void doInBackground(Void... params) {
             wsCallSendDanger = new WsCallSendDanger(getActivity());
-            wsCallSendDanger.executeService(Double.parseDouble(lat), Double.parseDouble(log), timezoneID);
+            wsCallSendDanger.executeService(Double.parseDouble(lat), Double.parseDouble(log), timezoneID, accuracy);
             return null;
         }
-
 
         @Override
         protected void onPostExecute(Void aVoid) {
@@ -710,25 +718,17 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
                         @Override
                         public void onClick(View view) {
                             dialog.dismiss();
-
-
                         }
                     });
 
-
                     dialog.show();
-
-
                 } else {
-
 //                    Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_SOME_WENT_WRONG_MSG), getString(R.string.ok), "", false, false);
                     Toast.makeText(getActivity(), getString(R.string.TAG_SOME_WENT_WRONG_MSG), Toast.LENGTH_SHORT).show();
                     progressDialog.dismiss();
                 }
             }
         }
-
-
     }
 
 
@@ -738,12 +738,64 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
                 asyncTaskTestMode.execute();
             } else if (asyncTaskTestMode == null || asyncTaskTestMode.getStatus() == AsyncTask.Status.FINISHED) {
                 asyncTaskTestMode = new AsyncTaskTestMode();
-                asyncTaskTestMode.execute();
+                sendAlert(asyncTaskTestMode);
             }
         } else {
             Utills.displayDialogNormalMessage(getString(R.string.app_name), getString(R.string.TAG_INTERNET_AVAILABILITY), getActivity());
         }
 
+    }
+
+    private void sendAlert(final AsyncTask<Void, Void, Void> task)
+    {
+        progressDialog = ProgressDialog.show(getActivity(), "", getString(R.string.TAG_SENDING_ALERT));
+        progressDialog.show();
+
+        final Intent serviceIntent = new Intent(getActivity(), LocationBroadcastServiceNew.class);
+        serviceIntent.putExtra(Constants.Extras.SMALLEST_DISPLACEMENT_VALUE, 0f);
+
+        getActivity().stopService(serviceIntent);
+        getActivity().startService(serviceIntent);
+        final CountDownTimer countDownTimer = new CountDownTimer(120000, 1000)
+        {
+            @Override
+            public void onTick(long millisUntilFinished)
+            {
+                int accuracy = Preference.getInstance().mSharedPreferences.getInt(Constant.COMMON_ACCURACY, 0);
+                //Log.d(TAG, "Location Accuracy = " + accuracy);
+
+                if (accuracy >= Constants.MINIMUM_ACCEPTABLE_ACCURACY)
+                {
+                    cancel();
+                    onFinish();
+                }
+            }
+
+            @Override
+            public void onFinish()
+            {
+                if (task.getStatus() == AsyncTask.Status.FINISHED)
+                {
+                    Log.e(TAG, "Trying to execute duplicate task.");
+                }
+                else
+                {
+                    task.execute();
+                }
+                //Stop the LocationService after allowing a few seconds to ensure that the service has time connect. This is necessary since the accuracy could already meet the criteria from a request. It will automatically be restarted by the repeating AlarmManager every 1 minute.
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        getActivity().stopService(serviceIntent);
+                    }
+                }, 3000);
+            }
+        };
+
+        countDownTimer.start();
     }
 
     private class AsyncTaskTestMode extends AsyncTask<Void, Void, Void> {
@@ -767,18 +819,17 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
             super.onPostExecute(aVoid);
             if (!isCancelled()) {
                 if (wsCallDADTest.isSuccess()) {
+                    progressDialog.dismiss();
                     // From here do further logic
                     //Toast.makeText(getActivity(), "Successfully ON Test Mode ", Toast.LENGTH_SHORT).show();
-                    Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_TEST_MODE_ON), getString(R.string.ok), "", false, false);
+                    /*Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_TEST_MODE_OFF), getString(R.string.ok), "", false, false);*/
+                    updateTestModeValue(false);
                 } else {
                     Toast.makeText(getActivity(), getString(R.string.TAG_SOME_WENT_WRONG_MSG), Toast.LENGTH_SHORT).show();
                 }
             }
         }
-
-
     }
-
 
     private void callCrowdAlertModeServiceON(int status) {
         if (Utills.isInternetConnected(getActivity())) {
@@ -950,4 +1001,27 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
     }
 
 
+    private BroadcastReceiver mAlertSentReceiver = new BroadcastReceiver()
+    {
+        @Override
+        public void onReceive(Context context, Intent intent)
+        {
+            updateTestModeValue(false);
+            updateTestModeSwitch();
+        }
+    };
+
+    private void updateTestModeValue(boolean isChecked)
+    {
+        Preference.getInstance().mSharedPreferences.edit().putBoolean(Constant.IS_TEST_MODE, isChecked).commit();
+        updateTestModeSwitch();
+    }
+
+    private void updateTestModeSwitch()
+    {
+        boolean isInTestMode =  Preference.getInstance().mSharedPreferences.getBoolean(Constant.IS_TEST_MODE, false);
+        swTestMode.setOnCheckedChangeListener(null);
+        swTestMode.setChecked(isInTestMode);
+        swTestMode.setOnCheckedChangeListener(mTestModeOnCheckChangeListener);
+    }
 }

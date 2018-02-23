@@ -321,7 +321,7 @@ Dette tester enheten og hele leveringsprosessen, er den eneste forskjellen mello
     <string name="TAG_PIN_CAN_NOT_GET">Pin ikke kan generere enda. Vennligst prøv igjen senere.</string>
     <string name="TAG_GPS_MSG">GPS aktivert.</string>
     <string name="TAG_GPS_ONLINE">Aktiver GPS for å gå online.</string>
-    <string name="TAG_WELLCOME">Velkommen</string>
+    <string name="TAG_WELCOME">Velkommen</string>
     <string name="TAG_LOGOUT_CONFIRMATION">Logg ut bekreftelse</string>
     <string name="TAG_LOGOUT_CONFIRMATION_DES">Når du logger ut All kontoinformasjonen vil bli slettet fra denne enheten. Du vil bli bedt om å Logg inn igjen for å bruke kontoen din. Kontaktene og tidligere varsler er lagret på våre servere, og vil bli gjenopprettet på din neste pålogging.</string>
     <string name="TAG_PWD_EMAIL_EROR">E-post eller passord er feil.</string>
