@@ -1,5 +1,16 @@
 package com.dad.blework;
 
+import com.dad.R;
+import com.dad.recievers.BLEHelper;
+import com.dad.registration.util.Constant;
+import com.dad.registration.util.Utills;
+import com.dad.settings.webservices.WsCallDADTest;
+import com.dad.settings.webservices.WsCallSendDanger;
+import com.dad.util.CheckForeground;
+import com.dad.util.Constants;
+import com.dad.util.GPSTracker;
+import com.dad.util.Preference;
+
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.IntentService;
@@ -15,16 +26,6 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.dad.R;
-import com.dad.recievers.BLEHelper;
-import com.dad.registration.util.Constant;
-import com.dad.registration.util.Utills;
-import com.dad.settings.webservices.WsCallDADTest;
-import com.dad.settings.webservices.WsCallSendDanger;
-import com.dad.util.CheckForeground;
-import com.dad.util.GPSTracker;
-import com.dad.util.Preference;
-
 import java.util.Calendar;
 import java.util.TimeZone;
 
@@ -35,6 +36,7 @@ public class BleService extends IntentService {
     private String TAG = BleService.class.getName();
     private String latitude;
     private String longitude;
+    private int accuracy;
     private String timezoneID;
     private Handler handler;
     private AsyncTaskSendCrowdAlert asyncTaskSendPush;
@@ -68,10 +70,13 @@ public class BleService extends IntentService {
     private void getLatLong() {
         GPSTracker gpsTracker = new GPSTracker(getApplicationContext());
         if (gpsTracker.canGetLocation()) {
-            latitude = Preference.getInstance().mSharedPreferences.getString(Constant.COMMON_LATITUDE, "0.01");
-            longitude = Preference.getInstance().mSharedPreferences.getString(Constant.COMMON_LONGITUDE, "0.01");
+            latitude = String.valueOf(gpsTracker.getLatitude());
+            longitude = String.valueOf(gpsTracker.getLongitude());
+            accuracy = (int) gpsTracker.getLocation().getAccuracy();
+
             Log.d(TAG, latitude);
             Log.d(TAG, longitude);
+            Log.d(TAG, String.valueOf(accuracy));
         }
 
     }
@@ -207,7 +212,7 @@ public class BleService extends IntentService {
 
     @SuppressLint("NewApi")
     public void sendPushNotification() {
-        if (Preference.getInstance().mSharedPreferences.getBoolean(Constant.IS_TEST_MODEE, false)) {
+        if (Preference.getInstance().mSharedPreferences.getBoolean(Constant.IS_TEST_MODE, false)) {
 
             if (Preference.getInstance().mSharedPreferences.getBoolean(Constant.IS_ON_SETTING, false)) {
                 return;
@@ -333,7 +338,8 @@ public class BleService extends IntentService {
         if ((currentTimeMillis - lastLoggedTime) <= MIN_ALERT_TIME_INTERVEL) {
             return false;
         }
-        System.out.println("BleService.isAMinuteOver()");
+        Log.d("BleService", "isAMinuteOver()");
+
         return true;
     }
 
@@ -380,7 +386,7 @@ public class BleService extends IntentService {
         @Override
         protected Void doInBackground(Void... params) {
             wsCallSendDanger = new WsCallSendDanger(BleService.this);
-            wsCallSendDanger.executeService(Double.parseDouble(latitude), Double.parseDouble(longitude), timezoneID);
+            wsCallSendDanger.executeService(Double.parseDouble(latitude), Double.parseDouble(longitude), timezoneID, accuracy);
             return null;
         }
 
@@ -409,10 +415,10 @@ public class BleService extends IntentService {
                     Log.d("Al_UUID", Preference.getInstance().mSharedPreferences.getString("UUIDHex", ""));
                     Preference preference = Preference.getInstance();
                     if (preference != null) {
-                        if (Preference.getInstance().mSharedPreferences.getString("new_uuid", "").equalsIgnoreCase("FD8C0AA6D40411E5AB30625662870761")) {
+                        if (Preference.getInstance().mSharedPreferences.getString(Constants.Preferences.Keys.NEW_UUID_KEY, "").equalsIgnoreCase(Constants.NEW_UUID)) {
 
-                            final String major = preference.mSharedPreferences.getString("new_major", "");
-                            final String minor = preference.mSharedPreferences.getString("new_minor", "");
+                            final String major = preference.mSharedPreferences.getString(Constants.Preferences.Keys.NEW_MAJOR_KEY, "");
+                            final String minor = preference.mSharedPreferences.getString(Constants.Preferences.Keys.NEW_MINOR_KEY, "");
 
                             if (!minor.equals("") && !major.equals("")) {
                                 double doubleminor = Double.parseDouble(minor) / 1000;
@@ -422,36 +428,38 @@ public class BleService extends IntentService {
 
                                     tvMsgLeve.setText(getString(R.string.battery_level_good));
                                     tvMsgLeve.setBackgroundColor(getResources().getColor(R.color.color_green));
-                                    preference.clearPreferenceItem("new_uuid");
-                                    preference.clearPreferenceItem("new_major");
-                                    preference.clearPreferenceItem("new_minor");
+                                    preference.clearPreferenceItem(Constants.Preferences.Keys.NEW_UUID_KEY);
+                                    preference.clearPreferenceItem(Constants.Preferences.Keys.NEW_MAJOR_KEY);
+                                    preference.clearPreferenceItem(Constants.Preferences.Keys.NEW_MINOR_KEY);
 
                                 } else if (doubleminor >= -2.499 && doublemajor >= 2.0) {
 
                                     tvMsgLeve.setText(getString(R.string.battery_level_low));
                                     tvMsgLeve.setBackgroundColor(getResources().getColor(R.color.color_yello));
-                                    preference.clearPreferenceItem("new_uuid");
-                                    preference.clearPreferenceItem("new_major");
-                                    preference.clearPreferenceItem("new_minor");
+                                    preference.clearPreferenceItem(Constants.Preferences.Keys.NEW_UUID_KEY);
+                                    preference.clearPreferenceItem(Constants.Preferences.Keys.NEW_MAJOR_KEY);
+                                    preference.clearPreferenceItem(Constants.Preferences.Keys.NEW_MINOR_KEY);
                                 } else if (doubleminor < 2.0 && doublemajor < 2.0) {
                                     tvMsgLeve.setText(getString(R.string.battery_level_replace));
                                     tvMsgLeve.setBackgroundColor(getResources().getColor(R.color.color_alert_red));
-                                    preference.clearPreferenceItem("new_uuid");
-                                    preference.clearPreferenceItem("new_major");
-                                    preference.clearPreferenceItem("new_minor");
+                                    preference.clearPreferenceItem(Constants.Preferences.Keys.NEW_UUID_KEY);
+                                    preference.clearPreferenceItem(Constants.Preferences.Keys.NEW_MAJOR_KEY);
+                                    preference.clearPreferenceItem(Constants.Preferences.Keys.NEW_MINOR_KEY);
                                 } else {
                                     tvMsgLeve.setText(getString(R.string.battery_level_good));
                                     tvMsgLeve.setBackgroundColor(getResources().getColor(R.color.color_green));
-                                    preference.clearPreferenceItem("new_uuid");
-                                    preference.clearPreferenceItem("new_major");
-                                    preference.clearPreferenceItem("new_minor");
+                                    preference.clearPreferenceItem(Constants.Preferences.Keys.NEW_UUID_KEY);
+                                    preference.clearPreferenceItem(Constants.Preferences.Keys.NEW_MAJOR_KEY);
+                                    preference.clearPreferenceItem(Constants.Preferences.Keys.NEW_MINOR_KEY);
                                 }
 
 
                             }
-                        } else if (Preference.getInstance().mSharedPreferences.getString("old_uuid", "").equalsIgnoreCase("FD8C0AA6D40411E5AB30625662870761")) {
+                        } /*else if (Preference.getInstance().mSharedPreferences.getString(Constants.Preferences.Keys.OLD_UUID_KEY, "").equalsIgnoreCase("FD8C0AA6D40411E5AB30625662870761"))*/
+                        else if (Preference.getInstance().mSharedPreferences.getString(Constants.Preferences.Keys.OLD_UUID_KEY, "").equalsIgnoreCase(Constants.OLD_UUID))
+                        {
 
-                            final String major = preference.mSharedPreferences.getString("old_major", "");
+                            final String major = preference.mSharedPreferences.getString(Constants.Preferences.Keys.OLD_MAJOR_KEY, "");
                             final String minor = preference.mSharedPreferences.getString("old_minor", "");
 
                             if (!minor.equals("") && !major.equals("")) {
@@ -487,7 +495,7 @@ public class BleService extends IntentService {
                         @Override
                         public void onClick(View view) {
                             dialog.dismiss();
-
+                            sendAlertBroadcast();
 
                         }
                     });
@@ -530,6 +538,7 @@ public class BleService extends IntentService {
             if (!isCancelled()) {
                 if (wsCallDADTest.isSuccess()) {
                     // From here do further logic
+                    sendAlertBroadcast();
                 }
             }
         }
@@ -537,6 +546,12 @@ public class BleService extends IntentService {
     }
 
 
+    private void sendAlertBroadcast()
+    {
+        Intent intent = new Intent();
+        intent.setAction(Constants.Actions.SENT_ALERT_ACTION);
+        sendBroadcast(intent);
+    }
 }
 
 

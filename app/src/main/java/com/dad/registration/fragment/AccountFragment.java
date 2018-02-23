@@ -1,10 +1,23 @@
 package com.dad.registration.fragment;
 
+import com.dad.R;
+import com.dad.home.BaseFragment;
+import com.dad.registration.activity.MainActivity;
+import com.dad.registration.util.Constant;
+import com.dad.registration.util.Utills;
+import com.dad.settings.webservices.WsLogout;
+import com.dad.settings.webservices.WsResetCount;
+import com.dad.util.Constants;
+import com.dad.util.Preference;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,16 +27,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.dad.R;
-import com.dad.home.BaseFragment;
-import com.dad.registration.activity.MainActivity;
-import com.dad.registration.util.Constant;
-import com.dad.registration.util.Utills;
-import com.dad.settings.webservices.WsLogout;
-import com.dad.settings.webservices.WsResetCount;
-import com.dad.util.Preference;
+import java.util.Locale;
 
 public class AccountFragment extends BaseFragment {
+
+    private static final String TAG = AccountFragment.class.getSimpleName();
 
     private TextView tvWelcome;
     private TextView tvEditAccount;
@@ -50,13 +58,42 @@ public class AccountFragment extends BaseFragment {
         tvShowEula = (TextView) view.findViewById(R.id.fragment_settings_tvShowEula);
         tvLogOut = (TextView) view.findViewById(R.id.fragment_settings_tvLogOut);
         currentUserName = Preference.getInstance().mSharedPreferences.getString(Constant.USER_NAME, "");
-        tvWelcome.setText(getString(R.string.TAG_WELLCOME) + " " + currentUserName);
+        tvWelcome.setText(getString(R.string.TAG_WELCOME) + " " + currentUserName);
 
 //       tvWelcome.setText(String.format("Welcome ", currentUserName));
         tvEditAccount.setOnClickListener(this);
         tvLogin.setOnClickListener(this);
         tvShowEula.setOnClickListener(this);
         tvLogOut.setOnClickListener(this);
+
+
+
+        TextView tvBuildVersion = (TextView) view.findViewById(R.id.tvBuild);
+        try
+        {
+            PackageInfo packageInfo = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0);
+
+            tvBuildVersion.setText(String.format(Locale.US, getString(R.string.build_no), packageInfo.versionCode, packageInfo.versionName));
+        }
+        catch (PackageManager.NameNotFoundException e)
+        {
+            Log.e(TAG, "Package Not found." + e.getMessage());
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        switch (requestCode) {
+            case Constants.REQUEST_CODES.FORCE_LOGOUT: {
+                if (resultCode == Activity.RESULT_OK) {
+                    if (data.hasExtra(Constants.Extras.FORCE_LOGOUT) && data.getBooleanExtra(Constants.Extras.FORCE_LOGOUT, false)) {
+                        logOut();
+                    }
+                }
+            }
+
+        }
     }
 
     @Override
@@ -235,7 +272,7 @@ public class AccountFragment extends BaseFragment {
         super.onHiddenChanged(hidden);
         if (!hidden) {
             currentUserName = Preference.getInstance().mSharedPreferences.getString(Constant.USER_NAME, "");
-            tvWelcome.setText(String.format(getString(R.string.TAG_WELLCOME) + "%s", currentUserName));
+            tvWelcome.setText(String.format(getString(R.string.TAG_WELCOME) + " %s", currentUserName));
         }
     }
 }

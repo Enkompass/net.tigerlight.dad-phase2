@@ -26,8 +26,9 @@ public class Constant {
     public final static String KEY_PASSWORD = "keyPassword";
     public final static String COMMON_LATITUDE = "latitude";
     public final static String COMMON_LONGITUDE = "longitude";
+    public final static String COMMON_ACCURACY = "accuracy";
     public final static String IS_CHECKED = "is_checked";
-    public final static String IS_TEST_MODEE = "is_test_mode";
+    public final static String IS_TEST_MODE = "is_test_mode";
     public static final String IS_DA = " IS_DA";
     public static final String IS_NB = " IS_NB";
     public static final String IS_SV = " IS_SV";

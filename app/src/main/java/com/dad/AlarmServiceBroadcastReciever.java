@@ -12,13 +12,16 @@ import android.util.Log;
  */
 
 public class AlarmServiceBroadcastReciever extends BroadcastReceiver {
+
+    private static final String TAG = AlarmServiceBroadcastReciever.class.getSimpleName();
+
     @Override
     public void onReceive(Context context, Intent intent) {
 
         long time = 1000 * 5;  //For repiting 30 second
 
         try {
-
+            Log.d(TAG, "Starting AlarmServiceBroadcastReciever");
             Intent serviceIntent = new Intent(context, LocationBroadcastServiceNew.class);
             PendingIntent pendingIntent = PendingIntent.getService(context, 1001, serviceIntent, PendingIntent.FLAG_CANCEL_CURRENT);
             AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);

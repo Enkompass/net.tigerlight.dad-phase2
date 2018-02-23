@@ -322,7 +322,7 @@ EULA måste godkännas för att använda denna app. Om du inte vill acceptera EU
     <string name="TAG_PIN_CAN_NOT_GET">Pin kan inte generera ännu. Försök igen senare.</string>
     <string name="TAG_GPS_MSG">Gps aktiverad.</string>
     <string name="TAG_GPS_ONLINE">Aktivera GPS för att gå online.</string>
-    <string name="TAG_WELLCOME">Välkommen</string>
+    <string name="TAG_WELCOME">Välkommen</string>
     <string name="TAG_LOGOUT_CONFIRMATION">Utloggningsbekräftelse</string>
     <string name="TAG_LOGOUT_CONFIRMATION_DES">När du loggar ut All din kontoinformation kommer att rensas från den här enheten. Du kommer att krävas för att logga in igen för att använda kontot. Dina kontakter och tidigare varningar lagras på våra servrar och återställs på din nästa inloggning.</string>
     <string name="TAG_PWD_EMAIL_EROR">E-post eller lösenord är felaktigt.</string>

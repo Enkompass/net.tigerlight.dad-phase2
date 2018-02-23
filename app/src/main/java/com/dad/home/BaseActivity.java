@@ -1,19 +1,5 @@
 package com.dad.home;
 
-import android.app.FragmentManager;
-import android.content.Intent;
-import android.content.IntentSender;
-import android.location.Location;
-import android.os.Bundle;
-import android.os.SystemClock;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.View;
-import android.widget.Toast;
-
-import com.dad.LocationBroadcastServiceNew;
-import com.dad.R;
-import com.dad.util.Util;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
@@ -24,6 +10,21 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStates;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
+
+import com.dad.LocationBroadcastServiceNew;
+import com.dad.R;
+import com.dad.util.Util;
+
+import android.app.FragmentManager;
+import android.content.Intent;
+import android.content.IntentSender;
+import android.location.Location;
+import android.os.Bundle;
+import android.os.SystemClock;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.View;
+import android.widget.Toast;
 
 public class BaseActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -141,6 +142,11 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
 //        }
     }
 
+    public void createLocationRequest()
+    {
+        createLocationRequest(LocationBroadcastServiceNew.UPDATE_INTERVAL_IN_MILLISECONDS, LocationBroadcastServiceNew.FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS, LocationBroadcastServiceNew.DEFAULT_SMALLEST_DISPLACEMENT_DISTANCE_IN_METERS);
+    }
+
     /**
      * Sets up the location request. Android has two location request settings:
      * {@code ACCESS_COARSE_LOCATION} and {@code ACCESS_FINE_LOCATION}. These settings control
@@ -154,20 +160,21 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
      * These settings are appropriate for mapping applications that show real-time location
      * updates.
      */
-    protected void createLocationRequest() {
+    public void createLocationRequest(long interval, long fastestInterval, float smallestDisplacement) {
         final LocationRequest locationRequest = new LocationRequest();
 
         // Sets the desired interval for active location updates. This interval is
         // inexact. You may not receive updates at all if no location sources are available, or
         // you may receive them slower than requested. You may also receive updates faster than
         // requested if other applications are requesting location at a faster interval.
-        locationRequest.setInterval(LocationBroadcastServiceNew.UPDATE_INTERVAL_IN_MILLISECONDS);
+        locationRequest.setInterval(interval);
 
         // Sets the fastest rate for active location updates. This interval is exact, and your
         // application will never receive updates faster than this value.
-        locationRequest.setFastestInterval(LocationBroadcastServiceNew.FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS);
+        locationRequest.setFastestInterval(fastestInterval);
+        locationRequest.setSmallestDisplacement(smallestDisplacement);
 
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        //locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         final LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder().addLocationRequest(locationRequest);
         builder.setAlwaysShow(true);
         final PendingResult<LocationSettingsResult> result = LocationServices.SettingsApi.checkLocationSettings(googleApiClient, builder.build());

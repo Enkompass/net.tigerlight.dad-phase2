@@ -1,5 +1,13 @@
 package com.dad.gcm;
 
+import com.google.android.gms.gcm.GcmListenerService;
+
+import com.dad.R;
+import com.dad.home.SplashActivity;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.ActivityManager;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -12,13 +20,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-
-import com.dad.R;
-import com.dad.home.SplashActivity;
-import com.google.android.gms.gcm.GcmListenerService;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,11 +52,11 @@ public class MyGcmListenerService extends GcmListenerService {
     public void onMessageReceived(String from, Bundle data) {
 
         final String messageTmp = data.getString("message");
-        Log.e("Bundle", data + "");
-        Log.e("messageTmp", messageTmp + "");
+        Log.d("Bundle", data + "");
+        Log.d("messageTmp", messageTmp + "");
 
         if (data.getString("others") != null) {
-            Log.e("Elsecondition", messageTmp + "");
+            Log.d("Elsecondition", messageTmp + "");
 
             boolean isActivityFound = false;
             //        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP) {

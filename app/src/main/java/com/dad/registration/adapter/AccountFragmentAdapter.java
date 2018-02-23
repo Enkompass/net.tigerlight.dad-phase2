@@ -1,5 +1,17 @@
 package com.dad.registration.adapter;
 
+import com.dad.R;
+import com.dad.registration.activity.MainActivity;
+import com.dad.registration.fragment.ChangPassWordFragment;
+import com.dad.registration.fragment.CreatePinFragment;
+import com.dad.registration.fragment.EditProfileFragment;
+import com.dad.registration.fragment.RegistartionFragment;
+import com.dad.registration.fragment.SearchIBeacon;
+import com.dad.registration.util.Constant;
+import com.dad.registration.util.Utills;
+import com.dad.settings.webservices.WsLogout;
+import com.dad.util.Preference;
+
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -14,18 +26,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.dad.R;
-import com.dad.registration.activity.MainActivity;
-import com.dad.registration.fragment.ChangPassWordFragment;
-import com.dad.registration.fragment.CreatePinFragment;
-import com.dad.registration.fragment.EditProfileFragment;
-import com.dad.registration.fragment.RegistartionFragment;
-import com.dad.registration.fragment.SearchIBeacon;
-import com.dad.registration.util.Constant;
-import com.dad.registration.util.Utills;
-import com.dad.settings.webservices.WsLogout;
-import com.dad.util.Preference;
 
 /**
  * Created by indianic on 20/10/16.

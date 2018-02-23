@@ -10,18 +10,19 @@
         android:layout_weight="0.1"
         android:background="@color/colorOrange_new"
         android:gravity="center"
-        android:padding="@dimen/_10sdp">
+        android:padding="@dimen/_10sdp"
+            android:paddingStart="@dimen/_2sdp">
 
         <com.dad.util.CustomTextViewBold
             android:id="@+id/fragment_alert_detail_tvBackAlerts"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0.2"
             android:background="@color/colorOrange_new"
             android:gravity="center"
             android:text="@string/dashbord_alert"
             android:textColor="@color/color_blue"
             android:textSize="@dimen/_14sdp"
+            android:drawableLeft="@drawable/ic_action_previous_item"
             android:textStyle="bold" />
 
         <com.dad.util.CustomTextViewBold
@@ -33,7 +34,6 @@
             android:layout_weight="0.5"
             android:background="@color/colorOrange_new"
             android:gravity="center"
-
             android:textColor="@color/colorBlack"
             android:textSize="@dimen/_16sdp"
             android:textStyle="bold" />

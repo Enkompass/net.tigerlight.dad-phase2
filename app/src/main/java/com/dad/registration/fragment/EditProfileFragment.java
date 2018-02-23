@@ -1,5 +1,25 @@
 package com.dad.registration.fragment;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.dad.DADApplication;
+import com.dad.R;
+import com.dad.cropimage.CropImage;
+import com.dad.home.BaseFragment;
+import com.dad.registration.model.GetUserInfoModel;
+import com.dad.registration.util.Constant;
+import com.dad.registration.util.Utills;
+import com.dad.registration.webservices.WsCallForgotPassword;
+import com.dad.settings.webservices.WsCallChangePassword;
+import com.dad.settings.webservices.WsCallUpdateAccount;
+import com.dad.settings.webservices.WsGetUserData;
+import com.dad.settings.webservices.WsUploadImage;
+import com.dad.simplecropping.CameraUtil;
+import com.dad.simplecropping.Constants;
+import com.dad.util.CircleTransform;
+import com.dad.util.Preference;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -25,30 +45,12 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
-import com.dad.DADApplication;
-import com.dad.R;
-import com.dad.cropimage.CropImage;
-import com.dad.home.BaseFragment;
-import com.dad.registration.model.GetUserInfoModel;
-import com.dad.registration.util.Constant;
-import com.dad.registration.util.Utills;
-import com.dad.registration.webservices.WsCallForgotPassword;
-import com.dad.settings.webservices.WsCallChangePassword;
-import com.dad.settings.webservices.WsCallUpdateAccount;
-import com.dad.settings.webservices.WsGetUserData;
-import com.dad.settings.webservices.WsUploadImage;
-import com.dad.simplecropping.CameraUtil;
-import com.dad.simplecropping.Constants;
-import com.dad.util.CircleTransform;
-import com.dad.util.Preference;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.Locale;
+
+import static android.app.Activity.RESULT_OK;
 
 public class EditProfileFragment extends BaseFragment {
 
@@ -446,7 +448,7 @@ public class EditProfileFragment extends BaseFragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        if (resultCode != Activity.RESULT_OK) {
+        if (resultCode != RESULT_OK) {
             return;
         }
         switch (requestCode) {
@@ -928,6 +930,9 @@ public class EditProfileFragment extends BaseFragment {
         dialog.setPositiveButton(strPositiveText, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 dialog.dismiss();
+                Intent intent = new Intent();
+                intent.putExtra(com.dad.util.Constants.Extras.FORCE_LOGOUT, true);
+                                getTargetFragment().onActivityResult(com.dad.util.Constants.REQUEST_CODES.FORCE_LOGOUT, RESULT_OK, intent);
                 getFragmentManager().popBackStack();
             }
         });

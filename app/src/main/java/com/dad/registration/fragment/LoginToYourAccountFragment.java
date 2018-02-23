@@ -1,5 +1,23 @@
 package com.dad.registration.fragment;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.gcm.GoogleCloudMessaging;
+
+import com.dad.LocationBroadcastServiceNew;
+import com.dad.R;
+import com.dad.blework.AlarmReceiver;
+import com.dad.blework.BleReceiver;
+import com.dad.home.BaseActivity;
+import com.dad.home.BaseFragment;
+import com.dad.registration.activity.MainActivity;
+import com.dad.registration.model.GetUserInfoModel;
+import com.dad.registration.util.Constant;
+import com.dad.registration.util.Utills;
+import com.dad.registration.webservices.WsCallLogin;
+import com.dad.settings.webservices.WsGetUserData;
+import com.dad.util.Preference;
+
 import android.app.AlarmManager;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
@@ -21,23 +39,6 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
-
-import com.dad.LocationBroadcastServiceNew;
-import com.dad.R;
-import com.dad.blework.AlarmReceiver;
-import com.dad.blework.BleReceiver;
-import com.dad.home.BaseActivity;
-import com.dad.home.BaseFragment;
-import com.dad.registration.activity.MainActivity;
-import com.dad.registration.model.GetUserInfoModel;
-import com.dad.registration.util.Constant;
-import com.dad.registration.util.Utills;
-import com.dad.registration.webservices.WsCallLogin;
-import com.dad.settings.webservices.WsGetUserData;
-import com.dad.util.Preference;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import java.io.IOException;
 

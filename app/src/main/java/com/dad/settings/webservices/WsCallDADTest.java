@@ -1,7 +1,5 @@
 package com.dad.settings.webservices;
 
-import android.content.Context;
-
 import com.dad.registration.util.Constant;
 import com.dad.util.Preference;
 import com.dad.util.WSUtil;
@@ -9,6 +7,8 @@ import com.dad.util.WsConstants;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import android.content.Context;
 
 /**
  * Created by M.T. on 7 Oct, 2016.
@@ -84,6 +84,7 @@ public class WsCallDADTest {
         builder.append("&" + wsConstants.PARAMS_USER_ID + "=" + Preference.getInstance().mSharedPreferences.getString(Constant.USER_ID, ""));
         builder.append("&" + wsConstants.PARAMS_TAG + "=" + wsConstants.PARAMS_TAG_VALUE);
         builder.append("&" + wsConstants.PARAMS_LANGUAGE + "=" + preference.mSharedPreferences.getString(Constant.IS_LANG_ID, ""));
+        builder.append("&" + wsConstants.PARAMS_ACCURACY + "=" + preference.mSharedPreferences.getInt(Constant.COMMON_ACCURACY, 0));
 //        builder.append("&" + wsConstants.PARAMS_LANGUAGE + "=" + preference.mSharedPreferences.getString(preference.KEY_LANG_ID, "en"));
         return builder.toString();
     }

@@ -105,6 +105,7 @@
         android:orientation="vertical">
 
         <com.dad.util.CustomTextViewSemiBold
+                android:id="@+id/tvBuild"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/build_no"

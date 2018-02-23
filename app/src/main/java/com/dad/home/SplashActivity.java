@@ -1,5 +1,15 @@
 package com.dad.home;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
+
+import com.dad.LocationBroadcastServiceNew;
+import com.dad.R;
+import com.dad.gcm.RegistrationIntentService;
+import com.dad.registration.activity.MainActivity;
+import com.dad.registration.util.Constant;
+import com.dad.util.Preference;
+
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -8,15 +18,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-
-import com.dad.LocationBroadcastServiceNew;
-import com.dad.R;
-import com.dad.gcm.RegistrationIntentService;
-import com.dad.registration.activity.MainActivity;
-import com.dad.registration.util.Constant;
-import com.dad.util.Preference;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
 
 
 public class SplashActivity extends AppCompatActivity {

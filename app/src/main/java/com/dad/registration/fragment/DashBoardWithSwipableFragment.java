@@ -1,17 +1,5 @@
 package com.dad.registration.fragment;
 
-import android.app.Fragment;
-import android.content.Context;
-import android.os.Bundle;
-import android.os.Handler;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
-
 import com.dad.R;
 import com.dad.home.BaseFragment;
 import com.dad.registration.adapter.ViewPagerAdapter;
@@ -23,6 +11,18 @@ import com.dad.util.Util;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import android.app.Fragment;
+import android.content.Context;
+import android.os.Bundle;
+import android.os.Handler;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
 public class DashBoardWithSwipableFragment extends BaseFragment implements TabLayout.OnTabSelectedListener {
 
@@ -102,7 +102,7 @@ public class DashBoardWithSwipableFragment extends BaseFragment implements TabLa
      * @param tabPosition setCurrentTabFragment to replace fragmet with current fragment
      */
     private void setCurrentTabFragment(int tabPosition) {
-        Log.e("tab", "select" + tabPosition);
+        Log.d("tab", "select" + tabPosition);
         switch (tabPosition) {
             case 0:
                 final TextView tabOne = (TextView) tabLayout.getTabAt(tabPosition).getCustomView().findViewById(R.id.tab);
@@ -131,7 +131,7 @@ public class DashBoardWithSwipableFragment extends BaseFragment implements TabLa
     }
 
     private void setDefaultTab(int tabPosition) {
-        Log.e("tab", "unselect" + tabPosition);
+        Log.d("tab", "unselect" + tabPosition);
         switch (tabPosition) {
             case 0:
                 final TextView tabOne = (TextView) tabLayout.getTabAt(tabPosition).getCustomView().findViewById(R.id.tab);

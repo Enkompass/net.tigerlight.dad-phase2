@@ -1,15 +1,5 @@
 package com.dad.registration.activity;
 
-import android.app.AlertDialog;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.os.Bundle;
-import android.util.Log;
-
 import com.dad.R;
 import com.dad.home.BaseActivity;
 import com.dad.home.BaseFragment;
@@ -20,6 +10,16 @@ import com.dad.registration.fragment.RegistartionFragment;
 import com.dad.registration.util.Constant;
 import com.dad.util.Preference;
 import com.dad.util.Util;
+
+import android.app.AlertDialog;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
 
 public class MainActivity extends BaseActivity {
 
@@ -38,25 +38,25 @@ public class MainActivity extends BaseActivity {
 
         final Intent intent = getIntent();
         String jsonObject = intent.getStringExtra(Constant.JSON_OBJECT);
-        Log.e("notification", "oncreate ----json object:" + intent.getStringExtra(Constant.JSON_OBJECT));
+        Log.d("notification", "oncreate ----json object:" + intent.getStringExtra(Constant.JSON_OBJECT));
         if (jsonObject != null) {
             if (getFragmentManager().getBackStackEntryCount() > 0) {
-                Log.e("notification", "oncreate if " + intent.getStringExtra(Constant.JSON_OBJECT));
+                Log.d("notification", "oncreate if " + intent.getStringExtra(Constant.JSON_OBJECT));
                 // Get the Back Entry
                 final FragmentManager.BackStackEntry backEntry = getFragmentManager().getBackStackEntryAt(getFragmentManager().getBackStackEntryCount() - 1);
                 // Find the Fragment from the Back Entry by it's Tag
                 final Fragment fragment = getFragmentManager().findFragmentByTag(backEntry.getName());
                 if (fragment != null) {
-                    Log.e("notification", "fragment " + fragment);
+                    Log.d("notification", "fragment " + fragment);
                     // Fetch the Fragment currently added in the Stack
                     final BaseFragment currentFragment = (BaseFragment) getFragmentManager().findFragmentById(R.id.activity_registartion_fl_container);
                     if (currentFragment != null) {
-                        Log.e("notification", "currentFragment " + fragment);
+                        Log.d("notification", "currentFragment " + fragment);
                         addFragment(new AlertDetailFragment(), currentFragment);
                     }
                 }
             } else {
-                Log.e("notification", "oncreate else " + intent.getStringExtra(Constant.JSON_OBJECT));
+                Log.d("notification", "oncreate else " + intent.getStringExtra(Constant.JSON_OBJECT));
                 final AlertDetailFragment alertDetailFragment = new AlertDetailFragment();
                 final Bundle bundle = new Bundle();
                 bundle.putString(Constant.JSON_OBJECT, jsonObject);
@@ -106,7 +106,7 @@ public class MainActivity extends BaseActivity {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.e("onrecive", "called");
+            Log.d("onrecive", "called");
 
 
 //            if (getFragmentManager().getBackStackEntryCount() > 0) {
@@ -131,7 +131,7 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        Log.e("notification", "called" + intent.getStringExtra(Constant.JSON_OBJECT));
+        Log.d("notification", "called" + intent.getStringExtra(Constant.JSON_OBJECT));
         // BaseFragment fragment = (BaseFragment) getFragmentManager().findFragmentById(R.id.activity_registartion_fl_container);
         //if (fragment != null) {
         final AlertDetailFragment alertDetailFragment = new AlertDetailFragment();
@@ -139,7 +139,7 @@ public class MainActivity extends BaseActivity {
         final Bundle bundle = new Bundle();
         bundle.putString(Constant.JSON_OBJECT, jsonObject);
         alertDetailFragment.setArguments(bundle);
-        Log.e("notification", " ifcalled" + intent.getStringExtra(Constant.JSON_OBJECT));
+        Log.d("notification", " ifcalled" + intent.getStringExtra(Constant.JSON_OBJECT));
         addFragment(alertDetailFragment);
     }
 
@@ -187,6 +187,7 @@ public class MainActivity extends BaseActivity {
      */
     public void addFragment(final BaseFragment newFragment, final BaseFragment hideFragment) {
         Util.getInstance().hideSoftKeyboard(this);
+        newFragment.setTargetFragment(hideFragment, 1);
         getLocalFragmentManager()
                 .beginTransaction()
                 .add(R.id.activity_registartion_fl_container, newFragment, newFragment.getClass().getSimpleName())

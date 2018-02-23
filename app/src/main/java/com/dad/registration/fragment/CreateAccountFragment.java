@@ -1,5 +1,25 @@
 package com.dad.registration.fragment;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.gcm.GoogleCloudMessaging;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.dad.LocationBroadcastServiceNew;
+import com.dad.R;
+import com.dad.blework.BleReceiver;
+import com.dad.cropimage.CropImage;
+import com.dad.home.BaseFragment;
+import com.dad.registration.activity.MainActivity;
+import com.dad.registration.util.Constant;
+import com.dad.registration.util.Utills;
+import com.dad.registration.webservices.WsCallRegistrer;
+import com.dad.settings.webservices.WsUploadImage;
+import com.dad.simplecropping.CameraUtil;
+import com.dad.simplecropping.Constants;
+import com.dad.util.Preference;
+
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
@@ -31,25 +51,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
-import com.dad.LocationBroadcastServiceNew;
-import com.dad.R;
-import com.dad.blework.BleReceiver;
-import com.dad.cropimage.CropImage;
-import com.dad.home.BaseFragment;
-import com.dad.registration.activity.MainActivity;
-import com.dad.registration.util.Constant;
-import com.dad.registration.util.Utills;
-import com.dad.registration.webservices.WsCallRegistrer;
-import com.dad.settings.webservices.WsUploadImage;
-import com.dad.simplecropping.CameraUtil;
-import com.dad.simplecropping.Constants;
-import com.dad.util.Preference;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import java.io.File;
 import java.io.FileOutputStream;
