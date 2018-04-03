@@ -245,7 +245,10 @@ public class DashBoardWithSwipableFragment extends BaseFragment implements TabLa
                         isDataAvailable = true;
                         jsonArray = jsonRecieved.getJSONArray("data");
                         listSize = jsonArray.length();
-                        getActivity().runOnUiThread(new AlertListDataHandler(jsonRecieved));
+                        if (getActivity() != null) //TODO:  Band-aid (per Rod) for unknown NPE
+                        {
+                            getActivity().runOnUiThread(new AlertListDataHandler(jsonRecieved));
+                        }
                     } else {
                         isDataAvailable = false;
                     }
@@ -254,7 +257,10 @@ public class DashBoardWithSwipableFragment extends BaseFragment implements TabLa
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            getActivity().runOnUiThread(new AlertListDataHandler(null));
+            if (getActivity() != null) //TODO:  Band-aid (per Rod) for unknown NPE
+            {
+                getActivity().runOnUiThread(new AlertListDataHandler(null));
+            }
         }
     }
 

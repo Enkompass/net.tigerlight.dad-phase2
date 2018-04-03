@@ -72,7 +72,7 @@ public class BleService extends IntentService {
         if (gpsTracker.canGetLocation()) {
             latitude = String.valueOf(gpsTracker.getLatitude());
             longitude = String.valueOf(gpsTracker.getLongitude());
-            accuracy = (int) gpsTracker.getLocation().getAccuracy();
+            accuracy = (int) gpsTracker.getAccuracy();
 
             Log.d(TAG, latitude);
             Log.d(TAG, longitude);
@@ -397,111 +397,132 @@ public class BleService extends IntentService {
 //                progressDialog.dismiss();
 //            }
             if (!isCancelled()) {
-                if (wsCallSendDanger.isSuccess()) {
+                if (wsCallSendDanger.isSuccess())
+                {
                     // From here do further logic
 
-                    final Dialog dialog = new Dialog(getActivity(), R.style.AppDialogTheme);
-                    dialog.setContentView(R.layout.custom_progress_layout);
-                    final TextView tvTitlee = (TextView) dialog.findViewById(R.id.dialog_tvTitlee);
-                    final TextView tvMessagee = (TextView) dialog.findViewById(R.id.dialog_tvMessagee);
-                    final TextView tvMsgLeve = (TextView) dialog.findViewById(R.id.dialog_tvMsgLevel);
-                    final TextView tvPosButtonn = (TextView) dialog.findViewById(R.id.dialog_tvPosButtonn);
+                    if (getActivity() != null) //TODO:  Band-aid (per Rod) for unknown NPE
+                    {
+                        final Dialog dialog = new Dialog(getActivity(), R.style.AppDialogTheme);
+                        dialog.setContentView(R.layout.custom_progress_layout);
+                        final TextView tvTitlee = (TextView) dialog.findViewById(R.id.dialog_tvTitlee);
+                        final TextView tvMessagee = (TextView) dialog.findViewById(R.id.dialog_tvMessagee);
+                        final TextView tvMsgLeve = (TextView) dialog.findViewById(R.id.dialog_tvMsgLevel);
+                        final TextView tvPosButtonn = (TextView) dialog.findViewById(R.id.dialog_tvPosButtonn);
 
+                        tvTitlee.setText(getString(R.string.custom_progess_dialog_tv_title));
+                        tvMessagee.setText(getString(R.string.custom_progess_dialog_tv_msg));
+                        tvPosButtonn.setText(getString(R.string.custom_progess_dialog_tv_ok));
 
-                    tvTitlee.setText(getString(R.string.custom_progess_dialog_tv_title));
-                    tvMessagee.setText(getString(R.string.custom_progess_dialog_tv_msg));
-                    tvPosButtonn.setText(getString(R.string.custom_progess_dialog_tv_ok));
-
-                    Log.d("Al_UUID", Preference.getInstance().mSharedPreferences.getString("UUIDHex", ""));
-                    Preference preference = Preference.getInstance();
-                    if (preference != null) {
-                        if (Preference.getInstance().mSharedPreferences.getString(Constants.Preferences.Keys.NEW_UUID_KEY, "").equalsIgnoreCase(Constants.NEW_UUID)) {
-
-                            final String major = preference.mSharedPreferences.getString(Constants.Preferences.Keys.NEW_MAJOR_KEY, "");
-                            final String minor = preference.mSharedPreferences.getString(Constants.Preferences.Keys.NEW_MINOR_KEY, "");
-
-                            if (!minor.equals("") && !major.equals("")) {
-                                double doubleminor = Double.parseDouble(minor) / 1000;
-                                double doublemajor = Double.parseDouble(major) / 1000;
-
-                                if (doubleminor >= -3.0 && doublemajor >= 2.5) {
-
-                                    tvMsgLeve.setText(getString(R.string.battery_level_good));
-                                    tvMsgLeve.setBackgroundColor(getResources().getColor(R.color.color_green));
-                                    preference.clearPreferenceItem(Constants.Preferences.Keys.NEW_UUID_KEY);
-                                    preference.clearPreferenceItem(Constants.Preferences.Keys.NEW_MAJOR_KEY);
-                                    preference.clearPreferenceItem(Constants.Preferences.Keys.NEW_MINOR_KEY);
-
-                                } else if (doubleminor >= -2.499 && doublemajor >= 2.0) {
-
-                                    tvMsgLeve.setText(getString(R.string.battery_level_low));
-                                    tvMsgLeve.setBackgroundColor(getResources().getColor(R.color.color_yello));
-                                    preference.clearPreferenceItem(Constants.Preferences.Keys.NEW_UUID_KEY);
-                                    preference.clearPreferenceItem(Constants.Preferences.Keys.NEW_MAJOR_KEY);
-                                    preference.clearPreferenceItem(Constants.Preferences.Keys.NEW_MINOR_KEY);
-                                } else if (doubleminor < 2.0 && doublemajor < 2.0) {
-                                    tvMsgLeve.setText(getString(R.string.battery_level_replace));
-                                    tvMsgLeve.setBackgroundColor(getResources().getColor(R.color.color_alert_red));
-                                    preference.clearPreferenceItem(Constants.Preferences.Keys.NEW_UUID_KEY);
-                                    preference.clearPreferenceItem(Constants.Preferences.Keys.NEW_MAJOR_KEY);
-                                    preference.clearPreferenceItem(Constants.Preferences.Keys.NEW_MINOR_KEY);
-                                } else {
-                                    tvMsgLeve.setText(getString(R.string.battery_level_good));
-                                    tvMsgLeve.setBackgroundColor(getResources().getColor(R.color.color_green));
-                                    preference.clearPreferenceItem(Constants.Preferences.Keys.NEW_UUID_KEY);
-                                    preference.clearPreferenceItem(Constants.Preferences.Keys.NEW_MAJOR_KEY);
-                                    preference.clearPreferenceItem(Constants.Preferences.Keys.NEW_MINOR_KEY);
-                                }
-
-
-                            }
-                        } /*else if (Preference.getInstance().mSharedPreferences.getString(Constants.Preferences.Keys.OLD_UUID_KEY, "").equalsIgnoreCase("FD8C0AA6D40411E5AB30625662870761"))*/
-                        else if (Preference.getInstance().mSharedPreferences.getString(Constants.Preferences.Keys.OLD_UUID_KEY, "").equalsIgnoreCase(Constants.OLD_UUID))
+                        Log.d("Al_UUID", Preference.getInstance().mSharedPreferences.getString("UUIDHex", ""));
+                        Preference preference = Preference.getInstance();
+                        if (preference != null)
                         {
+                            if (Preference.getInstance().mSharedPreferences.getString(Constants.Preferences.Keys.NEW_UUID_KEY, "").equalsIgnoreCase(Constants.NEW_UUID))
+                            {
 
-                            final String major = preference.mSharedPreferences.getString(Constants.Preferences.Keys.OLD_MAJOR_KEY, "");
-                            final String minor = preference.mSharedPreferences.getString("old_minor", "");
+                                final String major = preference.mSharedPreferences.getString(Constants.Preferences.Keys.NEW_MAJOR_KEY, "");
+                                final String minor = preference.mSharedPreferences.getString(Constants.Preferences.Keys.NEW_MINOR_KEY, "");
 
-                            if (!minor.equals("") && !major.equals("")) {
-                                double doubleminor = Double.parseDouble(minor) / 1000;
-                                double doublemajor = Double.parseDouble(major) / 1000;
+                                if (!minor.equals("") && !major.equals(""))
+                                {
+                                    double doubleminor = Double.parseDouble(minor) / 1000;
+                                    double doublemajor = Double.parseDouble(major) / 1000;
 
-                                if (doubleminor >= -3.0 && doublemajor >= 2.5) {
+                                    if (doubleminor >= -3.0 && doublemajor >= 2.5)
+                                    {
+
+                                        tvMsgLeve.setText(getString(R.string.battery_level_good));
+                                        tvMsgLeve.setBackgroundColor(getResources().getColor(R.color.color_green));
+                                        preference.clearPreferenceItem(Constants.Preferences.Keys.NEW_UUID_KEY);
+                                        preference.clearPreferenceItem(Constants.Preferences.Keys.NEW_MAJOR_KEY);
+                                        preference.clearPreferenceItem(Constants.Preferences.Keys.NEW_MINOR_KEY);
+
+                                    }
+                                    else if (doubleminor >= -2.499 && doublemajor >= 2.0)
+                                    {
+
+                                        tvMsgLeve.setText(getString(R.string.battery_level_low));
+                                        tvMsgLeve.setBackgroundColor(getResources().getColor(R.color.color_yello));
+                                        preference.clearPreferenceItem(Constants.Preferences.Keys.NEW_UUID_KEY);
+                                        preference.clearPreferenceItem(Constants.Preferences.Keys.NEW_MAJOR_KEY);
+                                        preference.clearPreferenceItem(Constants.Preferences.Keys.NEW_MINOR_KEY);
+                                    }
+                                    else if (doubleminor < 2.0 && doublemajor < 2.0)
+                                    {
+                                        tvMsgLeve.setText(getString(R.string.battery_level_replace));
+                                        tvMsgLeve.setBackgroundColor(getResources().getColor(R.color.color_alert_red));
+                                        preference.clearPreferenceItem(Constants.Preferences.Keys.NEW_UUID_KEY);
+                                        preference.clearPreferenceItem(Constants.Preferences.Keys.NEW_MAJOR_KEY);
+                                        preference.clearPreferenceItem(Constants.Preferences.Keys.NEW_MINOR_KEY);
+                                    }
+                                    else
+                                    {
+                                        tvMsgLeve.setText(getString(R.string.battery_level_good));
+                                        tvMsgLeve.setBackgroundColor(getResources().getColor(R.color.color_green));
+                                        preference.clearPreferenceItem(Constants.Preferences.Keys.NEW_UUID_KEY);
+                                        preference.clearPreferenceItem(Constants.Preferences.Keys.NEW_MAJOR_KEY);
+                                        preference.clearPreferenceItem(Constants.Preferences.Keys.NEW_MINOR_KEY);
+                                    }
+
+
+                                }
+                            } /*else if (Preference.getInstance().mSharedPreferences.getString(Constants.Preferences.Keys.OLD_UUID_KEY, "").equalsIgnoreCase("FD8C0AA6D40411E5AB30625662870761"))*/
+                            else if (Preference.getInstance().mSharedPreferences.getString(Constants.Preferences.Keys.OLD_UUID_KEY, "").equalsIgnoreCase(Constants.OLD_UUID))
+                            {
+
+                                final String major = preference.mSharedPreferences.getString(Constants.Preferences.Keys.OLD_MAJOR_KEY, "");
+                                final String minor = preference.mSharedPreferences.getString("old_minor", "");
+
+                                if (!minor.equals("") && !major.equals(""))
+                                {
+                                    double doubleminor = Double.parseDouble(minor) / 1000;
+                                    double doublemajor = Double.parseDouble(major) / 1000;
+
+                                    if (doubleminor >= -3.0 && doublemajor >= 2.5)
+                                    {
 
 //                                    tvMsgLeve.setText("GOOD D.A.D BATTERY");
 //                                    tvMsgLeve.setBackgroundColor(getResources().getColor(R.color.color_green));
 
-
-                                } else if (doubleminor >= -2.499 && doublemajor >= 2.0) {
+                                    }
+                                    else if (doubleminor >= -2.499 && doublemajor >= 2.0)
+                                    {
 
 //                                    tvMsgLeve.setText("LOW D.A.D BATTERY");
 //                                    tvMsgLeve.setBackgroundColor(getResources().getColor(R.color.color_yello));
-                                } else if (doubleminor < 2.0 && doublemajor < 2.0) {
+                                    }
+                                    else if (doubleminor < 2.0 && doublemajor < 2.0)
+                                    {
 //                                    tvMsgLeve.setText("REPLACE D.A.D BATTERY");
 //                                    tvMsgLeve.setBackgroundColor(getResources().getColor(R.color.color_alert_red));
-                                } else {
+                                    }
+                                    else
+                                    {
 //                                    tvMsgLeve.setText("GOOD D.A.D BATTERY");
 //                                    tvMsgLeve.setBackgroundColor(getResources().getColor(R.color.color_green));
-                                }
+                                    }
 
+
+                                }
 
                             }
 
                         }
 
+                        tvPosButtonn.setOnClickListener(new View.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(View view)
+                            {
+                                dialog.dismiss();
+                                sendAlertBroadcast();
+
+                            }
+                        });
+
+                        dialog.show();
                     }
-
-                    tvPosButtonn.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            dialog.dismiss();
-                            sendAlertBroadcast();
-
-                        }
-                    });
-
-
-                    dialog.show();
                 }
             }
         }

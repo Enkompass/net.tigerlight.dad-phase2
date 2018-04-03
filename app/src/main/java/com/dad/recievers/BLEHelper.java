@@ -165,31 +165,17 @@ public class BLEHelper {
                     if (msg.contains(ContactFragment.TEST_UUID_PREVIOUS) || msg.contains(ContactFragment.TEST_UUID_PREVIOUS)) {
                         bleService.sendPushNotification();
                     }
-
-
                 }
-
-
             }
-
-
-
         };
-
-
     }
 
 
     @SuppressLint("NewApi")
     public BLEHelper(final LocationBroadcastServiceNew LocationbleService, final boolean isSetting) {
-
-
         mLeScanCallback = new BluetoothAdapter.LeScanCallback() {
-
             @Override
             public void onLeScan(final BluetoothDevice device, int rssi, final byte[] scanRecord) {
-
-
                 String msg = "";
                 IsFirst = isSetting;
 
@@ -215,8 +201,6 @@ public class BLEHelper {
                 if (IsFirst) {
                     if (UUIDHex.equalsIgnoreCase(Constants.NEW_UUID)) {
                         IsFirst = false;
-
-
                         Log.d("tigerlight", "found");
 
                         //if (UUIDHex.equals(GELO_UUID)) {
@@ -235,9 +219,12 @@ public class BLEHelper {
                         Preference.getInstance().savePreferenceData(Constants.Preferences.Keys.MAJOR_KEY, String.valueOf(major));
                         Preference.getInstance().savePreferenceData(Constants.Preferences.Keys.MINOR_KEY, String.valueOf(minor));
 
-                        getActivity().startActivity(new Intent(getActivity(), MainActivity.class));
-
-
+                        if (getActivity() != null) //TODO:  Band-aid (per Rod) for unknown NPE
+                        {
+                            getActivity().startActivity(new Intent(getActivity(), MainActivity.class));
+                        } else {
+                            Log.e(TAG, "getActivity() = null");
+                        }
                     }
                 }
 
@@ -268,9 +255,12 @@ public class BLEHelper {
                         Preference.getInstance().savePreferenceData(Constants.Preferences.Keys.MAJOR_KEY, String.valueOf(major));
                         Preference.getInstance().savePreferenceData(Constants.Preferences.Keys.MINOR_KEY, String.valueOf(minor));
 
-                        getActivity().startActivity(new Intent(getActivity(), MainActivity.class));
-
-
+                        if (getActivity() != null)
+                        {
+                            getActivity().startActivity(new Intent(getActivity(), MainActivity.class));
+                        }  else {
+                            Log.e(TAG, "getActivity() = null");
+                        }
                     }
                 }
             }

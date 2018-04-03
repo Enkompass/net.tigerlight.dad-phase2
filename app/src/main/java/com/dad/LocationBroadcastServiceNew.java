@@ -96,11 +96,10 @@ public class LocationBroadcastServiceNew extends Service implements GoogleApiCli
 
     @Override
     public void onDestroy() {
-
-        Log.d(TAG, "onDestroy");
+        super.onDestroy();
+        Log.e(TAG, "onDestroy");
         stopLocationUpdates();
         unregisterReceiver(mBroadcastReceiver2);
-        super.onDestroy();
     }
 
     @Nullable

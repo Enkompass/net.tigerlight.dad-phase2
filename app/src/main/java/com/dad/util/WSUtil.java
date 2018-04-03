@@ -1,14 +1,14 @@
 package com.dad.util;
 
-import android.content.Context;
-import android.text.TextUtils;
-import android.util.Log;
-
 import com.dad.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import android.content.Context;
+import android.text.TextUtils;
+import android.util.Log;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -38,7 +38,7 @@ public class WSUtil {
             final HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
             logging.setLevel(HttpLoggingInterceptor.Level.BODY);
             final OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                    .addInterceptor(logging)
+                    .addInterceptor(logging )
                     .connectTimeout(WsConstants.CONNECTION_TIMEOUT, TimeUnit.SECONDS)
                     .readTimeout(WsConstants.CONNECTION_TIMEOUT, TimeUnit.SECONDS)
                     .build();
@@ -135,7 +135,7 @@ public class WSUtil {
             final WsConstants wsConstants = new WsConstants();
             final JSONObject jsonObjectSettings = new JSONObject();
             jsonObjectSettings.put(wsConstants.PARAMS_SUCCESS, 0);
-            jsonObjectSettings.put(wsConstants.PARAMS_MESSAGE, mContext.getString(R.string.alert_network_error));
+            jsonObjectSettings.put(wsConstants.PARAMS_MESSAGE, (mContext != null) ? mContext.getString(R.string.alert_network_error) : "Network error, please try again later"); //TODO:  Band-aid (per Rod) for unknown NPE
             jsonObject.put(wsConstants.PARAMS_SETTINGS, jsonObjectSettings);
         } catch (JSONException e) {
             e.printStackTrace();

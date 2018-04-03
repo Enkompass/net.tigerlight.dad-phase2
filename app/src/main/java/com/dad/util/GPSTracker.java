@@ -25,6 +25,7 @@ public class GPSTracker extends Service implements LocationListener {
     Location location; // location
     double latitude; // latitude
     double longitude; // longitude
+    float accuracy = 0f;
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10; // 10 meters
     private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1; // 1 minute
     protected LocationManager locationManager;
@@ -63,6 +64,7 @@ public class GPSTracker extends Service implements LocationListener {
                         if (location != null) {
                             latitude = location.getLatitude();
                             longitude = location.getLongitude();
+                            accuracy = location.getAccuracy();
                         }
                     }
                 }
@@ -80,14 +82,18 @@ public class GPSTracker extends Service implements LocationListener {
                             if (location != null) {
                                 latitude = location.getLatitude();
                                 longitude = location.getLongitude();
+                                accuracy = location.getAccuracy();
                             }
                         }
                     }
                 }
 
-                Preference.getInstance().savePreferenceData(Constant.COMMON_LATITUDE, String.valueOf(location.getLatitude()));
-                Preference.getInstance().savePreferenceData(Constant.COMMON_LONGITUDE, String.valueOf(location.getLongitude()));
-                Preference.getInstance().savePreferenceData(Constant.COMMON_ACCURACY, (int) location.getAccuracy());
+                if (location != null)
+                {
+                    Preference.getInstance().savePreferenceData(Constant.COMMON_LATITUDE, String.valueOf(location.getLatitude()));
+                    Preference.getInstance().savePreferenceData(Constant.COMMON_LONGITUDE, String.valueOf(location.getLongitude()));
+                    Preference.getInstance().savePreferenceData(Constant.COMMON_ACCURACY, (int) location.getAccuracy());
+                }
             }
 
         } catch (Exception e) {
@@ -129,6 +135,18 @@ public class GPSTracker extends Service implements LocationListener {
 
         // return longitude
         return longitude;
+    }
+
+    /**
+     * Function to get accuracy
+     */
+    public float getAccuracy() {
+        if (location != null) { //TODO:  Band-aid (per Rod) for unknown NPE - need to find out why the location is null, particularly after the app is first installed.  Might be because the app is trying to acquire a location before the permissions are granted.
+            accuracy = location.getAccuracy();
+        }
+
+        // return accuracy
+        return accuracy;
     }
 
     /**

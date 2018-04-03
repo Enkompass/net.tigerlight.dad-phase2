@@ -1,5 +1,9 @@
 package com.dad.util;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.dad.R;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DownloadManager;
@@ -20,10 +24,6 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
-
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
-import com.dad.R;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -234,74 +234,6 @@ public class Util {
         }
     }
 
-//    /**
-//     * Custom view as app theme common dialog
-//     *
-//     * @param mActivity      Activity context
-//     * @param title          Title text
-//     * @param msg            Message text
-//     * @param strPositiveBtn Positive button text
-//     * @param strNegativeBtn Negative button text
-//     * @param isTitle        Show title if true otherwise not
-//     * @param isNegativeBtn  Show negative if true otherwise not
-//     * @param isFinish       finish activity then true else false
-//     */
-//    public void displayDialog(final Activity mActivity, final String title, String msg, final String strPositiveBtn, final String strNegativeBtn, final boolean isTitle, final boolean isNegativeBtn, final boolean isFinish, final boolean isActivity) {
-//        if (mActivity != null && !mActivity.isFinishing()) {
-//            if (TextUtils.isEmpty(msg)) {
-//                msg = mActivity.getString(R.string.alert_some_error);
-//            }
-//
-//            final Dialog mDialog = new Dialog(mActivity);
-//            mDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-//            mDialog.setCancelable(false);
-//            mDialog.setCanceledOnTouchOutside(false);
-//            mDialog.setContentView(R.layout.custom_common_dialog);
-//
-//            final View titleView = mDialog.findViewById(R.id.common_dialog_titleView);
-//            final TextView tvTitle = (TextView) mDialog.findViewById(R.id.common_dialog_tvTitle);
-//            final TextView tvMsg = (TextView) mDialog.findViewById(R.id.common_dialog_tvMsg);
-//            final TextView btnPositive = (TextView) mDialog.findViewById(R.id.common_dialog_btnPositive);
-//            final TextView btnNegative = (TextView) mDialog.findViewById(R.id.common_dialog_btnNegative);
-//
-//            tvTitle.setText(title.trim());
-//            tvMsg.setText(msg.trim());
-//            btnPositive.setText(strPositiveBtn.trim());
-//            btnNegative.setText(strNegativeBtn.trim());
-//
-//            if (isTitle) {
-//                titleView.setVisibility(View.VISIBLE);
-//                tvTitle.setVisibility(View.VISIBLE);
-//            }
-//
-//            btnPositive.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    mDialog.dismiss();
-//                    if (isFinish && isActivity) {
-//                        mActivity.finish();
-//                    }
-//
-//                    if (isFinish && !isActivity) {
-//                        mActivity.onBackPressed();
-//                    }
-//                }
-//            });
-//
-//            if (isNegativeBtn) {
-//                btnNegative.setVisibility(View.VISIBLE);
-//
-//                btnNegative.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        mDialog.dismiss();
-//                    }
-//                });
-//            }
-//            mDialog.show();
-//        }
-//    }
-
     public void downloadFile(android.app.Fragment fragment, String url) {
         if (!TextUtils.isEmpty(url)) {
             Util.getInstance().hideSoftKeyboard(fragment.getActivity());
@@ -354,4 +286,12 @@ public class Util {
         return px;
     }
 
+    public static int getResourceId(Context context, String resourceName)
+    {
+        if (resourceName.contains(".")) {
+            resourceName = resourceName.substring(0, resourceName.indexOf('.'));
+        }
+
+        return context.getResources().getIdentifier(resourceName, "raw", context.getPackageName());
+    }
 }

@@ -111,14 +111,6 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
         }
 
         swTestMode = (Switch) view.findViewById(R.id.fragment_alert_swTestMode);
-        //updateTestModeSwitch();
-
-//        if (Preference.getInstance().mSharedPreferences.getBoolean(Constant.IS_TEST_MODE, false)) {
-//            swTestMode.setChecked(true);
-//        } else {
-//            swTestMode.setChecked(false);
-//        }
-//
         lvAlerts = (SwipeMenuListView) view.findViewById(R.id.fragment_alert_lvAlerts);
 
         tvSendDanger.setOnClickListener(this);
@@ -186,50 +178,6 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
                     callSenDangerServiceRecievingListScreen();
                 }
                 break;
-
-//            case R.id.fragment_alert_swCrowdAlert:
-////                Preference.getInstance().savePreferenceData(Constant.IS_CHECKED, true);
-//
-//                swCrowdALert.setOnCheckedChangeListener(this);//Commented this line on 19 dec 2016 need to ask parth for confirmation
-//                break;
-
-//            case R.id.fragment_alert_swTestMode:
-//
-//                if (swTestMode.isChecked()) {
-//                    final Dialog dialog = new Dialog(getActivity(), R.style.AppDialogTheme);
-//                    dialog.setContentView(R.layout.custom_dialog_test_mode);
-//
-//                    final TextView tvTitle = (TextView) dialog.findViewById(R.id.dialog_tvTitle);
-//                    final TextView tvMessage = (TextView) dialog.findViewById(R.id.dialog_tvMessage);
-//                    final TextView tvPosButton = (TextView) dialog.findViewById(R.id.dialog_tvPosButton);
-//                    final TextView tvNegButton = (TextView) dialog.findViewById(R.id.dialog_tvNegButton);
-//
-//                    tvTitle.setText(getString(R.string.dialog_test_mode_title));
-//                    tvMessage.setText(getString(R.string.dialog_test_mode_msg));
-//                    tvPosButton.setText(getString(R.string.dialog_test_mode_pos_btn));
-//                    tvNegButton.setText(getString(R.string.dialog_test_mode_neg_btn));
-//
-//                    tvPosButton.setOnClickListener(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View view) {
-//                            dialog.dismiss();
-//                            Preference.getInstance().savePreferenceData(Constant.IS_TEST_MODE, true);
-//                            swTestMode.setChecked(true);
-//                            callTestModeService();
-//                        }
-//                    });
-//                    tvNegButton.setOnClickListener(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View view) {
-//                            Preference.getInstance().savePreferenceData(Constant.IS_TEST_MODE, false);
-//                            dialog.dismiss();
-//
-//                            swTestMode.setChecked(false);
-//                        }
-//                    });
-//                    dialog.show();
-//                }
-//                break;
         }
 
     }
@@ -252,26 +200,11 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
 //                ((MainActivity)getActivity()).addFragment(alertDetailFragment,AlertFragment.this);
                 loadFragment(alertDetailFragment, AlertDetailFragment.class.getSimpleName());
 
-//                Intent i = new Intent(getActivity(), AlertDetailFragment.class);
-//                startActivity(i);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
     }
-
-//    @Override
-//    public void onDeleteItemClick(int position) {
-//        //if (isEditing) {
-//        try {
-//            jsonobjectToChange = (JSONObject) jsonArray.get(position);
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-//
-//        deleteUsingThread(position);
-//        //}
-//    }
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -287,12 +220,8 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
             Preference.getInstance().savePreferenceData(Constant.IS_CHECKED, isChecked);
 
             callCrowdAlertModeServiceON(1);
-
-//            new LacaleHelpStatusThread(1).start();
         } else {
             Preference.getInstance().savePreferenceData(Constant.IS_CHECKED, isChecked);
-//            Preference.getInstance().savePreferenceData(Constant.IS_CHECKED, false);
-//            new LacaleHelpStatusThread(0).start();
 
             callCrowdAlertModeServiceOFF(0);
 
@@ -510,15 +439,6 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
                             }
                             Preference.getInstance().savePreferenceData("total_count", alertCount);
                             dashBoardWithSwipableFragment.updateCount();
-
-
-//                            TextView textCount = (TextView) getActivity().findViewById(R.id.framgent_alert_tv_badge_count);
-
-//                            textCount.setText(String.valueOf(Preference.getInstance().mSharedPreferences.getInt("total_count", 0)));
-//                            TextView textCount = getView().findViewById(R.id.framgent_alert_tv_badge_count);
-//                            textCount.setText(String.valueOf(preference.mSharedPreferences.getInt("alert_count", 0)));
-
-//                            ((TextView) findViewById(R.id.alertCount)).setText("" + alertCount);
                             alertAdapter.remove(position);
                             progressDialog.dismiss();
                         }
@@ -658,62 +578,6 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
                     tvTitlee.setText(getString(R.string.custom_progess_dialog_tv_title));
                     tvMessagee.setText(getString(R.string.custom_progess_dialog_tv_msg));
                     tvPosButtonn.setText(getString(R.string.custom_progess_dialog_tv_ok));
-//
-//                    Log.d("Al_UUID", Preference.getInstance().mSharedPreferences.getString("UUIDHex", ""));
-//                    Preference preference = Preference.getInstance();
-//                    if (preference != null) {
-//
-//                        final String major = preference.mSharedPreferences.getString("major", "");
-//                        final String minor = preference.mSharedPreferences.getString("minor", "");
-//
-//                        if (!minor.equals("") && !major.equals("")) {
-//                            double doubleminor = Double.parseDouble(minor) / 1000;
-//                            double doublemajor = Double.parseDouble(major) / 1000;
-//
-//                            if (doubleminor >= -3.0 && doublemajor >= 2.5) {
-//
-////                                tvMsgLeve.setText("GOOD D.A.D BATTERY");
-////                                tvMsgLeve.setBackgroundColor(getResources().getColor(R.color.color_green));
-//                            } else if (doubleminor >= -2.499 && doublemajor >= 2.0) {
-////
-////                                tvMsgLeve.setText("LOW D.A.D BATTERY");
-////                                tvMsgLeve.setBackgroundColor(getResources().getColor(R.color.color_yello));
-//                            } else if (doubleminor < 2.0 && doublemajor < 2.0) {
-////                                tvMsgLeve.setText("REPLACE D.A.D BATTERY");
-////                                tvMsgLeve.setBackgroundColor(getResources().getColor(R.color.color_alert_red));
-//                            } else {
-////                                tvMsgLeve.setText("GOOD D.A.D BATTERY");
-////                                tvMsgLeve.setBackgroundColor(getResources().getColor(R.color.color_green));
-//                            }
-//
-//
-//                        }
-//                    }
-
-//                    final int temp = 3;
-
-//                    3 separate levels (Good -3.0V to 2.5V), (Low – 2.499V to 2.0V), (Replace <2.0V)
-//                    final double minor = -2;
-//                    final double major = 1.0;
-////
-//
-//                    if (minor >= -3.0 && major >= 2.5) {
-//
-//                        tvMsgLeve.setText("GOOD D.A.D BATTERY");
-//                        tvMsgLeve.setBackgroundColor(getResources().getColor(R.color.color_green));
-//                    } else if (minor >= -2.499 && major >= 2.0) {
-//
-//                        tvMsgLeve.setText("LOW D.A.D BATTERY");
-//                        tvMsgLeve.setBackgroundColor(getResources().getColor(R.color.color_yello));
-//                    } else if (minor < 2.0 && major < 2.0) {
-//                        tvMsgLeve.setText("REPLACE D.A.D BATTERY");
-//                        tvMsgLeve.setBackgroundColor(getResources().getColor(R.color.color_alert_red));
-//                    } else {
-//                        tvMsgLeve.setText("GOOD D.A.D BATTERY");
-//                        tvMsgLeve.setBackgroundColor(getResources().getColor(R.color.color_green));
-//                    }
-
-
                     tvPosButtonn.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -819,7 +683,6 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
             super.onPostExecute(aVoid);
             if (!isCancelled()) {
                 if (wsCallDADTest.isSuccess()) {
-                    progressDialog.dismiss();
                     // From here do further logic
                     //Toast.makeText(getActivity(), "Successfully ON Test Mode ", Toast.LENGTH_SHORT).show();
                     /*Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_TEST_MODE_OFF), getString(R.string.ok), "", false, false);*/
@@ -827,6 +690,7 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
                 } else {
                     Toast.makeText(getActivity(), getString(R.string.TAG_SOME_WENT_WRONG_MSG), Toast.LENGTH_SHORT).show();
                 }
+                progressDialog.dismiss();
             }
         }
     }

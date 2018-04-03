@@ -1,21 +1,24 @@
 package com.dad;
 
+import com.dad.registration.activity.MainActivity;
+import com.dad.registration.fragment.AlertDetailFragment;
+import com.dad.registration.util.Constant;
+import com.dad.util.CheckForeground;
+import com.dad.util.Constants;
+import com.dad.util.Util;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.WakefulBroadcastReceiver;
-
-import com.dad.registration.activity.MainActivity;
-import com.dad.registration.fragment.AlertDetailFragment;
-import com.dad.registration.util.Constant;
-import com.dad.util.CheckForeground;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import static com.dad.registration.fragment.AlertFragment.jsonobjectToChange;
 
@@ -121,9 +124,28 @@ public class GcmBroadcastReceiver extends WakefulBroadcastReceiver {
         intent.putExtra(Constant.JSON_OBJECT, jsonObject);
         PendingIntent contentIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_ONE_SHOT);
 
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context).setSmallIcon(R.drawable.app_icon).setContentTitle("D.A.D.").setContentText(safeDangerString);
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
+                .setSmallIcon(R.drawable.app_icon)
+                .setContentTitle("D.A.D.")
+                .setContentText(safeDangerString);
         mBuilder.setContentIntent(contentIntent);
-        mBuilder.setDefaults(Notification.DEFAULT_SOUND);
+
+        try
+        {
+            if (jsonobjectToChange.has(Constants.JsonKeys.NOTIFICATION_SOUND)) {
+                String soundValue = jsonobjectToChange.getString(Constants.JsonKeys.NOTIFICATION_SOUND);
+                //String soundValue =  "collision_alert.wav"; //TODO:  Testing
+                mBuilder.setSound(Uri.parse(("android.resource://" + context.getPackageName() + "/" + Util.getResourceId(context, soundValue))));
+            } else {
+                mBuilder.setDefaults(Notification.DEFAULT_SOUND);
+            }
+        }
+        catch (JSONException e)
+        {
+            e.printStackTrace();
+            mBuilder.setDefaults(Notification.DEFAULT_SOUND);
+        }
+
         mBuilder.setAutoCancel(true);
         NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(1, mBuilder.build());

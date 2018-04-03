@@ -1,5 +1,31 @@
 package com.dad.registration.fragment;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.dad.R;
+import com.dad.home.BaseFragment;
+import com.dad.registration.model.CountryModel;
+import com.dad.registration.util.Constant;
+import com.dad.registration.util.Utills;
+import com.dad.sqlite.SqlLiteDbHelper;
+import com.dad.util.CircleTransform;
+import com.dad.util.Preference;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -25,31 +51,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.dad.R;
-import com.dad.home.BaseFragment;
-import com.dad.registration.model.CountryModel;
-import com.dad.registration.util.Constant;
-import com.dad.registration.util.Utills;
-import com.dad.sqlite.SqlLiteDbHelper;
-import com.dad.util.CircleTransform;
-import com.dad.util.Preference;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.Calendar;
 import java.util.Locale;
@@ -143,12 +144,16 @@ public class AlertDetailFragment extends BaseFragment implements OnClickListener
             }
         });
 
-        final String address = jsonobjectToChange.optString(TAG_ADDRESS);
+        //TODO:  Band-aid (per Rod) for unknown NPE
+        final String address = (jsonobjectToChange != null) ? jsonobjectToChange.optString(TAG_ADDRESS) : "";
         tvUserAddress.setText(address);
-        final String dateTime = jsonobjectToChange.optString(TAG_DATE_TIME);
+
+        //TODO:  Band-aid (per Rod) for unknown NPE
+        final String dateTime = (jsonobjectToChange != null) ? jsonobjectToChange.optString(TAG_DATE_TIME) : "";
         tvUserDateTime.setText(dateTime);
 
-        final String userName = jsonobjectToChange.optString(TAG_USER_NAME);
+        //TODO:  Band-aid (per Rod) for unknown NPE
+        final String userName = (jsonobjectToChange != null) ? jsonobjectToChange.optString(TAG_USER_NAME) : "";
         tvTitle.setText(userName);
 
 

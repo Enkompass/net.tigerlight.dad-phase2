@@ -174,7 +174,14 @@ public class AccountFragment extends BaseFragment {
                     Log.d("Count", "Updated");
 
                 } else {
-                    Toast.makeText(getActivity(), getString(R.string.TAG_SOME_WENT_WRONG_MSG), Toast.LENGTH_SHORT).show();
+                    try //TODO:  Band-aid (per Rod) for unknown NPE
+                    {
+                        Toast.makeText(getActivity(), getString(R.string.TAG_SOME_WENT_WRONG_MSG), Toast.LENGTH_SHORT).show();
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.e(TAG, ex.getMessage());
+                    }
 
                 }
             }

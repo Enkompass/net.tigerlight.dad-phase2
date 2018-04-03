@@ -63,6 +63,8 @@ import static com.dad.registration.util.Utills.isInternetConnected;
 
 public class ContactFragment extends BaseFragment implements AdapterView.OnItemClickListener, RecieveElementAdapter.OnDeleteItemClickListner {
 
+    private static final String TAG = ContactFragment.class.getSimpleName();
+
     private TextView tvRestoreFromTheServer;
     private TextView tvEmptyView;
     private ImageView ivAddMore;
@@ -276,25 +278,35 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        if ((isDataAvailable || isJustDataDeleted) && jsonArray != null) {
-                            isJustDataDeleted = false;
+                        try
+                        {
+                            if ((isDataAvailable || isJustDataDeleted) && jsonArray != null)
+                            {
+                                isJustDataDeleted = false;
 
-                            recieveElementAdapter = new RecieveElementAdapter(getActivity(), ContactFragment.this, jsonArray, isDataAvailable);
-                            listView.setAdapter(recieveElementAdapter);
-                            recieveElementAdapter.notifyDataSetChanged();
+                                recieveElementAdapter = new RecieveElementAdapter(getActivity(), ContactFragment.this, jsonArray, isDataAvailable);
+                                listView.setAdapter(recieveElementAdapter);
+                                recieveElementAdapter.notifyDataSetChanged();
 
-                            if (jsonArray.length() == 0) {
-                                tvEmptyView.setVisibility(View.VISIBLE);
-                                tvEmptyView.setText(getString(R.string.TAG_DATA_NA_MSG));
-                                llMain.setVisibility(View.GONE);
-                            } else {
-                                llMain.setVisibility(View.VISIBLE);
-                                tvEmptyView.setVisibility(View.GONE);
+                                if (jsonArray.length() == 0)
+                                {
+                                    tvEmptyView.setVisibility(View.VISIBLE);
+                                    tvEmptyView.setText(getString(R.string.TAG_DATA_NA_MSG));
+                                    llMain.setVisibility(View.GONE);
+                                }
+                                else
+                                {
+                                    llMain.setVisibility(View.VISIBLE);
+                                    tvEmptyView.setVisibility(View.GONE);
+                                }
+
+                                listView.setOnItemClickListener(ContactFragment.this);
                             }
-
-                            listView.setOnItemClickListener(ContactFragment.this);
+                            progressDialog.dismiss();
                         }
-                        progressDialog.dismiss();
+                        catch (Exception ex) {
+                            Log.e(TAG, ex.getMessage());
+                        }
                     }
                 });
 

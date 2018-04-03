@@ -8,8 +8,8 @@ public class WsConstants {
     public final static int CONNECTION_TIMEOUT = 30;
     public final static int SUCCESS_1 = 1;
 
-    public static final String DOMAIN = "https://elasticbean.defensealertdevice.com/";
-    //public static final String DOMAIN = "http://52.33.140.142:8080/";
+    //public static final String DOMAIN = "https://elasticbean.defensealertdevice.com/";  //Prod
+    public static final String DOMAIN = "http://52.33.140.142:8080/"; //Test
     /* Live URL	*/
     //    public static final String MAIN_URL = "http://defensealertdevice.com/admin/";
     /* Staging URL	*/
