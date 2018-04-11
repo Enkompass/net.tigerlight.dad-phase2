@@ -4,7 +4,6 @@ import com.dad.registration.activity.MainActivity;
 import com.dad.registration.fragment.AlertDetailFragment;
 import com.dad.registration.util.Constant;
 import com.dad.util.CheckForeground;
-import com.dad.util.Constants;
 import com.dad.util.Util;
 
 import org.json.JSONException;
@@ -24,6 +23,20 @@ import static com.dad.registration.fragment.AlertFragment.jsonobjectToChange;
 
 public class GcmBroadcastReceiver extends WakefulBroadcastReceiver {
 
+    /*
+      Sample intent data:
+      Bundle[
+  {
+    google.sent_time=1523459319099,
+    google.ttl=3600,
+    gcm.notification.alert=Test User 1 is in Danger at 123 Main St, City Name, ST 12345, USA http://maps.google.com/?q=34.77957,-119.0335347&zoom=17 estimated accuracy is 20 meters.,
+    gcm.notification.badge=1,
+    gcm.notification.sound=default,
+    from=32989397760,
+    google.message_id=0:1523459319105669%230ce0ddf9fd7ecd,
+    gcm.notification.data={"datetime":null,"alertType":"0","address":"123 Main St, City Name, City Name, ST 12345, USA","phone":"1115551212","latitude":"34.77957","testStatus":"false","userid":"1234","email":"TestUser1@test.com","longitude":"-119.0335347","username":"Test User 1","status":"0"}}]
+
+     */
     private final String TAG_USER_NAME = "username";
     private String data = "";
 
@@ -94,12 +107,9 @@ public class GcmBroadcastReceiver extends WakefulBroadcastReceiver {
 
         Bundle extras = intentData.getExtras();
         data = extras.getString("gcm.notification.data");
-        if (data == null) {
-            data = extras.getString("message");
-        }
-        if (data == null) {
-            data = extras.getString("gcm.notification.alert");
-        }
+        //String message = extras.getString("message");
+        String sound = extras.getString("gcm.notification.sound");
+
         if (data == null) {
             return;
         }
@@ -124,25 +134,16 @@ public class GcmBroadcastReceiver extends WakefulBroadcastReceiver {
         intent.putExtra(Constant.JSON_OBJECT, jsonObject);
         PendingIntent contentIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_ONE_SHOT);
 
+
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
                 .setSmallIcon(R.drawable.app_icon)
                 .setContentTitle("D.A.D.")
                 .setContentText(safeDangerString);
         mBuilder.setContentIntent(contentIntent);
 
-        try
-        {
-            if (jsonobjectToChange.has(Constants.JsonKeys.NOTIFICATION_SOUND)) {
-                String soundValue = jsonobjectToChange.getString(Constants.JsonKeys.NOTIFICATION_SOUND);
-                //String soundValue =  "collision_alert.wav"; //TODO:  Testing
-                mBuilder.setSound(Uri.parse(("android.resource://" + context.getPackageName() + "/" + Util.getResourceId(context, soundValue))));
-            } else {
-                mBuilder.setDefaults(Notification.DEFAULT_SOUND);
-            }
-        }
-        catch (JSONException e)
-        {
-            e.printStackTrace();
+        if (!"default".equals(sound)) {
+            mBuilder.setSound(Uri.parse(("android.resource://" + context.getPackageName() + "/" + Util.getResourceId(context, sound))));
+        } else {
             mBuilder.setDefaults(Notification.DEFAULT_SOUND);
         }
 
