@@ -32,6 +32,4 @@ public class CheckForeground {
     public static void setThreatScreenVisible(boolean isThreatScreenVisible) {
         CheckForeground.isThreatScreenVisible = isThreatScreenVisible;
     }
-
-
 }

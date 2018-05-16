@@ -16,6 +16,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.WakefulBroadcastReceiver;
 
@@ -23,20 +24,22 @@ import static com.dad.registration.fragment.AlertFragment.jsonobjectToChange;
 
 public class GcmBroadcastReceiver extends WakefulBroadcastReceiver {
 
-    /*
-      Sample intent data:
-      Bundle[
-  {
-    google.sent_time=1523459319099,
-    google.ttl=3600,
-    gcm.notification.alert=Test User 1 is in Danger at 123 Main St, City Name, ST 12345, USA http://maps.google.com/?q=34.77957,-119.0335347&zoom=17 estimated accuracy is 20 meters.,
-    gcm.notification.badge=1,
-    gcm.notification.sound=default,
-    from=32989397760,
-    google.message_id=0:1523459319105669%230ce0ddf9fd7ecd,
-    gcm.notification.data={"datetime":null,"alertType":"0","address":"123 Main St, City Name, City Name, ST 12345, USA","phone":"1115551212","latitude":"34.77957","testStatus":"false","userid":"1234","email":"TestUser1@test.com","longitude":"-119.0335347","username":"Test User 1","status":"0"}}]
+    public static final int DELAY_MILLIS = 5000;
 
-     */
+    /*
+              Sample intent data:
+              Bundle[
+          {
+            google.sent_time=1523459319099,
+            google.ttl=3600,
+            gcm.notification.alert=Test User 1 is in Danger at 123 Main St, City Name, ST 12345, USA http://maps.google.com/?q=34.77957,-119.0335347&zoom=17 estimated accuracy is 20 meters.,
+            gcm.notification.badge=1,
+            gcm.notification.sound=default,
+            from=32989397760,
+            google.message_id=0:1523459319105669%230ce0ddf9fd7ecd,
+            gcm.notification.data={"datetime":null,"alertType":"0","address":"123 Main St, City Name, City Name, ST 12345, USA","phone":"1115551212","latitude":"34.77957","testStatus":"false","userid":"1234","email":"TestUser1@test.com","longitude":"-119.0335347","username":"Test User 1","status":"0"}}]
+
+             */
     private final String TAG_USER_NAME = "username";
     private String data = "";
 
@@ -88,16 +91,19 @@ public class GcmBroadcastReceiver extends WakefulBroadcastReceiver {
         final String jsonObject = jsonobjectToChange.toString();
         bundle.putString(Constant.JSON_OBJECT, jsonObject);
         alertDetailFragment.setArguments(bundle);
-        CheckForeground.getActivity().getFragmentManager()
-                .beginTransaction().add(
-                R.id.activity_registartion_fl_container, alertDetailFragment, alertDetailFragment.getClass().getSimpleName())
-                .addToBackStack(alertDetailFragment.getClass().getSimpleName()).commit();
-        //addFragment(new AlertDetailFragment());
-
-        // Intent intent5 = new Intent("parth");
-        //LocalBroadcastManager.getInstance(context).sendBroadcast(intent5);
-
-
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                CheckForeground.getActivity().getFragmentManager()
+                        .beginTransaction()
+                        .add(R.id.activity_registartion_fl_container,
+                                alertDetailFragment,
+                                alertDetailFragment.getClass().getSimpleName())
+                        .addToBackStack(alertDetailFragment.getClass().getSimpleName())
+                        .commit();
+            }
+        }, DELAY_MILLIS);
     }
 
     private void showNotification(Context context, Intent intentData) {

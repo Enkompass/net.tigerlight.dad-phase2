@@ -1,5 +1,8 @@
 package com.dad.home;
 
+import com.dad.util.Constants;
+import com.dad.util.Util;
+
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.os.Bundle;
@@ -7,10 +10,6 @@ import android.os.SystemClock;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import com.dad.util.CheckForeground;
-import com.dad.util.Constants;
-import com.dad.util.Util;
 
 /**
  * Created by B.S on 19/04/16.
@@ -82,7 +81,7 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
     }
 
 
-    @Override
+   /* @Override
     public void onPause() {
         super.onPause();
         CheckForeground.onPause();
@@ -92,7 +91,7 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
     public void onResume() {
         super.onResume();
         CheckForeground.onResume(getActivity());
-    }
+    }*/
 
     //    @Override
     //    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

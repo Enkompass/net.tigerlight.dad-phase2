@@ -13,6 +13,7 @@ import com.google.android.gms.location.LocationSettingsStatusCodes;
 
 import com.dad.LocationBroadcastServiceNew;
 import com.dad.R;
+import com.dad.util.CheckForeground;
 import com.dad.util.Util;
 
 import android.app.FragmentManager;
@@ -47,6 +48,8 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
     private String longtdLastKnown;
     private String lattdLastKnown;
     private LocationSettingsRequest.Builder builder;
+    private String currentlyVisibleFragmentName = "";
+
     /**
      * Provides the entry point to Google Play services.
      */
@@ -86,6 +89,21 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
 
         buildGoogleApiClient();
 
+       /* getLocalFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+            @Override
+            public void onBackStackChanged() {
+                Fragment fragment = getLocalFragmentManager().findFragmentById(R.id.activity_registartion_fl_container);
+
+                if (fragment != null) {
+                    currentlyVisibleFragmentName = fragment.getTag();
+
+                    if (fragment instanceof BaseFragment) {
+                        fragment.onResume();
+                    }
+                }
+
+            }
+        });*/
     }
 
     /**
@@ -238,6 +256,7 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onResume() {
         super.onResume();
+        CheckForeground.onResume(this);
 //        if (mGoogleApiClient.isConnected()) {
 //            startLocationUpdates();
 //        }
@@ -246,6 +265,7 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onPause() {
         super.onPause();
+       CheckForeground.onPause();
 //        if (mGoogleApiClient.isConnected()) {
 //            stopLocationUpdates();
 //        }

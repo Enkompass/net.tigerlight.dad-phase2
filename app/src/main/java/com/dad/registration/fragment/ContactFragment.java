@@ -17,7 +17,6 @@ import com.dad.swipemenulistview.SwipeMenuCreator;
 import com.dad.swipemenulistview.SwipeMenuItem;
 import com.dad.swipemenulistview.SwipeMenuListView;
 import com.dad.util.BitMapHelper;
-import com.dad.util.CheckForeground;
 import com.dad.util.Constants;
 import com.dad.util.NetworkAvailability;
 import com.dad.util.Preference;
@@ -137,7 +136,7 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
         TimeZone tz = cal.getTimeZone();
         timezoneID = tz.getID();
 
-        CheckForeground.onResume(getActivity());
+       //CheckForeground.onResume(getActivity());
 
         isAllredyShown = false;
 
@@ -516,7 +515,7 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
     @Override
     public void onStop() {
         super.onStop();
-        CheckForeground.onPause();
+        //CheckForeground.onPause();
     }
 
     private class ListCountThread extends Thread {

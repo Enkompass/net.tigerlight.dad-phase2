@@ -46,8 +46,8 @@ android {
             applicationId "com.tigerlight.dad"
             minSdkVersion 19
             targetSdkVersion 22
-            versionCode 526
-            versionName "5.2.6"
+            versionCode 5263
+            versionName "5.2.6.3"
         }
 
 

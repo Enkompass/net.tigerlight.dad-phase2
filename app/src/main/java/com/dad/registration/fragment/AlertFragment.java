@@ -16,6 +16,7 @@ import com.dad.swipemenulistview.SwipeMenu;
 import com.dad.swipemenulistview.SwipeMenuCreator;
 import com.dad.swipemenulistview.SwipeMenuItem;
 import com.dad.swipemenulistview.SwipeMenuListView;
+import com.dad.util.CheckForeground;
 import com.dad.util.Constants;
 import com.dad.util.Preference;
 import com.dad.util.Util;
@@ -34,7 +35,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.AssetFileDescriptor;
 import android.graphics.drawable.ColorDrawable;
+import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -50,12 +53,16 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
+
 /**
  * AlertFragment : all alert listing
  */
 public class AlertFragment extends BaseFragment implements AdapterView.OnItemClickListener, CompoundButton.OnCheckedChangeListener {
 
     private static final String TAG = AlertFragment.class.getSimpleName();
+
+    public static final int MAXIMUM_ACCURACY_WAIT = 30000;
 
     private TextView tvSendDanger;
     private TextView tvEmptyAlert;
@@ -155,6 +162,10 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
             getActivity().unregisterReceiver(mAlertSentReceiver);
             mIsSentAlertReceiverRegistered = false;
         }
+
+        if (progressDialog != null) {
+            progressDialog.dismiss();
+        }
     }
 
     @Override
@@ -173,13 +184,11 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
             case R.id.fragment_alert_tvSendDanger:
                 if (Preference.getInstance().mSharedPreferences.getBoolean(Constant.IS_TEST_MODE, false)) {
                     callTestModeService();
-
                 } else {
                     callSenDangerServiceRecievingListScreen();
                 }
                 break;
         }
-
     }
 
 
@@ -283,6 +292,7 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
         }
     };
 
+
     @Override
     public void onViewStateRestored(Bundle savedInstanceState)
     {
@@ -308,27 +318,6 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
 
     }
 
-    private class LacaleHelpStatusThread extends Thread {
-
-        private int staus;
-        private WsCrowdAlert wsCrowdAlert;
-
-        private LacaleHelpStatusThread(int staus) {
-            wsCrowdAlert = new WsCrowdAlert(getActivity());
-            this.staus = staus;
-        }
-
-        @Override
-        public void run() {
-            wsCrowdAlert.executeService(staus);
-
-            if (wsCrowdAlert.isSuccess()) {
-                Utills.displayDialog(getActivity(), getString(R.string.app_name), "Has Been On", getString(R.string.ok), "", false, false);
-            }
-
-        }
-    }
-
     private class AlertListLoaderThread extends Thread {
         @Override
         public void run() {
@@ -342,8 +331,9 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
                     if (jsonRecieved.getInt(SUCCESS) == 1) {
                         isDataAvailable = true;
                         jsonArray = jsonRecieved.getJSONArray("data");
-                        listSize = jsonArray.length();
-                        getActivity().runOnUiThread(new AlertListDataHandler(jsonRecieved));
+                        if (getActivity() != null) {
+                            getActivity().runOnUiThread(new AlertListDataHandler(jsonRecieved));
+                        }
                     } else {
                         isDataAvailable = false;
                     }
@@ -397,7 +387,6 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
 
     }
 
-
     private void deleteUsingThread(final int position) {
         final Handler handler = new Handler();
         final ProgressDialog progressDialog = ProgressDialog.show(getActivity(), "", getString(R.string.TAG_DELETING));
@@ -431,7 +420,7 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
                         if (response == 1) {
                             isJustDataDeleted = false;
                             Toast.makeText(getActivity(), getString(R.string.dialog_delete_alert_title), Toast.LENGTH_SHORT).show();
-                            upadateJsonArray(position);
+                            updateJsonArray(position);
                             int alertCount = Preference.getInstance().mSharedPreferences.getInt("total_count", 0);
 
                             alertCount = alertCount - 1;
@@ -448,8 +437,7 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
         }).start();
     }
 
-
-    private void upadateJsonArray(int position) {
+    private void updateJsonArray(int position) {
         JSONArray newArray = new JSONArray();
         for (int i = 0; i < jsonArray.length(); i++) {
             if (i == position) {
@@ -513,7 +501,6 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
     private class AsyncTaskResetCount extends AsyncTask<Void, Void, Void> {
         private WsResetCount wsResetCount;
 
-
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -539,7 +526,6 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
             }
         }
     }
-
 
     private class AsyncTaskSendPush extends AsyncTask<Void, Void, Void> {
         private WsCallSendDanger wsCallSendDanger;
@@ -571,14 +557,14 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
 
                     final Dialog dialog = new Dialog(getActivity(), R.style.AppDialogTheme);
                     dialog.setContentView(R.layout.custom_progress_layout);
-                    final TextView tvTitlee = (TextView) dialog.findViewById(R.id.dialog_tvTitlee);
-                    final TextView tvMessagee = (TextView) dialog.findViewById(R.id.dialog_tvMessagee);
+                    final TextView tvTitle = (TextView) dialog.findViewById(R.id.dialog_tvTitlee);
+                    final TextView tvMessage = (TextView) dialog.findViewById(R.id.dialog_tvMessagee);
                     final TextView tvMsgLeve = (TextView) dialog.findViewById(R.id.dialog_tvMsgLevel);
-                    final TextView tvPosButtonn = (TextView) dialog.findViewById(R.id.dialog_tvPosButtonn);
-                    tvTitlee.setText(getString(R.string.custom_progess_dialog_tv_title));
-                    tvMessagee.setText(getString(R.string.custom_progess_dialog_tv_msg));
-                    tvPosButtonn.setText(getString(R.string.custom_progess_dialog_tv_ok));
-                    tvPosButtonn.setOnClickListener(new View.OnClickListener() {
+                    final TextView tvPosButton = (TextView) dialog.findViewById(R.id.dialog_tvPosButtonn);
+                    tvTitle.setText(getString(R.string.custom_progess_dialog_tv_title));
+                    tvMessage.setText(getString(R.string.custom_progess_dialog_tv_msg));
+                    tvPosButton.setText(getString(R.string.custom_progess_dialog_tv_ok));
+                    tvPosButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             dialog.dismiss();
@@ -620,7 +606,7 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
 
         getActivity().stopService(serviceIntent);
         getActivity().startService(serviceIntent);
-        final CountDownTimer countDownTimer = new CountDownTimer(120000, 1000)
+        final CountDownTimer countDownTimer = new CountDownTimer(MAXIMUM_ACCURACY_WAIT, 1000)
         {
             @Override
             public void onTick(long millisUntilFinished)
@@ -683,16 +669,58 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
             super.onPostExecute(aVoid);
             if (!isCancelled()) {
                 if (wsCallDADTest.isSuccess()) {
-                    // From here do further logic
-                    //Toast.makeText(getActivity(), "Successfully ON Test Mode ", Toast.LENGTH_SHORT).show();
-                    /*Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_TEST_MODE_OFF), getString(R.string.ok), "", false, false);*/
                     updateTestModeValue(false);
+
+                    if (CheckForeground.isInForeGround()) {
+                        displayTestMessageDialog();
+                    }
                 } else {
                     Toast.makeText(getActivity(), getString(R.string.TAG_SOME_WENT_WRONG_MSG), Toast.LENGTH_SHORT).show();
                 }
                 progressDialog.dismiss();
             }
         }
+    }
+
+    private void displayTestMessageDialog() {
+
+        playAlarmSound();
+
+        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(getActivity());
+        builder.setTitle(R.string.test_message_title)
+                .setMessage(R.string.test_message_body)
+                .setPositiveButton(R.string.nice, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        }).show();
+}
+
+    private void playAlarmSound() {
+            final AssetFileDescriptor audioFile = getActivity().getResources().openRawResourceFd(R.raw.tigerlightsound);
+
+            Thread thread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    MediaPlayer mediaPlayer = new MediaPlayer();
+                    try {
+                        mediaPlayer.setDataSource(audioFile.getFileDescriptor(), audioFile.getStartOffset(), audioFile.getLength());
+
+                    mediaPlayer.prepare();
+                    mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                        @Override
+                        public void onCompletion(MediaPlayer mp) {
+                            mp.release();
+                        }
+                    });
+                    mediaPlayer.start();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            thread.run();
     }
 
     private void callCrowdAlertModeServiceON(int status) {
@@ -711,22 +739,20 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
 
     private class AsyncCrowdAlertModeOn extends AsyncTask<Integer, Void, Void> {
 
-        private int staus;
+        private int status;
         private WsCrowdAlert wsCrowdAlert;
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
             wsCrowdAlert = new WsCrowdAlert(getActivity());
-
-
         }
 
         @Override
         protected Void doInBackground(Integer... integers) {
 
-            staus = integers[0].intValue();
-            wsCrowdAlert.executeService(staus);
+            status = integers[0].intValue();
+            wsCrowdAlert.executeService(status);
             return null;
         }
 
@@ -737,7 +763,6 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
             if (wsCrowdAlert.isSuccess()) {
                 Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_CROWD_ALERT_ON), getString(R.string.ok), "", false, false);
             }
-
         }
     }
 
@@ -753,7 +778,6 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
         } else {
             Utills.displayDialogNormalMessage(getString(R.string.app_name), getString(R.string.TAG_INTERNET_AVAILABILITY), getActivity());
         }
-
     }
 
     private class AsyncCrowdAlertModeOff extends AsyncTask<Integer, Void, Void> {
@@ -765,8 +789,6 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
         protected void onPreExecute() {
             super.onPreExecute();
             wsCrowdAlert = new WsCrowdAlert(getActivity());
-
-
         }
 
         @Override
@@ -785,11 +807,8 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
             if (wsCrowdAlert.isSuccess()) {
                 Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_CROWD_ALERT_OFF), getString(R.string.ok), "", false, false);
             }
-
-
         }
     }
-
 
     /**
      * Setup swipe menu on listview and apply click event on it
