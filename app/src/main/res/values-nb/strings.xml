@@ -216,7 +216,7 @@ ny</string>
     <string name="fragment_add_more_et_last_name_hint">Etternavn</string>
     <string name="fragment_add_more_tv_last_name_hint"><i>Etternavn på kontaktpersoner er ikke obligatorisk</i></string>
     <string name="fragment_add_more_et_email_hint">e-post</string>
-    <string name="fragment_add_more_tv_email_hint"><i>E-postadresse for kontaktpersoner er ikke obligatorisk, men ANBEFALES. Uten dette kan kontaktpersonene dine ikke motta varsler via e-post.</i></string>
+    <string name="fragment_add_more_tv_email_hint"><i>Skriv inn en D.A.D. App-brukerens registrerings-e-postadresse, slik at de vil motta appvarsler med unik lyd. Andre kontakter vil bare motta e-postvarsler.</i></string>
     <string name="fragment_add_more_tv_cance">Avbryt</string>
     <string name="fragment_add_more_tv_addressbook"> Adressebok</string>
     <string name="fragment_add_more_tv_save">Lagre</string>
@@ -389,6 +389,10 @@ Dette tester enheten og hele leveringsprosessen, er den eneste forskjellen mello
     <string name="battery_level_good">GOD D.A. BATTERI</string>
     <string name="battery_level_low">LAV D.A. BATTERI</string>
     <string name="battery_level_replace">BYTTE D.A.D BATTERI</string>
+
+    <string name="test_message_title">Testmelding sendt</string>
+    <string name="test_message_body">Testmeldinger er sendt tilbake til deg via e-post, sms og appvarsling</string>
+    <string name="nice">Hyggelig</string>
 
 
 </resources>

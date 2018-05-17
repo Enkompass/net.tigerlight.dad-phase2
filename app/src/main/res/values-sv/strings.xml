@@ -215,7 +215,7 @@
     <string name="fragment_add_more_et_last_name_hint">Efternamn</string>
     <string name="fragment_add_more_tv_last_name_hint"><i>Kontaktpersonens efternamn, ej obligatoriskt</i></string>
     <string name="fragment_add_more_et_email_hint">e-post</string>
-    <string name="fragment_add_more_tv_email_hint"><i>Kontaktpersonens e-postadress är inte obligatorisk men REKOMMENDERAS. Utan detta kommer inte dina kontakter kunna ta emot e-postalarm.</i></string>
+    <string name="fragment_add_more_tv_email_hint"><i>Ange en D.A.D. app-användarens registreringsadress, så att de kommer att få appanmälan med ett unikt ljud. Andra kontakter får endast e-postmeddelanden.</i></string>
     <string name="fragment_add_more_tv_cance">Avbryt</string>
     <string name="fragment_add_more_tv_addressbook">Adressbok</string>
     <string name="fragment_add_more_tv_save">Spara</string>
@@ -390,6 +390,8 @@ EULA måste godkännas för att använda denna app. Om du inte vill acceptera EU
     <string name="battery_level_good">GOD D.A.D BATTERI</string>
     <string name="battery_level_low">Låg D.A. BATTERI</string>
     <string name="battery_level_replace">BYTE DATUM BATTERI</string>
-
+    <string name="test_message_title">Testmeddelande skickat</string>
+    <string name="test_message_body">Testmeddelanden har skickats tillbaka till dig via e-post, sms och appmeddelande</string>
+    <string name="nice">Trevlig</string>
 
 </resources>

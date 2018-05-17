@@ -215,7 +215,7 @@
     <string name="fragment_add_more_et_last_name_hint">Efternavn</string>
     <string name="fragment_add_more_tv_last_name_hint"><i>Kontaktpersonens efternavn - ikke påkrævet</i></string>
     <string name="fragment_add_more_et_email_hint">e-mail</string>
-    <string name="fragment_add_more_tv_email_hint"><i>Kontaktpersonens mailadresse — Ikke påkrævet, men ANBEFALET. Uden mailadresse kan din kontaktperson ikke modtage dine advarsler via mail.</i></string>
+    <string name="fragment_add_more_tv_email_hint"><i>Indtast en D.A.D. App-brugerens registrerings-emailadresse, så de vil modtage app-underretninger med enestående lyd. Andre kontakter modtager kun e-mail-advarsler.</i></string>
     <string name="fragment_add_more_tv_cance">Annuller</string>
     <string name="fragment_add_more_tv_addressbook">Adressebog</string>
     <string name="fragment_add_more_tv_save">Gem</string>
@@ -388,6 +388,8 @@ Har været på</string>
     <string name="battery_level_good">GOOD D.A.D BATTERY</string>
     <string name="battery_level_low">LAV D.A. BATTERI</string>
     <string name="battery_level_replace">Udskift D.A.D BATTERI</string>
-
+    <string name="test_message_title">Testmeddelelse sendt</string>
+    <string name="test_message_body">Testmeddelelser er blevet sendt tilbage til dig via e-mail, sms og app notifikation</string>
+    <string name="nice">Pæn</string>
 
 </resources>
