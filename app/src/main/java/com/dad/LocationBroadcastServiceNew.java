@@ -13,6 +13,7 @@ import com.dad.settings.webservices.WsCallUpdateLocation;
 import com.dad.util.Constants;
 import com.dad.util.Preference;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
@@ -21,18 +22,21 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
-import android.support.annotation.Nullable;
 import android.util.Log;
 import android.widget.Toast;
 
 import static android.bluetooth.BluetoothAdapter.ACTION_DISCOVERY_FINISHED;
 import static android.bluetooth.BluetoothAdapter.ACTION_DISCOVERY_STARTED;
+
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 
 /**
  * Created on 23/11/16.
@@ -86,8 +90,7 @@ public class LocationBroadcastServiceNew extends Service implements GoogleApiCli
         Log.d(TAG, "onStartCommand");
 //        Utills.writeFile("\n\n" + "AT " + new Date() + "   " + "Service has been started ", this);
         mSmallestDisplacementValue = DEFAULT_SMALLEST_DISPLACEMENT_DISTANCE_IN_METERS;
-        if (intent != null)
-        {
+        if (intent != null) {
             mSmallestDisplacementValue = intent.getFloatExtra(Constants.Extras.SMALLEST_DISPLACEMENT_VALUE, DEFAULT_SMALLEST_DISPLACEMENT_DISTANCE_IN_METERS);
         }
 
@@ -131,9 +134,11 @@ public class LocationBroadcastServiceNew extends Service implements GoogleApiCli
         startListeningForLocationRequests();
     }
 
-    private void startListeningForLocationRequests()
-    {
+    private void startListeningForLocationRequests() {
         final LocationRequest locationRequest = createLocationRequest();
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
         LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
     }
 
@@ -290,11 +295,6 @@ public class LocationBroadcastServiceNew extends Service implements GoogleApiCli
             return;
         }
 
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            isBleSupported = false;
-            return;
-        }
-
         final BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
         mBluetoothAdapter = bluetoothManager.getAdapter();
         isBleSupported = true;
@@ -327,16 +327,21 @@ public class LocationBroadcastServiceNew extends Service implements GoogleApiCli
                 @Override
                 public void run() {
                     if (mBluetoothAdapter != null) {
+                        if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
+                            return;
+                        }
                         mBluetoothAdapter.stopLeScan(bleHelper.getmLeScanCallback());
                     }
                 }
 
             }, 2 * 60 * SCAN_PERIOD);
-            if (mBluetoothAdapter != null) {
+            if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.BLUETOOTH_SCAN) ==
+                    PackageManager.PERMISSION_GRANTED && mBluetoothAdapter != null) {
                 mBluetoothAdapter.startLeScan(bleHelper.getmLeScanCallback());
             }
         } else {
-            if (mBluetoothAdapter != null) {
+            if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.BLUETOOTH_SCAN) ==
+                    PackageManager.PERMISSION_GRANTED && mBluetoothAdapter != null) {
                 mBluetoothAdapter.stopLeScan(bleHelper.getmLeScanCallback());
             }
         }

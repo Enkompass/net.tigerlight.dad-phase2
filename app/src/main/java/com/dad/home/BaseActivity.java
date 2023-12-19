@@ -16,18 +16,26 @@ import com.dad.R;
 import com.dad.util.CheckForeground;
 import com.dad.util.Util;
 
+import android.Manifest;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.content.pm.PackageManager;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
 public class BaseActivity extends AppCompatActivity implements View.OnClickListener {
+
+    private static final int MY_PERMISSIONS_REQUEST_LOCATION = 1001;
+    private static final int MY_PERMISSIONS_REQUEST_BLUETOOTH = 1002;
 
     private long mLastClickTime = 0;
     private int MAX_CLICK_INTERVAL = 500;
@@ -114,7 +122,26 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
         googleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(LocationServices.API)
                 .build();
-        createLocationRequest();
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.BLUETOOTH_CONNECT},
+                        MY_PERMISSIONS_REQUEST_BLUETOOTH);
+            }
+        }
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    MY_PERMISSIONS_REQUEST_LOCATION);
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        } else {
+            createLocationRequest();
+        }
     }
 
 
@@ -197,32 +224,29 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
         builder.setAlwaysShow(true);
         final PendingResult<LocationSettingsResult> result = LocationServices.SettingsApi.checkLocationSettings(googleApiClient, builder.build());
 
-        result.setResultCallback(new ResultCallback<LocationSettingsResult>() {
-            @Override
-            public void onResult(LocationSettingsResult result) {
-                final Status status = result.getStatus();
-                final LocationSettingsStates state = result.getLocationSettingsStates();
-                switch (status.getStatusCode()) {
-                    case LocationSettingsStatusCodes.SUCCESS:
-                        // All location settings are satisfied. The client can initialize location
-                        // requests here.
-                        break;
-                    case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
-                        // Location settings are not satisfied. But could be fixed by showing the user
-                        // a dialog.
-                        try {
-                            // Show the dialog by calling startResolutionForResult(),
-                            // and check the result in onActivityResult().
-                            status.startResolutionForResult(BaseActivity.this, LOCATION_REQUEST_CHECK_SETTINGS);
-                        } catch (IntentSender.SendIntentException e) {
-                            // Ignore the error.
-                        }
-                        break;
-                    case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
-                        // Location settings are not satisfied. However, we have no way to fix the
-                        // settings so we won't show the dialog.
-                        break;
-                }
+        result.setResultCallback(result1 -> {
+            final Status status = result1.getStatus();
+            final LocationSettingsStates state = result1.getLocationSettingsStates();
+            switch (status.getStatusCode()) {
+                case LocationSettingsStatusCodes.SUCCESS:
+                    // All location settings are satisfied. The client can initialize location
+                    // requests here.
+                    break;
+                case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+                    // Location settings are not satisfied. But could be fixed by showing the user
+                    // a dialog.
+                    try {
+                        // Show the dialog by calling startResolutionForResult(),
+                        // and check the result in onActivityResult().
+                        status.startResolutionForResult(BaseActivity.this, LOCATION_REQUEST_CHECK_SETTINGS);
+                    } catch (IntentSender.SendIntentException e) {
+                        // Ignore the error.
+                    }
+                    break;
+                case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+                    // Location settings are not satisfied. However, we have no way to fix the
+                    // settings so we won't show the dialog.
+                    break;
             }
         });
 
@@ -357,8 +381,12 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         //final LocationSettingsStates states = LocationSettingsStates.fromIntent(intent);
+        super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
 
+            case MY_PERMISSIONS_REQUEST_LOCATION:
+                createLocationRequest();
+                break;
             case LOCATION_REQUEST_CHECK_SETTINGS:
                 switch (resultCode) {
                     case RESULT_OK:
@@ -381,9 +409,9 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
 
     /**
      * Gets the fragment manager object of activity required for fragment transaction
-     * <p>This method can be customised on the need of application,in which it returns {@link FragmentManager} or {@link android.support.v4.app.FragmentManager}</p>
+     * <p>This method can be customised on the need of application,in which it returns {@link FragmentManager} or {@link FragmentManager}</p>
      *
-     * @return object of {@link FragmentManager} or {@link android.support.v4.app.FragmentManager}
+     * @return object of {@link FragmentManager} or {@link FragmentManager}
      */
     public FragmentManager getLocalFragmentManager() {
         return this.getFragmentManager();

@@ -11,6 +11,7 @@ import com.dad.util.Constants;
 import com.dad.util.GPSTracker;
 import com.dad.util.Preference;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.IntentService;
@@ -18,6 +19,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
@@ -31,6 +33,8 @@ import java.util.TimeZone;
 
 import static com.dad.registration.util.Utills.isInternetConnected;
 import static com.dad.util.CheckForeground.getActivity;
+
+import androidx.core.app.ActivityCompat;
 
 public class BleService extends IntentService {
     private String TAG = BleService.class.getName();
@@ -125,11 +129,6 @@ public class BleService extends IntentService {
             return;
         }
 
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            isBleSupported = false;
-            return;
-        }
-
         final BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
         mBluetoothAdapter = bluetoothManager.getAdapter();
         isBleSupported = true;
@@ -162,16 +161,21 @@ public class BleService extends IntentService {
                 @Override
                 public void run() {
                     if (mBluetoothAdapter != null) {
+                        if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
+                            return;
+                        }
                         mBluetoothAdapter.stopLeScan(bleHelper.getmLeScanCallback());
                     }
                 }
 
             }, 2 * 60 * SCAN_PERIOD);
-            if (mBluetoothAdapter != null) {
+            if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.BLUETOOTH_SCAN) ==
+                    PackageManager.PERMISSION_GRANTED && mBluetoothAdapter != null) {
                 mBluetoothAdapter.startLeScan(bleHelper.getmLeScanCallback());
             }
         } else {
-            if (mBluetoothAdapter != null) {
+            if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.BLUETOOTH_SCAN) ==
+                    PackageManager.PERMISSION_GRANTED && mBluetoothAdapter != null) {
                 mBluetoothAdapter.stopLeScan(bleHelper.getmLeScanCallback());
             }
         }
@@ -228,7 +232,9 @@ public class BleService extends IntentService {
 //            new PushForCrowdAlert().start();
 
             if (mBluetoothAdapter != null) {
-                mBluetoothAdapter.stopLeScan(bleHelper.getmLeScanCallback());
+                if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.BLUETOOTH_SCAN) == PackageManager.PERMISSION_GRANTED) {
+                    mBluetoothAdapter.stopLeScan(bleHelper.getmLeScanCallback());
+                }
 
             }
 

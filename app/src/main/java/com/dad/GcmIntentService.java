@@ -11,7 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.SystemClock;
-import android.support.v4.app.NotificationCompat;
+import androidx.core.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -81,7 +81,7 @@ public class GcmIntentService extends IntentService {
                 this.getSystemService(Context.NOTIFICATION_SERVICE);
 
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-                new Intent(this, AlertDetailFragment.class), 0);
+                new Intent(this, AlertDetailFragment.class), PendingIntent.FLAG_IMMUTABLE);
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)

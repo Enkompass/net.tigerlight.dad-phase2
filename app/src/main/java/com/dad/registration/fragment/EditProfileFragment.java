@@ -32,8 +32,8 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
+import androidx.core.graphics.drawable.RoundedBitmapDrawable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -184,42 +184,19 @@ public class EditProfileFragment extends BaseFragment {
     public void onClick(View v) {
         super.onClick(v);
 
-        switch (v.getId()) {
-            case R.id.fragment_edit_profile_tv_save:
-                validateEditSection();
-                break;
-            case R.id.fragment_edit_profile_tv_cancel:
-                getActivity().onBackPressed();
-                break;
-//            case R.id.fragment_edit_profile_tv_forgot_password:
-//                forgotPassword();
-////                validateForgotPasswordSection();
-//                break;
+        final int fragmentId = v.getId();
 
-            case R.id.fragment_edit_profile_tv_forgot_password:
-                validateUpdatePasswordSection();
-                break;
-
-            case R.id.fragment_edit_profile_tv_change_language:
-                openDialogBox();
-                break;
-
-//            case R.id.fragment_edit_profile_tv_eng:
-//
-//                dadApplication.configLanguage(getActivity(), getString(R.string.pref_key_language_eng));
-//                restartActivity();
-//
-//                break;
-
-            case R.id.fragment_edit_profile_im_pf:
-                selectImage();
-
-
-            default:
-
-
+        if (fragmentId == R.id.fragment_edit_profile_tv_save) {
+            validateEditSection();
+        } else if (fragmentId == R.id.fragment_edit_profile_tv_cancel) {
+            getActivity().onBackPressed();
+        } else if (fragmentId == R.id.fragment_edit_profile_tv_forgot_password) {
+            validateUpdatePasswordSection();
+        } else if (fragmentId == R.id.fragment_edit_profile_tv_change_language) {
+            openDialogBox();
+        } else if (fragmentId == R.id.fragment_edit_profile_im_pf) {
+            selectImage();
         }
-
     }
 
     private void openDialogBox() {
@@ -475,7 +452,7 @@ public class EditProfileFragment extends BaseFragment {
                 if (path == null) {
                     return;
                 }
-                Glide.with(this).load(imageFile).asBitmap().centerCrop().into(new BitmapImageViewTarget(ivProfile) {
+                Glide.with(this).load(imageFile).centerCrop().into(new BitmapImageViewTarget(ivProfile) {
                     @Override
                     protected void setResource(Bitmap resource) {
                         final RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(getResources(), resource);
@@ -483,7 +460,7 @@ public class EditProfileFragment extends BaseFragment {
                         ivProfile.setImageDrawable(circularBitmapDrawable);
                         isImageUpdated = true;
                     }
-                });
+                }.getView());
 
                 break;
         }

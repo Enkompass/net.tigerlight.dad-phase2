@@ -63,14 +63,13 @@ public class DADLicenseFragment extends BaseFragment {
     public void onClick(View v) {
         super.onClick(v);
 
-        switch (v.getId()) {
-            case R.id.fragment_dad_license_tvDoNotAccept:
-                Utills.displayDialog(getActivity(), getString(R.string.dialog_eula_title), getString(R.string.dialog_eula_msg), getString(R.string.ok), "", false, false);
-                break;
-            case R.id.fragment_dad_license_tvAccept:
-                Preference.getInstance().savePreferenceData(Constant.IS_ACCEPT, true);
-                ((MainActivity) getActivity()).replaceFragment(new RegistartionFragment());
-                break;
+        final int fragmentId = v.getId();
+
+        if (fragmentId == R.id.fragment_dad_license_tvDoNotAccept) {
+            Utills.displayDialog(getActivity(), getString(R.string.dialog_eula_title), getString(R.string.dialog_eula_msg), getString(R.string.ok), "", false, false);
+        } else if (fragmentId == R.id.fragment_dad_license_tvAccept) {
+            Preference.getInstance().savePreferenceData(Constant.IS_ACCEPT, true);
+            ((MainActivity) getActivity()).replaceFragment(new RegistartionFragment());
         }
     }
 }

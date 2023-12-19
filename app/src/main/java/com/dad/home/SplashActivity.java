@@ -16,7 +16,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 
 
@@ -65,7 +65,7 @@ public class SplashActivity extends AppCompatActivity {
             if (isLogin) {
 
                 Intent serviceIntent = new Intent(getApplicationContext(), LocationBroadcastServiceNew.class);
-                PendingIntent pendingIntent = PendingIntent.getService(getApplicationContext(), 1001, serviceIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+                PendingIntent pendingIntent = PendingIntent.getService(getApplicationContext(), 1001, serviceIntent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
                 AlarmManager alarmManager = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
                 alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), time, pendingIntent);
 

@@ -1,12 +1,16 @@
 package com.dad.registration.fragment;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
+
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -34,6 +38,7 @@ import org.json.JSONObject;
 
 public class AmOkFragmentI extends BaseFragment {
 
+    private static final int MY_PERMISSIONS_REQUEST_LOCATION = 1001;
     private TextView tvResetPin;
     private TextView tvSendImOkMessage;
     private TextView tvForgotPin;
@@ -126,73 +131,47 @@ public class AmOkFragmentI extends BaseFragment {
     @Override
     public void onClick(View v) {
         super.onClick(v);
-        switch (v.getId()) {
+        final int fragmentId = v.getId();
+        if (fragmentId == R.id.fragment_iamok_llMain_tvValidatePin) {
+            ValidateNewAndConfirmFeild(false);
+        } else if (fragmentId == R.id.fragment_iamok_llMain_tvSavePin) {
+            ValidateNewAndConfirmFeild(true);
+        } else if (fragmentId == R.id.fragment_iamok_tvSendIamokMsg) {
+            if (!TextUtils.isEmpty(etPin.getText().toString())) {
+                // if (etPin.equals(etMainConfirmPin)) {
+                if (etPin.getText().length() == 4) {
+                    updateLatLong();
+                    callSendOkService(etPin.getText().toString());
 
-            case R.id.fragment_iamok_llMain_tvValidatePin:
-                ValidateNewAndConfirmFeild(false);
-                break;
-
-            case R.id.fragment_iamok_llMain_tvSavePin:
-                ValidateNewAndConfirmFeild(true);
-                break;
-
-            case R.id.fragment_iamok_tvSendIamokMsg:
-                if (!TextUtils.isEmpty(etPin.getText().toString())) {
-                    // if (etPin.equals(etMainConfirmPin)) {
-                    if (etPin.getText().length() == 4) {
-                        updateLatLong();
-                        callSendOkService(etPin.getText().toString());
-
-                    } else {
-                        DisplayDialog.getInstance().displayMessageDialog(getActivity(), getString(R.string.TAG_PING_SHORT_MSG));
-                    }
-                    //}
+                } else {
+                    DisplayDialog.getInstance().displayMessageDialog(getActivity(), getString(R.string.TAG_PING_SHORT_MSG));
+                }
+                //}
 //                    else {
 //                        DisplayDialog.getInstance().displayMessageDialog(getActivity(), "Please enter correct value for Pin.");
 //                    }
 
-                } else {
-                    DisplayDialog.getInstance().displayMessageDialog(getActivity(), getString(R.string.TAG_PIN_NOT_EMPTY_MSG));
-                }
-                break;
-
-            case R.id.fragment_iamok_tvResetPin:
-                llFirst.setVisibility(View.GONE);
-                llSecond.setVisibility(View.VISIBLE);
-                break;
-
-            case R.id.fragment_iamok_tvForgotPin:
-//                callForgotPinService();
-                forgotPin();
-                break;
-
-            case R.id.fragment_iamok_tvValidatePin:
-                ValidateOldNewAndConfirmFeild(false);
-                break;
-
-            case R.id.fragment_iamok_tvSavePin:
-                ValidateOldNewAndConfirmFeild(true);
-                callCreatePinService(false);
-                break;
-
-            case R.id.fragment_iamok_tvCancel:
-                etOldPin.setText("");
-                etNewPin.setText("");
-                etReEnterPin.setText("");
-                tvSavePin.setEnabled(false);
-                tvSavePin.setTextColor(ContextCompat.getColor(getActivity(), R.color.color_gray));
-                llSecond.setVisibility(View.GONE);
-                llFirst.setVisibility(View.VISIBLE);
-
-//            case R.id.fragment_i_m_ok_requiew_pin_tv_validate_pin:
-//                Toast.makeText(getActivity(), "validate", Toast.LENGTH_SHORT).show();
-//                break;
-//
-//            case R.id.fragment_i_m_ok_requiew_pin_tv_save_pin:
-//                ValidateNewAndConfirmFeild();
-//                //                Toast.makeText(getActivity(), "save", Toast.LENGTH_SHORT).show();
-//                break;
-
+            } else {
+                DisplayDialog.getInstance().displayMessageDialog(getActivity(), getString(R.string.TAG_PIN_NOT_EMPTY_MSG));
+            }
+        } else if (fragmentId == R.id.fragment_iamok_tvResetPin) {
+            llFirst.setVisibility(View.GONE);
+            llSecond.setVisibility(View.VISIBLE);
+        } else if (fragmentId == R.id.fragment_iamok_tvForgotPin) {
+            forgotPin();
+        } else if (fragmentId == R.id.fragment_iamok_tvValidatePin) {
+            ValidateOldNewAndConfirmFeild(false);
+        } else if (fragmentId == R.id.fragment_iamok_tvSavePin) {
+            ValidateOldNewAndConfirmFeild(true);
+            callCreatePinService(false);
+        } else if (fragmentId == R.id.fragment_iamok_tvCancel) {
+            etOldPin.setText("");
+            etNewPin.setText("");
+            etReEnterPin.setText("");
+            tvSavePin.setEnabled(false);
+            tvSavePin.setTextColor(ContextCompat.getColor(getActivity(), R.color.color_gray));
+            llSecond.setVisibility(View.GONE);
+            llFirst.setVisibility(View.VISIBLE);
         }
     }
 
@@ -282,15 +261,36 @@ public class AmOkFragmentI extends BaseFragment {
         }
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        // Check if the request code matches the one you used for requesting permissions
+        if (requestCode == MY_PERMISSIONS_REQUEST_LOCATION) {
+            // Check if the permission was granted
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission was granted, call your method
+                updateLatLong();
+            } else {
+                // Permission denied, handle accordingly (e.g., show a message or disable functionality)
+                Toast.makeText(getActivity(), "Permission denied", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
     public void updateLatLong() {
-        gpsTracker = new GPSTracker(getActivity());
-        if (gpsTracker.canGetLocation()) {
-            //lattdLastKnown = "" + gpsTracker.getLatitude();
-            //longtdLastKnown = "" + gpsTracker.getLongitude();
+        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            gpsTracker = new GPSTracker(getActivity());
+            if (gpsTracker.canGetLocation()) {
+                //lattdLastKnown = "" + gpsTracker.getLatitude();
+                //longtdLastKnown = "" + gpsTracker.getLongitude();
 
-            lattdLastKnown = Preference.getInstance().mSharedPreferences.getString(Constant.COMMON_LATITUDE, "0.01");
-            longtdLastKnown = Preference.getInstance().mSharedPreferences.getString(Constant.COMMON_LONGITUDE, "0.01");
+                lattdLastKnown = Preference.getInstance().mSharedPreferences.getString(Constant.COMMON_LATITUDE, "0.01");
+                longtdLastKnown = Preference.getInstance().mSharedPreferences.getString(Constant.COMMON_LONGITUDE, "0.01");
 
+            }
+        } else {
+            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_LOCATION);
         }
     }
 

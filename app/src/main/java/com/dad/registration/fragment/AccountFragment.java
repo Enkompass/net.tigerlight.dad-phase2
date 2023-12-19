@@ -99,24 +99,17 @@ public class AccountFragment extends BaseFragment {
     @Override
     public void onClick(View v) {
         super.onClick(v);
-        switch (v.getId()) {
-            case R.id.fragment_settings_tvEditAccount:
-                ((MainActivity) getActivity()).addFragment(new EditProfileFragment(), AccountFragment.this);
-                break;
-
-            case R.id.fragment_settings_tvLogOut:
-                displayMyDialog(getActivity(), getString(R.string.TAG_LOGOUT_CONFIRMATION), getString(R.string.TAG_LOGOUT_CONFIRMATION_DES), getString(R.string.TAG_OK), getString(R.string.fragment_create_account_tv_cancel));
-                break;
-
-            case R.id.fragment_settings_tvLogin:
-                displayMyDialog(getActivity(), getString(R.string.TAG_LOGOUT_CONFIRMATION), getString(R.string.TAG_LOGOUT_CONFIRMATION_DES), getString(R.string.TAG_OK), getString(R.string.fragment_create_account_tv_cancel));
-                break;
-
-            case R.id.fragment_settings_tvShowEula:
-                final FragmentManager fm = getFragmentManager();
-                final TermAndConditionFragment termAndConditionFragment = new TermAndConditionFragment();
-                termAndConditionFragment.show(fm, RegistartionFragment.class.getSimpleName());
-                break;
+        final int fragmentId = v.getId();
+        if (fragmentId == R.id.fragment_settings_tvEditAccount) {
+            ((MainActivity) getActivity()).addFragment(new EditProfileFragment(), AccountFragment.this);
+        } else if (fragmentId == R.id.fragment_settings_tvLogOut) {
+            displayMyDialog(getActivity(), getString(R.string.TAG_LOGOUT_CONFIRMATION), getString(R.string.TAG_LOGOUT_CONFIRMATION_DES), getString(R.string.TAG_OK), getString(R.string.fragment_create_account_tv_cancel));
+        } else if (fragmentId == R.id.fragment_settings_tvLogin) {
+            displayMyDialog(getActivity(), getString(R.string.TAG_LOGOUT_CONFIRMATION), getString(R.string.TAG_LOGOUT_CONFIRMATION_DES), getString(R.string.TAG_OK), getString(R.string.fragment_create_account_tv_cancel));
+        } else if (fragmentId == R.id.fragment_settings_tvShowEula) {
+            final FragmentManager fm = getFragmentManager();
+            final TermAndConditionFragment termAndConditionFragment = new TermAndConditionFragment();
+            termAndConditionFragment.show(fm, RegistartionFragment.class.getSimpleName());
         }
     }
 

@@ -31,7 +31,7 @@ import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.SystemClock;
-import android.support.v7.widget.AppCompatCheckBox;
+import androidx.appcompat.widget.AppCompatCheckBox;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -161,7 +161,7 @@ public class LoginToYourAccountFragment extends BaseFragment implements Compound
         if (refreshTimeInterval != 0) {
             alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
             Intent intent = new Intent(getActivity(), AlarmReceiver.class);
-            broadcast = PendingIntent.getBroadcast(getActivity(), 0, intent, 0);
+            broadcast = PendingIntent.getBroadcast(getActivity(), 0, intent, PendingIntent.FLAG_IMMUTABLE);
             alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(), refreshTimeInterval * 60 * 1000, broadcast);
         }
     }
@@ -178,26 +178,17 @@ public class LoginToYourAccountFragment extends BaseFragment implements Compound
     public void onClick(View v) {
         super.onClick(v);
 
-        switch (v.getId()) {
-            case R.id.fragment_login_to_your_account_tv_login:
-//                if (cbRememberMe.isChecked()) {
-//                    loginPrefsEditor.putBoolean("saveLogin", true);
-//                    loginPrefsEditor.putString("username", etUserName.getText().toString().trim());
-//                    loginPrefsEditor.putString("password", etPassword.getText().toString().trim());
-//                    loginPrefsEditor.commit();
-//                    //cbRememberMe.setBackgroundResource(R.drawable.img_checkbox);
-//                } else {
-//                    loginPrefsEditor.clear();
-//                    loginPrefsEditor.commit();
-//                }
-                validateFields();
-                break;
-            case R.id.fragment_login_to_your_account_tv_forgot_pwd:
-                getFragmentManager().beginTransaction().add(R.id.activity_registartion_fl_container, new ForgotPasswordFragment(), ForgotPasswordFragment.class.getSimpleName()).hide(this).addToBackStack(ForgotPasswordFragment.class.getSimpleName()).commit();
-                break;
-            case R.id.fragment_login_to_your_account_tv_cancel:
-                getLocalFragmentManager().popBackStack();
-                break;
+        final int fragmentId = v.getId();
+        if (fragmentId == R.id.fragment_login_to_your_account_tv_login) {
+            validateFields();
+        } else if (fragmentId == R.id.fragment_login_to_your_account_tv_forgot_pwd) {
+            getFragmentManager().beginTransaction()
+                    .add(R.id.activity_registartion_fl_container, new ForgotPasswordFragment(), ForgotPasswordFragment.class.getSimpleName())
+                    .hide(this)
+                    .addToBackStack(ForgotPasswordFragment.class.getSimpleName())
+                    .commit();
+        } else if (fragmentId == R.id.fragment_login_to_your_account_tv_cancel) {
+            getLocalFragmentManager().popBackStack();
         }
     }
 
@@ -321,7 +312,7 @@ public class LoginToYourAccountFragment extends BaseFragment implements Compound
                     if (!Utills.isMyServiceRunning(LocationBroadcastServiceNew.class, getActivity())) {
 
                         Intent serviceIntent = new Intent(getActivity(), LocationBroadcastServiceNew.class);
-                        PendingIntent pendingIntent = PendingIntent.getService(getActivity(), 1001, serviceIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+                        PendingIntent pendingIntent = PendingIntent.getService(getActivity(), 1001, serviceIntent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
                         AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
                         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), time, pendingIntent);
 
@@ -433,7 +424,7 @@ public class LoginToYourAccountFragment extends BaseFragment implements Compound
     private void startBackgroundThreadForBLE() {
         AlarmManager alarmManagerForBLE = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(getActivity(), BleReceiver.class);
-        PendingIntent broadcastIntentBle = PendingIntent.getBroadcast(getActivity(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent broadcastIntentBle = PendingIntent.getBroadcast(getActivity(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         alarmManagerForBLE.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(), 2 * 60 * SCAN_PERIOD, broadcastIntentBle);
     }
 
@@ -456,10 +447,7 @@ public class LoginToYourAccountFragment extends BaseFragment implements Compound
 
     private boolean checkPlayServices() {
         int googlePlayServicesAvailable = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getActivity());
-        if (googlePlayServicesAvailable == ConnectionResult.SUCCESS) {
-            return true;
-        }
-        return false;
+        return googlePlayServicesAvailable == ConnectionResult.SUCCESS;
     }
 
     private void registerInBackground() {

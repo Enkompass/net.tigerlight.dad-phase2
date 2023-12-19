@@ -54,17 +54,12 @@ public class CreatePinFragment extends BaseFragment {
     public void onClick(View v) {
         super.onClick(v);
 
+        final int fragmentId = v.getId();
 
-        switch (v.getId()) {
-            case R.id.fragment_create_pin_tv_cancel:
-
-                getActivity().onBackPressed();
-                break;
-            case R.id.fragment_create_pin_bn_save:
-                validateFields();
-
-                break;
-            default:
+        if (fragmentId == R.id.fragment_create_pin_tv_cancel) {
+            getActivity().onBackPressed();
+        } else if (fragmentId == R.id.fragment_create_pin_bn_save) {
+            validateFields();
         }
     }
 

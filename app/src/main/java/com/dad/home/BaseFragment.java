@@ -39,9 +39,9 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
 
     /**
      * Gets the fragment manager object of activity required for fragment transaction
-     * <p>This method can be customised on the need of application,in which it returns {@link FragmentManager} or {@link android.support.v4.app.FragmentManager}</p>
+     * <p>This method can be customised on the need of application,in which it returns {@link FragmentManager} or {@link FragmentManager}</p>
      *
-     * @return object of {@link FragmentManager} or {@link android.support.v4.app.FragmentManager}
+     * @return object of {@link FragmentManager} or {@link FragmentManager}
      */
     public FragmentManager getLocalFragmentManager() {
         return this.getActivity().getFragmentManager();
@@ -49,9 +49,9 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
 
     /**
      * Gets the child fragment manager object of fragment required for fragment transaction
-     * <p>This method can be customised on the need of application,in which it returns {@link FragmentManager} or {@link android.support.v4.app.FragmentManager}</p>
+     * <p>This method can be customised on the need of application,in which it returns {@link FragmentManager} or {@link FragmentManager}</p>
      *
-     * @return object of {@link FragmentManager} or {@link android.support.v4.app.FragmentManager}
+     * @return object of {@link FragmentManager} or {@link FragmentManager}
      */
     public FragmentManager getLocalChildFragmentManager() {
         return this.getChildFragmentManager();

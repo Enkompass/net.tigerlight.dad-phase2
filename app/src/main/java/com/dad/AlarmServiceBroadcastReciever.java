@@ -23,7 +23,7 @@ public class AlarmServiceBroadcastReciever extends BroadcastReceiver {
         try {
             Log.d(TAG, "Starting AlarmServiceBroadcastReciever");
             Intent serviceIntent = new Intent(context, LocationBroadcastServiceNew.class);
-            PendingIntent pendingIntent = PendingIntent.getService(context, 1001, serviceIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+            PendingIntent pendingIntent = PendingIntent.getService(context, 1001, serviceIntent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
             AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
             alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), time, pendingIntent);
 

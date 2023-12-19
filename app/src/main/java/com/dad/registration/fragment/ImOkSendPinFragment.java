@@ -55,18 +55,9 @@ public class ImOkSendPinFragment extends Fragment implements View.OnClickListene
 
     @Override
     public void onClick(View v) {
-
-
-        switch (v.getId()) {
-            case R.id.fragment_i_m_ok_send_pin_tv_send:
-
-                Toast.makeText(getActivity(), "Not Implemented Yet", Toast.LENGTH_SHORT).show();
-                break;
-
-
-            default:
+        final int fragmentId = v.getId();
+        if (fragmentId == R.id.fragment_i_m_ok_send_pin_tv_send) {
+            Toast.makeText(getActivity(), "Not Implemented Yet", Toast.LENGTH_SHORT).show();
         }
-
-
     }
 }

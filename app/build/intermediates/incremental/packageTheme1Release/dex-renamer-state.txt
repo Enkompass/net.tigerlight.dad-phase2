@@ -1,4 +1,0 @@
-#Tue May 16 18:54:55 IST 2017
-base.0=/Volumes/d/WorkSpaces_Projects/Parth/31_dec_2016_noon/Phase2/app/build/intermediates/transforms/dex/theme1/release/folders/1000/1f/main
-renamed.0=classes.dex
-file.0=/Volumes/d/WorkSpaces_Projects/Parth/31_dec_2016_noon/Phase2/app/build/intermediates/transforms/dex/theme1/release/folders/1000/1f/main/classes.dex

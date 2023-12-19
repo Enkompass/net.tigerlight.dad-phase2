@@ -1,5 +1,39 @@
 package com.dad.registration.fragment;
 
+import static android.app.Activity.RESULT_CANCELED;
+import static com.dad.registration.util.Utills.isInternetConnected;
+
+import android.Manifest;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Fragment;
+import android.app.ProgressDialog;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothManager;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.drawable.ColorDrawable;
+import android.location.LocationManager;
+import android.os.AsyncTask;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+
 import com.dad.R;
 import com.dad.home.BaseFragment;
 import com.dad.recievers.BLEHelper;
@@ -27,42 +61,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Fragment;
-import android.app.ProgressDialog;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothManager;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
-import android.location.LocationManager;
-import android.os.AsyncTask;
-import android.os.Build;
-import android.os.Bundle;
-import android.os.Handler;
-import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import java.util.Calendar;
 import java.util.TimeZone;
-
-import static android.app.Activity.RESULT_CANCELED;
-import static com.dad.registration.util.Utills.isInternetConnected;
 
 public class ContactFragment extends BaseFragment implements AdapterView.OnItemClickListener, RecieveElementAdapter.OnDeleteItemClickListner {
 
     private static final String TAG = ContactFragment.class.getSimpleName();
+    private static final int MY_PERMISSIONS_REQUEST_BLUETOOTH = 1002;
 
     private TextView tvRestoreFromTheServer;
     private TextView tvEmptyView;
@@ -114,9 +119,6 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
         new AlertListLoaderThread().start();
         mHandler = new Handler();
 
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            return;
-        }
         final BluetoothManager bluetoothManager = (BluetoothManager) getActivity().getSystemService(Context.BLUETOOTH_SERVICE);
         mBluetoothAdapter = bluetoothManager.getAdapter();
 
@@ -136,7 +138,7 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
         TimeZone tz = cal.getTimeZone();
         timezoneID = tz.getID();
 
-       //CheckForeground.onResume(getActivity());
+        //CheckForeground.onResume(getActivity());
 
         isAllredyShown = false;
 
@@ -277,24 +279,19 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        try
-                        {
-                            if ((isDataAvailable || isJustDataDeleted) && jsonArray != null)
-                            {
+                        try {
+                            if ((isDataAvailable || isJustDataDeleted) && jsonArray != null) {
                                 isJustDataDeleted = false;
 
                                 recieveElementAdapter = new RecieveElementAdapter(getActivity(), ContactFragment.this, jsonArray, isDataAvailable);
                                 listView.setAdapter(recieveElementAdapter);
                                 recieveElementAdapter.notifyDataSetChanged();
 
-                                if (jsonArray.length() == 0)
-                                {
+                                if (jsonArray.length() == 0) {
                                     tvEmptyView.setVisibility(View.VISIBLE);
                                     tvEmptyView.setText(getString(R.string.TAG_DATA_NA_MSG));
                                     llMain.setVisibility(View.GONE);
-                                }
-                                else
-                                {
+                                } else {
                                     llMain.setVisibility(View.VISIBLE);
                                     tvEmptyView.setVisibility(View.GONE);
                                 }
@@ -302,8 +299,7 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
                                 listView.setOnItemClickListener(ContactFragment.this);
                             }
                             progressDialog.dismiss();
-                        }
-                        catch (Exception ex) {
+                        } catch (Exception ex) {
                             Log.e(TAG, ex.getMessage());
                         }
                     }
@@ -390,17 +386,8 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
     public void onClick(View v) {
         super.onClick(v);
 
-        switch (v.getId()) {
-//            case R.id.fragment_contact_tv_restore_from_the_server:
-//                Toast.makeText(getActivity(), "Not Implemented Yet", Toast.LENGTH_SHORT).show();
-//                break;
-
-            case R.id.fragment_contact_iv_add_more:
-                loadFragment(new AddMoreFragment(ContactFragment.this), AddMoreFragment.class.getSimpleName());
-                break;
-
-            default:
-                break;
+        if (v.getId() == R.id.fragment_contact_iv_add_more) {
+            loadFragment(new AddMoreFragment(ContactFragment.this), AddMoreFragment.class.getSimpleName());
         }
     }
 
@@ -636,17 +623,41 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
 
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        // Check if the request code matches the one you used for requesting permissions
+        if (requestCode == MY_PERMISSIONS_REQUEST_BLUETOOTH) {
+            // Check if the permission was granted
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission was granted, call your method
+                sendPushNotification();
+            } else {
+                // Permission denied, handle accordingly (e.g., show a message or disable functionality)
+                Toast.makeText(getActivity(), "Permission denied", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
 
     public void sendPushNotification() {
         if (isAllredyShown) {
             return;
         }
-        isAllredyShown = true;
-        Toast.makeText(getActivity(), getString(R.string.TAG_SENDING_ALERT), Toast.LENGTH_SHORT).show();
-        ((MainActivity) getActivity()).updateLatLong();
-        new PushForReciever().start();
-        if (mBluetoothAdapter != null) {
-            mBluetoothAdapter.stopLeScan(bleHelper.getmLeScanCallback());
+        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.BLUETOOTH_SCAN)
+                == PackageManager.PERMISSION_GRANTED) {
+            // Permission is already granted, proceed with the method
+            isAllredyShown = true;
+            Toast.makeText(getActivity(), getString(R.string.TAG_SENDING_ALERT), Toast.LENGTH_SHORT).show();
+            ((MainActivity) getActivity()).updateLatLong();
+            new PushForReciever().start();
+            if (mBluetoothAdapter != null) {
+                mBluetoothAdapter.stopLeScan(bleHelper.getmLeScanCallback());
+            }
+        } else {
+            // Request the location permission
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                requestPermissions(new String[]{Manifest.permission.BLUETOOTH_SCAN}, MY_PERMISSIONS_REQUEST_BLUETOOTH);
+            }
         }
     }
 

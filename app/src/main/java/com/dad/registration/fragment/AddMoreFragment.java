@@ -17,9 +17,9 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.RoundedBitmapDrawable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -183,19 +183,15 @@ public class AddMoreFragment extends BaseFragment {
     public void onClick(View v) {
         super.onClick(v);
 
-        switch (v.getId()) {
-            case R.id.fragment_add_more_tv_save:
-                validateFragment();
-                break;
-            case R.id.fragment_add_more_tv_cancel:
-                getFragmentManager().popBackStack();
-                break;
-            case R.id.fragment_add_more_iv_user_profile:
-                selectImage();
-                break;
-            case R.id.fragment_add_more_tv_addressbook:
-                showcontacts();
-                break;
+        final int fragmentId = v.getId();
+        if (fragmentId == R.id.fragment_add_more_tv_save) {
+            validateFragment();
+        } else if (fragmentId == R.id.fragment_add_more_tv_cancel) {
+            getFragmentManager().popBackStack();
+        } else if (fragmentId == R.id.fragment_add_more_iv_user_profile) {
+            selectImage();
+        } else if (fragmentId == R.id.fragment_add_more_tv_addressbook) {
+            showcontacts();
         }
     }
 
@@ -228,7 +224,7 @@ public class AddMoreFragment extends BaseFragment {
                 if (path == null) {
                     return;
                 }
-                Glide.with(this).load(imageFile).asBitmap().centerCrop().into(new BitmapImageViewTarget(ivProfilePic) {
+                Glide.with(this).load(imageFile).centerCrop().into(new BitmapImageViewTarget(ivProfilePic) {
                     @Override
                     protected void setResource(Bitmap resource) {
                         final RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(getResources(), resource);
@@ -236,7 +232,7 @@ public class AddMoreFragment extends BaseFragment {
                         ivProfilePic.setImageDrawable(circularBitmapDrawable);
                         isImageUpdated = true;
                     }
-                });
+                }.getView());
 
                 break;
 

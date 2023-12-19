@@ -3,12 +3,15 @@
           package="com.dad">
 
     <!-- Accessing camera hardware -->
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" android:maxSdkVersion="28" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" android:maxSdkVersion="28" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.READ_CONTACTS"/>
@@ -43,6 +46,9 @@
     <uses-feature
             android:name="android.hardware.bluetooth_le"
             android:required="true"/>
+    <uses-feature
+        android:name="android.hardware.telephony"
+        android:required="false" />
 
     <application
             android:name=".DADApplication"
@@ -55,8 +61,9 @@
                 android:name=".home.SplashActivity"
                 android:alwaysRetainTaskState="true"
                 android:configChanges="orientation|keyboardHidden|screenSize"
-                android:screenOrientation="portrait"
-                android:theme="@style/FullscreenTheme">
+                android:screenOrientation="fullSensor"
+                android:theme="@style/FullscreenTheme"
+                android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -65,14 +72,15 @@
         </activity>
         <activity
                 android:name=".registration.activity.MainActivity"
-                android:screenOrientation="portrait"
+                android:screenOrientation="fullSensor"
                 android:theme="@style/FullscreenTheme"/>
         <activity android:name=".cropimage.CropImage"/>
         <activity android:name=".simplecropping.CropImage"/>
 
         <receiver
                 android:name=".GcmBroadcastReceiver"
-                android:permission="com.google.android.c2dm.permission.SEND">
+                android:permission="com.google.android.c2dm.permission.SEND"
+                android:exported="true">
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE"/>
                 <!-- Receives the registration id. -->

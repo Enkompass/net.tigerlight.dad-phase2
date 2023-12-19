@@ -96,31 +96,19 @@ public class ImOkFragment extends BaseFragment {
     @Override
     public void onClick(View v) {
         super.onClick(v);
-//
-        switch (v.getId()) {
-            case R.id.fragment_i_m_ok_send_pin_tv_sendd:
 
-                Toast.makeText(getActivity(), getString(R.string.TAG_SEND), Toast.LENGTH_SHORT).show();
-                break;
+        final int fragmentId = v.getId();
 
-            case R.id.fragment_i_m_ok_requiew_pin_tv_reset_pin:
-                Toast.makeText(getActivity(), getString(R.string.TAG_RESET), Toast.LENGTH_SHORT).show();
-                break;
-
-            case R.id.fragment_i_m_ok_requiew_pin_tv_forgot_pin:
-                callForgotPinService();
-                break;
-
-            case R.id.fragment_i_m_ok_requiew_pin_tv_validate_pin:
-                Toast.makeText(getActivity(), getString(R.string.TAG_VALIDATE), Toast.LENGTH_SHORT).show();
-                break;
-
-            case R.id.fragment_i_m_ok_requiew_pin_tv_save_pin:
-                ValidateNewAndConfirmFeild();
-                //                Toast.makeText(getActivity(), "save", Toast.LENGTH_SHORT).show();
-                break;
-
-            default:
+        if (fragmentId == R.id.fragment_i_m_ok_send_pin_tv_sendd) {
+            Toast.makeText(getActivity(), getString(R.string.TAG_SEND), Toast.LENGTH_SHORT).show();
+        } else if (fragmentId == R.id.fragment_i_m_ok_requiew_pin_tv_reset_pin) {
+            Toast.makeText(getActivity(), getString(R.string.TAG_RESET), Toast.LENGTH_SHORT).show();
+        } else if (fragmentId == R.id.fragment_i_m_ok_requiew_pin_tv_forgot_pin) {
+            callForgotPinService();
+        } else if (fragmentId == R.id.fragment_i_m_ok_requiew_pin_tv_validate_pin) {
+            Toast.makeText(getActivity(), getString(R.string.TAG_VALIDATE), Toast.LENGTH_SHORT).show();
+        } else if (fragmentId == R.id.fragment_i_m_ok_requiew_pin_tv_save_pin) {
+            ValidateNewAndConfirmFeild();
         }
     }
 

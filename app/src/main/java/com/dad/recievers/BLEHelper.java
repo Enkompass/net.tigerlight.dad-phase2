@@ -8,17 +8,21 @@ import com.dad.registration.fragment.ContactFragment;
 import com.dad.util.Constants;
 import com.dad.util.Preference;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.util.Log;
 
 import java.util.Arrays;
 import java.util.UUID;
 
 import static com.dad.util.CheckForeground.getActivity;
+
+import androidx.core.app.ActivityCompat;
 
 public class BLEHelper {
 
@@ -145,8 +149,11 @@ public class BLEHelper {
 
                 }
 
+                if (getActivity() != null && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+                    return;
+                }
                 if (UUIDHex.equalsIgnoreCase(Constants.OLD_UUID) && Constants.LAIRD_BEACON_LABEL.equals(device.getName())) {
-                //if (UUIDHex.equalsIgnoreCase(Constants.OLD_UUID)) {
+                    //if (UUIDHex.equalsIgnoreCase(Constants.OLD_UUID)) {
 
                     Log.d("Laird iBeacon", "found");
                     //if (UUIDHex.equals(GELO_UUID)) {
@@ -230,8 +237,11 @@ public class BLEHelper {
 
                 if (IsFirst) {
 
+                    if (getActivity() != null && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+                        return;
+                    }
                     if (UUIDHex.equalsIgnoreCase(Constants.OLD_UUID) && Constants.LAIRD_BEACON_LABEL.equals(device.getName())) {
-                    //if (UUIDHex.equalsIgnoreCase(Constants.OLD_UUID)) {
+                        //if (UUIDHex.equalsIgnoreCase(Constants.OLD_UUID)) {
 
                         IsFirst = false;
                         Preference.getInstance().mSharedPreferences.getString("IsSecond", "true");
@@ -255,10 +265,9 @@ public class BLEHelper {
                         Preference.getInstance().savePreferenceData(Constants.Preferences.Keys.MAJOR_KEY, String.valueOf(major));
                         Preference.getInstance().savePreferenceData(Constants.Preferences.Keys.MINOR_KEY, String.valueOf(minor));
 
-                        if (getActivity() != null)
-                        {
+                        if (getActivity() != null) {
                             getActivity().startActivity(new Intent(getActivity(), MainActivity.class));
-                        }  else {
+                        } else {
                             Log.e(TAG, "getActivity() = null");
                         }
                     }

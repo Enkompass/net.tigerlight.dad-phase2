@@ -36,7 +36,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
+import androidx.core.content.ContextCompat;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnGestureListener;
@@ -312,66 +312,54 @@ public class AlertDetailFragment extends BaseFragment implements OnClickListener
 
     @Override
     public void onClick(View v) {
+        final int fragmentId = v.getId();
+        if (fragmentId == fragment_alert_detail_tvDial911) {
+            final Dialog dialog = new Dialog(getActivity(), R.style.AppDialogTheme);
+            dialog.setContentView(R.layout.custom_dialog);
 
-        switch (v.getId()) {
+            final TextView tvTitle = (TextView) dialog.findViewById(R.id.dialog_tvTitle);
+            final TextView tvMessage = (TextView) dialog.findViewById(R.id.dialog_tvMessage);
+            final TextView tvPosButton = (TextView) dialog.findViewById(R.id.dialog_tvPosButton);
+            final TextView tvNegButton = (TextView) dialog.findViewById(R.id.dialog_tvNegButton);
+            tvTitle.setText(getString(R.string.dialog_dial_title));
+            tvMessage.setText(getString(R.string.dialog_dial_msg) + jsonobjectToChange.optString(TAG_USER_NAME) + ". " + getString(R.string.located_at) + " " + jsonobjectToChange.optString(TAG_ADDRESS) + ".");
+            tvPosButton.setText(getString(R.string.dialog_dial_pos_button));
+            tvNegButton.setText(getString(R.string.fragment_create_account_tv_cancel));
 
-            case fragment_alert_detail_tvDial911:
-                final Dialog dialog = new Dialog(getActivity(), R.style.AppDialogTheme);
-                dialog.setContentView(R.layout.custom_dialog);
+            tvPosButton.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dialog.dismiss();
 
-                final TextView tvTitle = (TextView) dialog.findViewById(R.id.dialog_tvTitle);
-                final TextView tvMessage = (TextView) dialog.findViewById(R.id.dialog_tvMessage);
-                final TextView tvPosButton = (TextView) dialog.findViewById(R.id.dialog_tvPosButton);
-                final TextView tvNegButton = (TextView) dialog.findViewById(R.id.dialog_tvNegButton);
-                tvTitle.setText(getString(R.string.dialog_dial_title));
-                tvMessage.setText(getString(R.string.dialog_dial_msg) + jsonobjectToChange.optString(TAG_USER_NAME) + ". " + getString(R.string.located_at) + " " + jsonobjectToChange.optString(TAG_ADDRESS) + ".");
-                tvPosButton.setText(getString(R.string.dialog_dial_pos_button));
-                tvNegButton.setText(getString(R.string.fragment_create_account_tv_cancel));
-
-                tvPosButton.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        dialog.dismiss();
-
-                        Intent callIntent = new Intent(Intent.ACTION_CALL);
-                        callIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_USER_ACTION);
+                    Intent callIntent = new Intent(Intent.ACTION_CALL);
+                    callIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_USER_ACTION);
 
 
-                        if (Preference.getInstance().mSharedPreferences.getString(Constant.C_CODE, "").equals("US")) {
+                    if (Preference.getInstance().mSharedPreferences.getString(Constant.C_CODE, "").equals("US")) {
 
-                            callIntent.setData(Uri.parse("tel:" + 911));
-                            startActivity(callIntent);
-                        } else if (Preference.getInstance().mSharedPreferences.getString(Constant.C_CODE, "").equals("FR")) {
-                            callIntent.setData(Uri.parse("tel:" + 112));
-                            startActivity(callIntent);
+                        callIntent.setData(Uri.parse("tel:" + 911));
+                        startActivity(callIntent);
+                    } else if (Preference.getInstance().mSharedPreferences.getString(Constant.C_CODE, "").equals("FR")) {
+                        callIntent.setData(Uri.parse("tel:" + 112));
+                        startActivity(callIntent);
 
-                        } else {
-                            callIntent.setData(Uri.parse("tel:" + 112));
-                            startActivity(callIntent);
-                        }
-
+                    } else {
+                        callIntent.setData(Uri.parse("tel:" + 112));
+                        startActivity(callIntent);
                     }
-                });
-                tvNegButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        dialog.dismiss();
-                    }
-                });
-                dialog.show();
-                break;
 
-            case R.id.fragment_alert_detail_tvBackAlerts:
-                getFragmentManager().popBackStack();
-                break;
-//            case R.id.cancelAlert:
-//                getActivity().finish();
-//                break;
-//
-//            default:
-//                break;
+                }
+            });
+            tvNegButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dialog.dismiss();
+                }
+            });
+            dialog.show();
+        } else if (fragmentId == R.id.fragment_alert_detail_tvBackAlerts) {
+            getFragmentManager().popBackStack();
         }
-
     }
 
     private void startAlertListScreen() {

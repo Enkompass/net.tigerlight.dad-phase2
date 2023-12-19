@@ -18,7 +18,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.content.LocalBroadcastManager;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -102,7 +102,7 @@ public class MyGcmListenerService extends GcmListenerService {
             resultIntent.putExtra("nd_payment_id", jsonObject.optString("payment_id"));
             resultIntent.putExtra("nd_jobseeker_id", jsonObject.optString("jobseeker_id"));
         }
-        PendingIntent piResult = PendingIntent.getActivity(this, (int) (Math.random() * 100), resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent piResult = PendingIntent.getActivity(this, (int) (Math.random() * 100), resultIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         /**
          * Set Custom Notification Icon according

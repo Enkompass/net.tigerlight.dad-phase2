@@ -62,28 +62,15 @@ public class RegistartionFragment extends BaseFragment {
     @Override
     public void onClick(View v) {
         super.onClick(v);
-        switch (v.getId()) {
-            case R.id.fragment_registration_tv_create_account:
-                ((MainActivity) getActivity()).addFragment(new CreateAccountFragment(), RegistartionFragment.this);
-                break;
-            case R.id.fragment_registration_tv_login_to_your_account:
-                ((MainActivity) getActivity()).addFragment(new LoginToYourAccountFragment(), RegistartionFragment.this);
-                break;
-            case R.id.fragment_registration_tv_show_eula:
-//                final Dialog dialog = new Dialog(getActivity());
-//                dialog.setContentView(R.layout.fragment_terms_and_condition);
-//                dialog.findViewById(R.id.fragment_terms_and_condition_tv_cancel).setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View view) {
-//                        dialog.dismiss();
-//                    }
-//                });
-//                dialog.show();
-
-                final FragmentManager fm = getFragmentManager();
-                final TermAndConditionFragment termAndConditionFragment = new TermAndConditionFragment();
-                termAndConditionFragment.show(fm, RegistartionFragment.class.getSimpleName());
-                break;
+        final int fragmentId = v.getId();
+        if (fragmentId == R.id.fragment_registration_tv_create_account) {
+            ((MainActivity) getActivity()).addFragment(new CreateAccountFragment(), RegistartionFragment.this);
+        } else if (fragmentId == R.id.fragment_registration_tv_login_to_your_account) {
+            ((MainActivity) getActivity()).addFragment(new LoginToYourAccountFragment(), RegistartionFragment.this);
+        } else if (fragmentId == R.id.fragment_registration_tv_show_eula) {
+            final FragmentManager fm = getFragmentManager();
+            final TermAndConditionFragment termAndConditionFragment = new TermAndConditionFragment();
+            termAndConditionFragment.show(fm, RegistartionFragment.class.getSimpleName());
         }
     }
 

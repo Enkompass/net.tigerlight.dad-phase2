@@ -73,7 +73,7 @@
             <!--android:textSize="@dimen/_15sdp"-->
             <!--android:textStyle="bold" />-->
 
-            <android.support.v7.widget.AppCompatCheckBox
+            <androidx.appcompat.widget.AppCompatCheckBox
                 android:id="@+id/fragment_login_to_your_account_cb_remember_me"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

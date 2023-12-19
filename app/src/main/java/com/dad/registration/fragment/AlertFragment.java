@@ -42,7 +42,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
-import android.support.v4.content.ContextCompat;
+import androidx.core.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -180,14 +180,13 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
     public void onClick(View v) {
         super.onClick(v);
 
-        switch (v.getId()) {
-            case R.id.fragment_alert_tvSendDanger:
-                if (Preference.getInstance().mSharedPreferences.getBoolean(Constant.IS_TEST_MODE, false)) {
-                    callTestModeService();
-                } else {
-                    callSenDangerServiceRecievingListScreen();
-                }
-                break;
+        final int fragmentId = v.getId();
+        if (fragmentId == R.id.fragment_alert_tvSendDanger) {
+            if (Preference.getInstance().mSharedPreferences.getBoolean(Constant.IS_TEST_MODE, false)) {
+                callTestModeService();
+            } else {
+                callSenDangerServiceRecievingListScreen();
+            }
         }
     }
 
@@ -686,7 +685,7 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
 
         playAlarmSound();
 
-        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(getActivity());
+        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(getActivity());
         builder.setTitle(R.string.test_message_title)
                 .setMessage(R.string.test_message_body)
                 .setPositiveButton(R.string.nice, new DialogInterface.OnClickListener() {

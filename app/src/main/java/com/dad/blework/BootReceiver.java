@@ -18,7 +18,7 @@ public class BootReceiver extends BroadcastReceiver {
         }
         AlarmManager alarmManagerForBLE = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent bleIntent = new Intent(context, BleReceiver.class);
-        PendingIntent broadcastIntentBle = PendingIntent.getBroadcast(context, 0, bleIntent, 0);
+        PendingIntent broadcastIntentBle = PendingIntent.getBroadcast(context, 0, bleIntent, PendingIntent.FLAG_IMMUTABLE);
         alarmManagerForBLE.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(), 2 * 60 * 1000, broadcastIntentBle);
     }
 

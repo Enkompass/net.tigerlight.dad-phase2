@@ -390,16 +390,17 @@
 
         <item>Cancel</item>
     </string-array>
-    <string name="test">\u00D4</string>
-    <string name="custom_progess_dialog_tv_title">Danger Alert Sent</string>
+    <string name="test" translatable="false">\u00D4</string>
+    <string name="custom_progess_dialog_tv_title" translatable="false">Danger Alert Sent</string>
     <string name="custom_progess_dialog_tv_msg">Send out a "danger" alert to your contacts.</string>
-    <string name="custom_progess_dialog_tv_ok">Ok</string>
+    <string name="custom_progess_dialog_tv_ok" translatable="false">Ok</string>
     <string name="battery_level_good">GOOD D.A.D BATTERY</string>
     <string name="battery_level_low">LOW D.A.D BATTERY</string>
     <string name="battery_level_replace">REPLACE D.A.D BATTERY</string>
     <string name="test_message_title">Test Message Sent</string>
     <string name="test_message_body">Test messages have been sent back to you via email, sms and app notification</string>
     <string name="nice">Nice</string>
+    <string name="gcm_defaultSenderId" translatable="false">32989397760</string>
 
 
 </resources>
