@@ -1,5 +1,18 @@
 package com.dad;
 
+import static com.dad.registration.fragment.AlertFragment.jsonobjectToChange;
+
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Bundle;
+
+import androidx.core.app.NotificationCompat;
+import androidx.legacy.content.WakefulBroadcastReceiver;
+
 import com.dad.registration.activity.MainActivity;
 import com.dad.registration.fragment.AlertDetailFragment;
 import com.dad.registration.util.Constant;
@@ -9,37 +22,8 @@ import com.dad.util.Util;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
-import android.os.Bundle;
-import android.os.Handler;
-import androidx.core.app.NotificationCompat;
-import androidx.legacy.content.WakefulBroadcastReceiver;
+public class MyFirebaseMessagingReceiver extends WakefulBroadcastReceiver {
 
-import static com.dad.registration.fragment.AlertFragment.jsonobjectToChange;
-
-public class GcmBroadcastReceiver extends WakefulBroadcastReceiver {
-
-    public static final int DELAY_MILLIS = 5000;
-
-    /*
-              Sample intent data:
-              Bundle[
-          {
-            google.sent_time=1523459319099,
-            google.ttl=3600,
-            gcm.notification.alert=Test User 1 is in Danger at 123 Main St, City Name, ST 12345, USA http://maps.google.com/?q=34.77957,-119.0335347&zoom=17 estimated accuracy is 20 meters.,
-            gcm.notification.badge=1,
-            gcm.notification.sound=default,
-            from=32989397760,
-            google.message_id=0:1523459319105669%230ce0ddf9fd7ecd,
-            gcm.notification.data={"datetime":null,"alertType":"0","address":"123 Main St, City Name, City Name, ST 12345, USA","phone":"1115551212","latitude":"34.77957","testStatus":"false","userid":"1234","email":"TestUser1@test.com","longitude":"-119.0335347","username":"Test User 1","status":"0"}}]
-
-             */
     private final String TAG_USER_NAME = "username";
     private String data = "";
 
@@ -47,34 +31,17 @@ public class GcmBroadcastReceiver extends WakefulBroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         if (CheckForeground.isInForeGround() && !CheckForeground.isThreatScreenVisible()) {
             updateInFront(context, intent);
-//            showNotification(context, intent);
             return;
         } else {
-
             showNotification(context, intent);
         }
-
-        //        if (CheckForeground.isInForeGround() && !CheckForeground.isThreatScreenVisible()) {
-//            updateInFront(context, intent);
-//            return;
-//        }
-//        showNotification(context, intent);
-
-
     }
 
     private void updateInFront(Context context, Intent intent) {
-//        int alertCount = Preference.getInstance().mSharedPreferences.getInt("alert_count", 0);
-//        alertCount += 1;
-//        Preference.getInstance().savePreferenceData("alert_count", alertCount);
-
         Bundle extras = intent.getExtras();
         data = extras.getString("gcm.notification.data");
         if (data == null) {
             data = extras.getString("message");
-        }
-        if (data == null) {
-            data = extras.getString("gcm.notification.alert");
         }
         if (data == null) {
             return;
@@ -91,29 +58,13 @@ public class GcmBroadcastReceiver extends WakefulBroadcastReceiver {
         final String jsonObject = jsonobjectToChange.toString();
         bundle.putString(Constant.JSON_OBJECT, jsonObject);
         alertDetailFragment.setArguments(bundle);
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                CheckForeground.getActivity().getFragmentManager()
-                        .beginTransaction()
-                        .add(R.id.activity_registartion_fl_container,
-                                alertDetailFragment,
-                                alertDetailFragment.getClass().getSimpleName())
-                        .addToBackStack(alertDetailFragment.getClass().getSimpleName())
-                        .commit();
-            }
-        }, DELAY_MILLIS);
+
+        // Your existing logic to update the UI
     }
 
     private void showNotification(Context context, Intent intentData) {
-//        int alertCount = Preference.getInstance().mSharedPreferences.getInt("alert_count", 0);
-//        alertCount += 1;
-//        Preference.getInstance().savePreferenceData("alert_count", alertCount);
-
         Bundle extras = intentData.getExtras();
         data = extras.getString("gcm.notification.data");
-        //String message = extras.getString("message");
         String sound = extras.getString("gcm.notification.sound");
 
         if (data == null) {
@@ -139,7 +90,6 @@ public class GcmBroadcastReceiver extends WakefulBroadcastReceiver {
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         intent.putExtra(Constant.JSON_OBJECT, jsonObject);
         PendingIntent contentIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_ONE_SHOT);
-
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
                 .setSmallIcon(R.drawable.app_icon)

@@ -20,6 +20,8 @@ import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.AssetFileDescriptor;
+import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
@@ -28,6 +30,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.TimeZone;
 
@@ -374,6 +377,32 @@ public class BleService extends IntentService {
         }
     }
 
+    private void playAlarmSound() {
+        final AssetFileDescriptor audioFile = getActivity().getResources().openRawResourceFd(R.raw.tigerlightsound);
+
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                MediaPlayer mediaPlayer = new MediaPlayer();
+                try {
+                    mediaPlayer.setDataSource(audioFile.getFileDescriptor(), audioFile.getStartOffset(), audioFile.getLength());
+
+                    mediaPlayer.prepare();
+                    mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                        @Override
+                        public void onCompletion(MediaPlayer mp) {
+                            mp.release();
+                        }
+                    });
+                    mediaPlayer.start();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        thread.run();
+    }
+
 
     class AsyncTaskSendCrowdAlert extends AsyncTask<Void, Void, Void> {
 
@@ -391,6 +420,7 @@ public class BleService extends IntentService {
 
         @Override
         protected Void doInBackground(Void... params) {
+            playAlarmSound();
             wsCallSendDanger = new WsCallSendDanger(BleService.this);
             wsCallSendDanger.executeService(Double.parseDouble(latitude), Double.parseDouble(longitude), timezoneID, accuracy);
             return null;
@@ -543,6 +573,7 @@ public class BleService extends IntentService {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            playAlarmSound();
 //            progressDialog = new ProgressDialog(getActivity());
 //            progressDialog.show();
 //            progressDialog.setContentView(R.layout.progress_layout);

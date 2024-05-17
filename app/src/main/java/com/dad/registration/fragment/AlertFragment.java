@@ -541,6 +541,7 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
 
         @Override
         protected Void doInBackground(Void... params) {
+            playAlarmSound();
             wsCallSendDanger = new WsCallSendDanger(getActivity());
             wsCallSendDanger.executeService(Double.parseDouble(lat), Double.parseDouble(log), timezoneID, accuracy);
             return null;

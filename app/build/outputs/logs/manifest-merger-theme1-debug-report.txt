@@ -1,15 +1,15 @@
 -- Merging decision tree log ---
 manifest
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:2:1-152:12
-INJECTED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:2:1-152:12
-INJECTED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:2:1-152:12
-INJECTED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:2:1-152:12
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:2:1-168:12
+INJECTED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:2:1-168:12
+INJECTED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:2:1-168:12
+INJECTED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:2:1-168:12
 MERGED from [com.google.firebase:firebase-crashlytics:18.6.0] /Users/harshitladdha/.gradle/caches/transforms-3/dd50a7b0414d69fd47fd3b2829d4388c/transformed/jetified-firebase-crashlytics-18.6.0/AndroidManifest.xml:2:1-24:12
 MERGED from [com.google.firebase:firebase-analytics:21.5.0] /Users/harshitladdha/.gradle/caches/transforms-3/32a277a25a4aee170e4778d21094b9a1/transformed/jetified-firebase-analytics-21.5.0/AndroidManifest.xml:2:1-9:12
+MERGED from [com.google.firebase:firebase-messaging:23.4.0] /Users/harshitladdha/.gradle/caches/transforms-3/53664f69ba51e470663ed71a6f80af76/transformed/jetified-firebase-messaging-23.4.0/AndroidManifest.xml:17:1-66:12
 MERGED from [de.hdodenhof:circleimageview:2.2.0] /Users/harshitladdha/.gradle/caches/transforms-3/460414a9a2f6bb549f9a756f24e64f44/transformed/jetified-circleimageview-2.2.0/AndroidManifest.xml:2:1-11:12
 MERGED from [androidx.legacy:legacy-support-v13:1.0.0] /Users/harshitladdha/.gradle/caches/transforms-3/e7038edf5a51c50739bc8b9f10c66325/transformed/legacy-support-v13-1.0.0/AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.legacy:legacy-support-v4:1.0.0] /Users/harshitladdha/.gradle/caches/transforms-3/b3f04652da647f51ef3124dbc74673f2/transformed/legacy-support-v4-1.0.0/AndroidManifest.xml:17:1-22:12
-MERGED from [com.google.android.gms:play-services-gcm:17.0.0] /Users/harshitladdha/.gradle/caches/transforms-3/fce5e56e7f4256ad8db2468358e79d0d/transformed/jetified-play-services-gcm-17.0.0/AndroidManifest.xml:17:1-28:12
 MERGED from [com.google.android.gms:play-services-places:17.0.0] /Users/harshitladdha/.gradle/caches/transforms-3/3aa73e029227e28361614cccb27d53cc/transformed/jetified-play-services-places-17.0.0/AndroidManifest.xml:17:1-24:12
 MERGED from [com.google.android.gms:play-services-maps:18.2.0] /Users/harshitladdha/.gradle/caches/transforms-3/327efc0db840f739ee7304421a865d61/transformed/jetified-play-services-maps-18.2.0/AndroidManifest.xml:17:1-44:12
 MERGED from [com.google.android.gms:play-services-location:21.0.1] /Users/harshitladdha/.gradle/caches/transforms-3/349c82e2a379125ee03e5b424b442924/transformed/jetified-play-services-location-21.0.1/AndroidManifest.xml:2:1-9:12
@@ -37,17 +37,18 @@ MERGED from [com.google.android.gms:play-services-measurement-sdk:21.5.0] /Users
 MERGED from [com.google.android.gms:play-services-measurement-impl:21.5.0] /Users/harshitladdha/.gradle/caches/transforms-3/48260f85e2a97a58d6499f938b1b3af7/transformed/jetified-play-services-measurement-impl-21.5.0/AndroidManifest.xml:17:1-32:12
 MERGED from [androidx.privacysandbox.ads:ads-adservices-java:1.0.0-beta05] /Users/harshitladdha/.gradle/caches/transforms-3/cd351d8a163c625e7faf5e7298ce4f5a/transformed/jetified-ads-adservices-java-1.0.0-beta05/AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.privacysandbox.ads:ads-adservices:1.0.0-beta05] /Users/harshitladdha/.gradle/caches/transforms-3/ce686c9a62c5d40ef06d649fc631cfa5/transformed/jetified-ads-adservices-1.0.0-beta05/AndroidManifest.xml:17:1-28:12
-MERGED from [com.google.android.gms:play-services-iid:17.0.0] /Users/harshitladdha/.gradle/caches/transforms-3/4571dba7a66841d1877b903ffa9ab95f/transformed/jetified-play-services-iid-17.0.0/AndroidManifest.xml:17:1-28:12
-MERGED from [com.google.android.gms:play-services-base:18.1.0] /Users/harshitladdha/.gradle/caches/transforms-3/efa9582a9a7d9aa2e4e3160784ffc99e/transformed/jetified-play-services-base-18.1.0/AndroidManifest.xml:16:1-24:12
 MERGED from [com.google.firebase:firebase-common:20.4.2] /Users/harshitladdha/.gradle/caches/transforms-3/9f49427979fa2218fff24976cbbfe09a/transformed/jetified-firebase-common-20.4.2/AndroidManifest.xml:15:1-41:12
+MERGED from [com.google.firebase:firebase-measurement-connector:19.0.0] /Users/harshitladdha/.gradle/caches/transforms-3/2e0e9b067a28822cf9f75b792cffc99c/transformed/jetified-firebase-measurement-connector-19.0.0/AndroidManifest.xml:17:1-25:12
+MERGED from [com.google.firebase:firebase-iid-interop:17.1.0] /Users/harshitladdha/.gradle/caches/transforms-3/037bb4fc97af49a5edeab554b0a0069b/transformed/jetified-firebase-iid-interop-17.1.0/AndroidManifest.xml:2:1-10:12
+MERGED from [com.google.android.gms:play-services-cloud-messaging:17.1.0] /Users/harshitladdha/.gradle/caches/transforms-3/9b19b4b9f10d4aab72e0655ba128ed18/transformed/jetified-play-services-cloud-messaging-17.1.0/AndroidManifest.xml:2:1-13:12
+MERGED from [com.google.android.gms:play-services-stats:17.0.2] /Users/harshitladdha/.gradle/caches/transforms-3/60463452b0a877283b9258074a3a4b0c/transformed/jetified-play-services-stats-17.0.2/AndroidManifest.xml:2:1-9:12
 MERGED from [com.google.android.gms:play-services-places-placereport:17.0.0] /Users/harshitladdha/.gradle/caches/transforms-3/a855f7f2e453243e3aa0c2d6e246c9bf/transformed/jetified-play-services-places-placereport-17.0.0/AndroidManifest.xml:17:1-24:12
+MERGED from [com.google.android.gms:play-services-base:18.1.0] /Users/harshitladdha/.gradle/caches/transforms-3/efa9582a9a7d9aa2e4e3160784ffc99e/transformed/jetified-play-services-base-18.1.0/AndroidManifest.xml:16:1-24:12
 MERGED from [com.google.firebase:firebase-installations-interop:17.1.1] /Users/harshitladdha/.gradle/caches/transforms-3/b4b375d51629f4185538697f80a980e1/transformed/jetified-firebase-installations-interop-17.1.1/AndroidManifest.xml:15:1-19:12
 MERGED from [com.google.android.gms:play-services-tasks:18.0.2] /Users/harshitladdha/.gradle/caches/transforms-3/c0514f22dfa98f2363cc6c3a4f02a981/transformed/jetified-play-services-tasks-18.0.2/AndroidManifest.xml:2:1-6:12
-MERGED from [com.google.android.gms:play-services-stats:17.0.2] /Users/harshitladdha/.gradle/caches/transforms-3/60463452b0a877283b9258074a3a4b0c/transformed/jetified-play-services-stats-17.0.2/AndroidManifest.xml:2:1-9:12
 MERGED from [com.google.android.gms:play-services-ads-identifier:18.0.0] /Users/harshitladdha/.gradle/caches/transforms-3/2441bc1806669119f767b9014f14f869/transformed/jetified-play-services-ads-identifier-18.0.0/AndroidManifest.xml:17:1-27:12
 MERGED from [com.google.android.gms:play-services-measurement-sdk-api:21.5.0] /Users/harshitladdha/.gradle/caches/transforms-3/bdbcbeb1fee8f59ee940c04511a61200/transformed/jetified-play-services-measurement-sdk-api-21.5.0/AndroidManifest.xml:17:1-30:12
 MERGED from [com.google.android.gms:play-services-measurement-base:21.5.0] /Users/harshitladdha/.gradle/caches/transforms-3/22617b8c2bd8cca8554ecb31a4082c5e/transformed/jetified-play-services-measurement-base-21.5.0/AndroidManifest.xml:2:1-9:12
-MERGED from [com.google.firebase:firebase-measurement-connector:19.0.0] /Users/harshitladdha/.gradle/caches/transforms-3/2e0e9b067a28822cf9f75b792cffc99c/transformed/jetified-firebase-measurement-connector-19.0.0/AndroidManifest.xml:17:1-25:12
 MERGED from [com.google.android.gms:play-services-basement:18.1.0] /Users/harshitladdha/.gradle/caches/transforms-3/86b6b2039058fdb8f6768123e1dfe02a/transformed/jetified-play-services-basement-18.1.0/AndroidManifest.xml:16:1-26:12
 MERGED from [androidx.fragment:fragment:1.3.6] /Users/harshitladdha/.gradle/caches/transforms-3/eaff5115f89bb72eb75a285667179c9b/transformed/fragment-1.3.6/AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.activity:activity:1.8.0] /Users/harshitladdha/.gradle/caches/transforms-3/25bdc2e330603a34ddb7c8c5c9280834/transformed/jetified-activity-1.8.0/AndroidManifest.xml:17:1-22:12
@@ -80,7 +81,7 @@ MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.6.1] /Users/harshitladdha/
 MERGED from [androidx.lifecycle:lifecycle-runtime:2.6.1] /Users/harshitladdha/.gradle/caches/transforms-3/e0c6c1013f64741fa7d0cec3b6de6c84/transformed/lifecycle-runtime-2.6.1/AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.6.1] /Users/harshitladdha/.gradle/caches/transforms-3/733fa16159d286f213843af2388d0cf3/transformed/jetified-lifecycle-viewmodel-savedstate-2.6.1/AndroidManifest.xml:17:1-22:12
 MERGED from [com.google.android.datatransport:transport-runtime:3.1.9] /Users/harshitladdha/.gradle/caches/transforms-3/434afd0ba3f5d1cc1b6197d6b3606111/transformed/jetified-transport-runtime-3.1.9/AndroidManifest.xml:15:1-41:12
-MERGED from [com.google.android.datatransport:transport-api:3.0.0] /Users/harshitladdha/.gradle/caches/transforms-3/390470f0afbe5f7a0e81a9463835cc7d/transformed/jetified-transport-api-3.0.0/AndroidManifest.xml:15:1-22:12
+MERGED from [com.google.android.datatransport:transport-api:3.1.0] /Users/harshitladdha/.gradle/caches/transforms-3/aaf0920e2a4ca381852f1e8906994b80/transformed/jetified-transport-api-3.1.0/AndroidManifest.xml:15:1-20:12
 MERGED from [com.google.firebase:firebase-components:17.1.5] /Users/harshitladdha/.gradle/caches/transforms-3/8a4b88216a022d446fd4bfab62716a06/transformed/jetified-firebase-components-17.1.5/AndroidManifest.xml:15:1-20:12
 MERGED from [com.github.bumptech.glide:gifdecoder:4.12.0] /Users/harshitladdha/.gradle/caches/transforms-3/7df4eae6d0d0ec8c4b6ee7cccd10d2ab/transformed/jetified-gifdecoder-4.12.0/AndroidManifest.xml:2:1-11:12
 MERGED from [androidx.exifinterface:exifinterface:1.2.0] /Users/harshitladdha/.gradle/caches/transforms-3/151c7bdbd4a2bac54241ebfbbe7f19e6/transformed/exifinterface-1.2.0/AndroidManifest.xml:17:1-24:12
@@ -111,19 +112,17 @@ MERGED from [androidx.test.espresso:espresso-idling-resource:3.5.1] /Users/harsh
 	xmlns:android
 		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:2:11-69
 uses-permission#android.permission.ACCESS_COARSE_LOCATION
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:6:5-108
-	android:maxSdkVersion
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:6:79-105
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:6:5-81
 	android:name
 		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:6:22-78
 uses-permission#android.permission.ACCESS_FINE_LOCATION
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:7:5-106
-	android:maxSdkVersion
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:7:77-103
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:7:5-79
 	android:name
 		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:7:22-76
 uses-permission#android.permission.ACCESS_NETWORK_STATE
 ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:8:5-78
+MERGED from [com.google.firebase:firebase-messaging:23.4.0] /Users/harshitladdha/.gradle/caches/transforms-3/53664f69ba51e470663ed71a6f80af76/transformed/jetified-firebase-messaging-23.4.0/AndroidManifest.xml:22:5-79
+MERGED from [com.google.firebase:firebase-messaging:23.4.0] /Users/harshitladdha/.gradle/caches/transforms-3/53664f69ba51e470663ed71a6f80af76/transformed/jetified-firebase-messaging-23.4.0/AndroidManifest.xml:22:5-79
 MERGED from [com.google.android.gms:play-services-maps:18.2.0] /Users/harshitladdha/.gradle/caches/transforms-3/327efc0db840f739ee7304421a865d61/transformed/jetified-play-services-maps-18.2.0/AndroidManifest.xml:23:5-79
 MERGED from [com.google.android.gms:play-services-maps:18.2.0] /Users/harshitladdha/.gradle/caches/transforms-3/327efc0db840f739ee7304421a865d61/transformed/jetified-play-services-maps-18.2.0/AndroidManifest.xml:23:5-79
 MERGED from [com.google.android.gms:play-services-measurement-api:21.5.0] /Users/harshitladdha/.gradle/caches/transforms-3/b76008b5f880bce1f8c97d096e5912d3/transformed/jetified-play-services-measurement-api-21.5.0/AndroidManifest.xml:23:5-79
@@ -136,6 +135,8 @@ MERGED from [com.google.android.gms:play-services-measurement:21.5.0] /Users/har
 MERGED from [com.google.android.gms:play-services-measurement:21.5.0] /Users/harshitladdha/.gradle/caches/transforms-3/09a9dadd125963ada1da9f9c0089c17e/transformed/jetified-play-services-measurement-21.5.0/AndroidManifest.xml:24:5-79
 MERGED from [com.google.android.gms:play-services-measurement-impl:21.5.0] /Users/harshitladdha/.gradle/caches/transforms-3/48260f85e2a97a58d6499f938b1b3af7/transformed/jetified-play-services-measurement-impl-21.5.0/AndroidManifest.xml:24:5-79
 MERGED from [com.google.android.gms:play-services-measurement-impl:21.5.0] /Users/harshitladdha/.gradle/caches/transforms-3/48260f85e2a97a58d6499f938b1b3af7/transformed/jetified-play-services-measurement-impl-21.5.0/AndroidManifest.xml:24:5-79
+MERGED from [com.google.android.gms:play-services-cloud-messaging:17.1.0] /Users/harshitladdha/.gradle/caches/transforms-3/9b19b4b9f10d4aab72e0655ba128ed18/transformed/jetified-play-services-cloud-messaging-17.1.0/AndroidManifest.xml:7:5-79
+MERGED from [com.google.android.gms:play-services-cloud-messaging:17.1.0] /Users/harshitladdha/.gradle/caches/transforms-3/9b19b4b9f10d4aab72e0655ba128ed18/transformed/jetified-play-services-cloud-messaging-17.1.0/AndroidManifest.xml:7:5-79
 MERGED from [com.google.android.gms:play-services-measurement-sdk-api:21.5.0] /Users/harshitladdha/.gradle/caches/transforms-3/bdbcbeb1fee8f59ee940c04511a61200/transformed/jetified-play-services-measurement-sdk-api-21.5.0/AndroidManifest.xml:24:5-79
 MERGED from [com.google.android.gms:play-services-measurement-sdk-api:21.5.0] /Users/harshitladdha/.gradle/caches/transforms-3/bdbcbeb1fee8f59ee940c04511a61200/transformed/jetified-play-services-measurement-sdk-api-21.5.0/AndroidManifest.xml:24:5-79
 MERGED from [com.google.android.datatransport:transport-runtime:3.1.9] /Users/harshitladdha/.gradle/caches/transforms-3/434afd0ba3f5d1cc1b6197d6b3606111/transformed/jetified-transport-runtime-3.1.9/AndroidManifest.xml:22:5-79
@@ -164,6 +165,8 @@ ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/
 		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:13:22-76
 uses-permission#android.permission.POST_NOTIFICATIONS
 ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:14:5-77
+MERGED from [com.google.firebase:firebase-messaging:23.4.0] /Users/harshitladdha/.gradle/caches/transforms-3/53664f69ba51e470663ed71a6f80af76/transformed/jetified-firebase-messaging-23.4.0/AndroidManifest.xml:23:5-77
+MERGED from [com.google.firebase:firebase-messaging:23.4.0] /Users/harshitladdha/.gradle/caches/transforms-3/53664f69ba51e470663ed71a6f80af76/transformed/jetified-firebase-messaging-23.4.0/AndroidManifest.xml:23:5-77
 	android:name
 		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:14:22-74
 uses-permission#android.permission.READ_PHONE_STATE
@@ -174,8 +177,6 @@ uses-permission#android.permission.INTERNET
 ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:16:5-66
 MERGED from [com.google.firebase:firebase-crashlytics:18.6.0] /Users/harshitladdha/.gradle/caches/transforms-3/dd50a7b0414d69fd47fd3b2829d4388c/transformed/jetified-firebase-crashlytics-18.6.0/AndroidManifest.xml:7:5-67
 MERGED from [com.google.firebase:firebase-crashlytics:18.6.0] /Users/harshitladdha/.gradle/caches/transforms-3/dd50a7b0414d69fd47fd3b2829d4388c/transformed/jetified-firebase-crashlytics-18.6.0/AndroidManifest.xml:7:5-67
-MERGED from [com.google.android.gms:play-services-gcm:17.0.0] /Users/harshitladdha/.gradle/caches/transforms-3/fce5e56e7f4256ad8db2468358e79d0d/transformed/jetified-play-services-gcm-17.0.0/AndroidManifest.xml:24:5-67
-MERGED from [com.google.android.gms:play-services-gcm:17.0.0] /Users/harshitladdha/.gradle/caches/transforms-3/fce5e56e7f4256ad8db2468358e79d0d/transformed/jetified-play-services-gcm-17.0.0/AndroidManifest.xml:24:5-67
 MERGED from [com.google.android.gms:play-services-maps:18.2.0] /Users/harshitladdha/.gradle/caches/transforms-3/327efc0db840f739ee7304421a865d61/transformed/jetified-play-services-maps-18.2.0/AndroidManifest.xml:24:5-67
 MERGED from [com.google.android.gms:play-services-maps:18.2.0] /Users/harshitladdha/.gradle/caches/transforms-3/327efc0db840f739ee7304421a865d61/transformed/jetified-play-services-maps-18.2.0/AndroidManifest.xml:24:5-67
 MERGED from [com.google.android.gms:play-services-measurement-api:21.5.0] /Users/harshitladdha/.gradle/caches/transforms-3/b76008b5f880bce1f8c97d096e5912d3/transformed/jetified-play-services-measurement-api-21.5.0/AndroidManifest.xml:22:5-67
@@ -188,8 +189,8 @@ MERGED from [com.google.android.gms:play-services-measurement:21.5.0] /Users/har
 MERGED from [com.google.android.gms:play-services-measurement:21.5.0] /Users/harshitladdha/.gradle/caches/transforms-3/09a9dadd125963ada1da9f9c0089c17e/transformed/jetified-play-services-measurement-21.5.0/AndroidManifest.xml:23:5-67
 MERGED from [com.google.android.gms:play-services-measurement-impl:21.5.0] /Users/harshitladdha/.gradle/caches/transforms-3/48260f85e2a97a58d6499f938b1b3af7/transformed/jetified-play-services-measurement-impl-21.5.0/AndroidManifest.xml:23:5-67
 MERGED from [com.google.android.gms:play-services-measurement-impl:21.5.0] /Users/harshitladdha/.gradle/caches/transforms-3/48260f85e2a97a58d6499f938b1b3af7/transformed/jetified-play-services-measurement-impl-21.5.0/AndroidManifest.xml:23:5-67
-MERGED from [com.google.android.gms:play-services-iid:17.0.0] /Users/harshitladdha/.gradle/caches/transforms-3/4571dba7a66841d1877b903ffa9ab95f/transformed/jetified-play-services-iid-17.0.0/AndroidManifest.xml:24:5-67
-MERGED from [com.google.android.gms:play-services-iid:17.0.0] /Users/harshitladdha/.gradle/caches/transforms-3/4571dba7a66841d1877b903ffa9ab95f/transformed/jetified-play-services-iid-17.0.0/AndroidManifest.xml:24:5-67
+MERGED from [com.google.android.gms:play-services-cloud-messaging:17.1.0] /Users/harshitladdha/.gradle/caches/transforms-3/9b19b4b9f10d4aab72e0655ba128ed18/transformed/jetified-play-services-cloud-messaging-17.1.0/AndroidManifest.xml:8:5-67
+MERGED from [com.google.android.gms:play-services-cloud-messaging:17.1.0] /Users/harshitladdha/.gradle/caches/transforms-3/9b19b4b9f10d4aab72e0655ba128ed18/transformed/jetified-play-services-cloud-messaging-17.1.0/AndroidManifest.xml:8:5-67
 MERGED from [com.google.android.gms:play-services-measurement-sdk-api:21.5.0] /Users/harshitladdha/.gradle/caches/transforms-3/bdbcbeb1fee8f59ee940c04511a61200/transformed/jetified-play-services-measurement-sdk-api-21.5.0/AndroidManifest.xml:23:5-67
 MERGED from [com.google.android.gms:play-services-measurement-sdk-api:21.5.0] /Users/harshitladdha/.gradle/caches/transforms-3/bdbcbeb1fee8f59ee940c04511a61200/transformed/jetified-play-services-measurement-sdk-api-21.5.0/AndroidManifest.xml:23:5-67
 	android:name
@@ -224,22 +225,26 @@ ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/
 		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:23:22-68
 uses-permission#android.permission.WAKE_LOCK
 ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:24:5-67
+MERGED from [com.google.firebase:firebase-messaging:23.4.0] /Users/harshitladdha/.gradle/caches/transforms-3/53664f69ba51e470663ed71a6f80af76/transformed/jetified-firebase-messaging-23.4.0/AndroidManifest.xml:24:5-68
+MERGED from [com.google.firebase:firebase-messaging:23.4.0] /Users/harshitladdha/.gradle/caches/transforms-3/53664f69ba51e470663ed71a6f80af76/transformed/jetified-firebase-messaging-23.4.0/AndroidManifest.xml:24:5-68
 MERGED from [com.google.android.gms:play-services-measurement-api:21.5.0] /Users/harshitladdha/.gradle/caches/transforms-3/b76008b5f880bce1f8c97d096e5912d3/transformed/jetified-play-services-measurement-api-21.5.0/AndroidManifest.xml:24:5-68
 MERGED from [com.google.android.gms:play-services-measurement-api:21.5.0] /Users/harshitladdha/.gradle/caches/transforms-3/b76008b5f880bce1f8c97d096e5912d3/transformed/jetified-play-services-measurement-api-21.5.0/AndroidManifest.xml:24:5-68
 MERGED from [com.google.android.gms:play-services-measurement:21.5.0] /Users/harshitladdha/.gradle/caches/transforms-3/09a9dadd125963ada1da9f9c0089c17e/transformed/jetified-play-services-measurement-21.5.0/AndroidManifest.xml:25:5-68
 MERGED from [com.google.android.gms:play-services-measurement:21.5.0] /Users/harshitladdha/.gradle/caches/transforms-3/09a9dadd125963ada1da9f9c0089c17e/transformed/jetified-play-services-measurement-21.5.0/AndroidManifest.xml:25:5-68
 MERGED from [com.google.android.gms:play-services-measurement-impl:21.5.0] /Users/harshitladdha/.gradle/caches/transforms-3/48260f85e2a97a58d6499f938b1b3af7/transformed/jetified-play-services-measurement-impl-21.5.0/AndroidManifest.xml:25:5-68
 MERGED from [com.google.android.gms:play-services-measurement-impl:21.5.0] /Users/harshitladdha/.gradle/caches/transforms-3/48260f85e2a97a58d6499f938b1b3af7/transformed/jetified-play-services-measurement-impl-21.5.0/AndroidManifest.xml:25:5-68
+MERGED from [com.google.android.gms:play-services-cloud-messaging:17.1.0] /Users/harshitladdha/.gradle/caches/transforms-3/9b19b4b9f10d4aab72e0655ba128ed18/transformed/jetified-play-services-cloud-messaging-17.1.0/AndroidManifest.xml:9:5-68
+MERGED from [com.google.android.gms:play-services-cloud-messaging:17.1.0] /Users/harshitladdha/.gradle/caches/transforms-3/9b19b4b9f10d4aab72e0655ba128ed18/transformed/jetified-play-services-cloud-messaging-17.1.0/AndroidManifest.xml:9:5-68
 MERGED from [com.google.android.gms:play-services-measurement-sdk-api:21.5.0] /Users/harshitladdha/.gradle/caches/transforms-3/bdbcbeb1fee8f59ee940c04511a61200/transformed/jetified-play-services-measurement-sdk-api-21.5.0/AndroidManifest.xml:25:5-68
 MERGED from [com.google.android.gms:play-services-measurement-sdk-api:21.5.0] /Users/harshitladdha/.gradle/caches/transforms-3/bdbcbeb1fee8f59ee940c04511a61200/transformed/jetified-play-services-measurement-sdk-api-21.5.0/AndroidManifest.xml:25:5-68
 	android:name
 		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:24:22-65
 uses-permission#com.google.android.c2dm.permission.RECEIVE
 ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:25:5-81
-MERGED from [com.google.android.gms:play-services-gcm:17.0.0] /Users/harshitladdha/.gradle/caches/transforms-3/fce5e56e7f4256ad8db2468358e79d0d/transformed/jetified-play-services-gcm-17.0.0/AndroidManifest.xml:23:5-82
-MERGED from [com.google.android.gms:play-services-gcm:17.0.0] /Users/harshitladdha/.gradle/caches/transforms-3/fce5e56e7f4256ad8db2468358e79d0d/transformed/jetified-play-services-gcm-17.0.0/AndroidManifest.xml:23:5-82
-MERGED from [com.google.android.gms:play-services-iid:17.0.0] /Users/harshitladdha/.gradle/caches/transforms-3/4571dba7a66841d1877b903ffa9ab95f/transformed/jetified-play-services-iid-17.0.0/AndroidManifest.xml:23:5-82
-MERGED from [com.google.android.gms:play-services-iid:17.0.0] /Users/harshitladdha/.gradle/caches/transforms-3/4571dba7a66841d1877b903ffa9ab95f/transformed/jetified-play-services-iid-17.0.0/AndroidManifest.xml:23:5-82
+MERGED from [com.google.firebase:firebase-messaging:23.4.0] /Users/harshitladdha/.gradle/caches/transforms-3/53664f69ba51e470663ed71a6f80af76/transformed/jetified-firebase-messaging-23.4.0/AndroidManifest.xml:26:5-82
+MERGED from [com.google.firebase:firebase-messaging:23.4.0] /Users/harshitladdha/.gradle/caches/transforms-3/53664f69ba51e470663ed71a6f80af76/transformed/jetified-firebase-messaging-23.4.0/AndroidManifest.xml:26:5-82
+MERGED from [com.google.android.gms:play-services-cloud-messaging:17.1.0] /Users/harshitladdha/.gradle/caches/transforms-3/9b19b4b9f10d4aab72e0655ba128ed18/transformed/jetified-play-services-cloud-messaging-17.1.0/AndroidManifest.xml:11:5-82
+MERGED from [com.google.android.gms:play-services-cloud-messaging:17.1.0] /Users/harshitladdha/.gradle/caches/transforms-3/9b19b4b9f10d4aab72e0655ba128ed18/transformed/jetified-play-services-cloud-messaging-17.1.0/AndroidManifest.xml:11:5-82
 	android:name
 		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:25:22-79
 uses-permission#android.permission.CAMERA
@@ -287,16 +292,16 @@ ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/
 	android:name
 		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:50:9-50
 application
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:53:5-150:19
-INJECTED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:53:5-150:19
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:53:5-166:19
+INJECTED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:53:5-166:19
 MERGED from [com.google.firebase:firebase-crashlytics:18.6.0] /Users/harshitladdha/.gradle/caches/transforms-3/dd50a7b0414d69fd47fd3b2829d4388c/transformed/jetified-firebase-crashlytics-18.6.0/AndroidManifest.xml:11:5-22:19
 MERGED from [com.google.firebase:firebase-crashlytics:18.6.0] /Users/harshitladdha/.gradle/caches/transforms-3/dd50a7b0414d69fd47fd3b2829d4388c/transformed/jetified-firebase-crashlytics-18.6.0/AndroidManifest.xml:11:5-22:19
 MERGED from [com.google.firebase:firebase-analytics:21.5.0] /Users/harshitladdha/.gradle/caches/transforms-3/32a277a25a4aee170e4778d21094b9a1/transformed/jetified-firebase-analytics-21.5.0/AndroidManifest.xml:7:5-20
 MERGED from [com.google.firebase:firebase-analytics:21.5.0] /Users/harshitladdha/.gradle/caches/transforms-3/32a277a25a4aee170e4778d21094b9a1/transformed/jetified-firebase-analytics-21.5.0/AndroidManifest.xml:7:5-20
+MERGED from [com.google.firebase:firebase-messaging:23.4.0] /Users/harshitladdha/.gradle/caches/transforms-3/53664f69ba51e470663ed71a6f80af76/transformed/jetified-firebase-messaging-23.4.0/AndroidManifest.xml:28:5-64:19
+MERGED from [com.google.firebase:firebase-messaging:23.4.0] /Users/harshitladdha/.gradle/caches/transforms-3/53664f69ba51e470663ed71a6f80af76/transformed/jetified-firebase-messaging-23.4.0/AndroidManifest.xml:28:5-64:19
 MERGED from [de.hdodenhof:circleimageview:2.2.0] /Users/harshitladdha/.gradle/caches/transforms-3/460414a9a2f6bb549f9a756f24e64f44/transformed/jetified-circleimageview-2.2.0/AndroidManifest.xml:9:5-20
 MERGED from [de.hdodenhof:circleimageview:2.2.0] /Users/harshitladdha/.gradle/caches/transforms-3/460414a9a2f6bb549f9a756f24e64f44/transformed/jetified-circleimageview-2.2.0/AndroidManifest.xml:9:5-20
-MERGED from [com.google.android.gms:play-services-gcm:17.0.0] /Users/harshitladdha/.gradle/caches/transforms-3/fce5e56e7f4256ad8db2468358e79d0d/transformed/jetified-play-services-gcm-17.0.0/AndroidManifest.xml:26:5-20
-MERGED from [com.google.android.gms:play-services-gcm:17.0.0] /Users/harshitladdha/.gradle/caches/transforms-3/fce5e56e7f4256ad8db2468358e79d0d/transformed/jetified-play-services-gcm-17.0.0/AndroidManifest.xml:26:5-20
 MERGED from [com.google.android.gms:play-services-places:17.0.0] /Users/harshitladdha/.gradle/caches/transforms-3/3aa73e029227e28361614cccb27d53cc/transformed/jetified-play-services-places-17.0.0/AndroidManifest.xml:22:5-20
 MERGED from [com.google.android.gms:play-services-places:17.0.0] /Users/harshitladdha/.gradle/caches/transforms-3/3aa73e029227e28361614cccb27d53cc/transformed/jetified-play-services-places-17.0.0/AndroidManifest.xml:22:5-20
 MERGED from [com.google.android.gms:play-services-maps:18.2.0] /Users/harshitladdha/.gradle/caches/transforms-3/327efc0db840f739ee7304421a865d61/transformed/jetified-play-services-maps-18.2.0/AndroidManifest.xml:36:5-42:19
@@ -329,24 +334,24 @@ MERGED from [com.google.android.gms:play-services-measurement-impl:21.5.0] /User
 MERGED from [com.google.android.gms:play-services-measurement-impl:21.5.0] /Users/harshitladdha/.gradle/caches/transforms-3/48260f85e2a97a58d6499f938b1b3af7/transformed/jetified-play-services-measurement-impl-21.5.0/AndroidManifest.xml:29:5-30:19
 MERGED from [androidx.privacysandbox.ads:ads-adservices:1.0.0-beta05] /Users/harshitladdha/.gradle/caches/transforms-3/ce686c9a62c5d40ef06d649fc631cfa5/transformed/jetified-ads-adservices-1.0.0-beta05/AndroidManifest.xml:22:5-26:19
 MERGED from [androidx.privacysandbox.ads:ads-adservices:1.0.0-beta05] /Users/harshitladdha/.gradle/caches/transforms-3/ce686c9a62c5d40ef06d649fc631cfa5/transformed/jetified-ads-adservices-1.0.0-beta05/AndroidManifest.xml:22:5-26:19
-MERGED from [com.google.android.gms:play-services-iid:17.0.0] /Users/harshitladdha/.gradle/caches/transforms-3/4571dba7a66841d1877b903ffa9ab95f/transformed/jetified-play-services-iid-17.0.0/AndroidManifest.xml:26:5-20
-MERGED from [com.google.android.gms:play-services-iid:17.0.0] /Users/harshitladdha/.gradle/caches/transforms-3/4571dba7a66841d1877b903ffa9ab95f/transformed/jetified-play-services-iid-17.0.0/AndroidManifest.xml:26:5-20
-MERGED from [com.google.android.gms:play-services-base:18.1.0] /Users/harshitladdha/.gradle/caches/transforms-3/efa9582a9a7d9aa2e4e3160784ffc99e/transformed/jetified-play-services-base-18.1.0/AndroidManifest.xml:19:5-23:19
-MERGED from [com.google.android.gms:play-services-base:18.1.0] /Users/harshitladdha/.gradle/caches/transforms-3/efa9582a9a7d9aa2e4e3160784ffc99e/transformed/jetified-play-services-base-18.1.0/AndroidManifest.xml:19:5-23:19
 MERGED from [com.google.firebase:firebase-common:20.4.2] /Users/harshitladdha/.gradle/caches/transforms-3/9f49427979fa2218fff24976cbbfe09a/transformed/jetified-firebase-common-20.4.2/AndroidManifest.xml:22:5-39:19
 MERGED from [com.google.firebase:firebase-common:20.4.2] /Users/harshitladdha/.gradle/caches/transforms-3/9f49427979fa2218fff24976cbbfe09a/transformed/jetified-firebase-common-20.4.2/AndroidManifest.xml:22:5-39:19
-MERGED from [com.google.android.gms:play-services-places-placereport:17.0.0] /Users/harshitladdha/.gradle/caches/transforms-3/a855f7f2e453243e3aa0c2d6e246c9bf/transformed/jetified-play-services-places-placereport-17.0.0/AndroidManifest.xml:22:5-20
-MERGED from [com.google.android.gms:play-services-places-placereport:17.0.0] /Users/harshitladdha/.gradle/caches/transforms-3/a855f7f2e453243e3aa0c2d6e246c9bf/transformed/jetified-play-services-places-placereport-17.0.0/AndroidManifest.xml:22:5-20
-MERGED from [com.google.android.gms:play-services-tasks:18.0.2] /Users/harshitladdha/.gradle/caches/transforms-3/c0514f22dfa98f2363cc6c3a4f02a981/transformed/jetified-play-services-tasks-18.0.2/AndroidManifest.xml:5:5-20
-MERGED from [com.google.android.gms:play-services-tasks:18.0.2] /Users/harshitladdha/.gradle/caches/transforms-3/c0514f22dfa98f2363cc6c3a4f02a981/transformed/jetified-play-services-tasks-18.0.2/AndroidManifest.xml:5:5-20
+MERGED from [com.google.firebase:firebase-measurement-connector:19.0.0] /Users/harshitladdha/.gradle/caches/transforms-3/2e0e9b067a28822cf9f75b792cffc99c/transformed/jetified-firebase-measurement-connector-19.0.0/AndroidManifest.xml:22:5-23:19
+MERGED from [com.google.firebase:firebase-measurement-connector:19.0.0] /Users/harshitladdha/.gradle/caches/transforms-3/2e0e9b067a28822cf9f75b792cffc99c/transformed/jetified-firebase-measurement-connector-19.0.0/AndroidManifest.xml:22:5-23:19
+MERGED from [com.google.firebase:firebase-iid-interop:17.1.0] /Users/harshitladdha/.gradle/caches/transforms-3/037bb4fc97af49a5edeab554b0a0069b/transformed/jetified-firebase-iid-interop-17.1.0/AndroidManifest.xml:7:5-8:19
+MERGED from [com.google.firebase:firebase-iid-interop:17.1.0] /Users/harshitladdha/.gradle/caches/transforms-3/037bb4fc97af49a5edeab554b0a0069b/transformed/jetified-firebase-iid-interop-17.1.0/AndroidManifest.xml:7:5-8:19
 MERGED from [com.google.android.gms:play-services-stats:17.0.2] /Users/harshitladdha/.gradle/caches/transforms-3/60463452b0a877283b9258074a3a4b0c/transformed/jetified-play-services-stats-17.0.2/AndroidManifest.xml:7:5-20
 MERGED from [com.google.android.gms:play-services-stats:17.0.2] /Users/harshitladdha/.gradle/caches/transforms-3/60463452b0a877283b9258074a3a4b0c/transformed/jetified-play-services-stats-17.0.2/AndroidManifest.xml:7:5-20
+MERGED from [com.google.android.gms:play-services-places-placereport:17.0.0] /Users/harshitladdha/.gradle/caches/transforms-3/a855f7f2e453243e3aa0c2d6e246c9bf/transformed/jetified-play-services-places-placereport-17.0.0/AndroidManifest.xml:22:5-20
+MERGED from [com.google.android.gms:play-services-places-placereport:17.0.0] /Users/harshitladdha/.gradle/caches/transforms-3/a855f7f2e453243e3aa0c2d6e246c9bf/transformed/jetified-play-services-places-placereport-17.0.0/AndroidManifest.xml:22:5-20
+MERGED from [com.google.android.gms:play-services-base:18.1.0] /Users/harshitladdha/.gradle/caches/transforms-3/efa9582a9a7d9aa2e4e3160784ffc99e/transformed/jetified-play-services-base-18.1.0/AndroidManifest.xml:19:5-23:19
+MERGED from [com.google.android.gms:play-services-base:18.1.0] /Users/harshitladdha/.gradle/caches/transforms-3/efa9582a9a7d9aa2e4e3160784ffc99e/transformed/jetified-play-services-base-18.1.0/AndroidManifest.xml:19:5-23:19
+MERGED from [com.google.android.gms:play-services-tasks:18.0.2] /Users/harshitladdha/.gradle/caches/transforms-3/c0514f22dfa98f2363cc6c3a4f02a981/transformed/jetified-play-services-tasks-18.0.2/AndroidManifest.xml:5:5-20
+MERGED from [com.google.android.gms:play-services-tasks:18.0.2] /Users/harshitladdha/.gradle/caches/transforms-3/c0514f22dfa98f2363cc6c3a4f02a981/transformed/jetified-play-services-tasks-18.0.2/AndroidManifest.xml:5:5-20
 MERGED from [com.google.android.gms:play-services-ads-identifier:18.0.0] /Users/harshitladdha/.gradle/caches/transforms-3/2441bc1806669119f767b9014f14f869/transformed/jetified-play-services-ads-identifier-18.0.0/AndroidManifest.xml:25:5-20
 MERGED from [com.google.android.gms:play-services-ads-identifier:18.0.0] /Users/harshitladdha/.gradle/caches/transforms-3/2441bc1806669119f767b9014f14f869/transformed/jetified-play-services-ads-identifier-18.0.0/AndroidManifest.xml:25:5-20
 MERGED from [com.google.android.gms:play-services-measurement-base:21.5.0] /Users/harshitladdha/.gradle/caches/transforms-3/22617b8c2bd8cca8554ecb31a4082c5e/transformed/jetified-play-services-measurement-base-21.5.0/AndroidManifest.xml:7:5-20
 MERGED from [com.google.android.gms:play-services-measurement-base:21.5.0] /Users/harshitladdha/.gradle/caches/transforms-3/22617b8c2bd8cca8554ecb31a4082c5e/transformed/jetified-play-services-measurement-base-21.5.0/AndroidManifest.xml:7:5-20
-MERGED from [com.google.firebase:firebase-measurement-connector:19.0.0] /Users/harshitladdha/.gradle/caches/transforms-3/2e0e9b067a28822cf9f75b792cffc99c/transformed/jetified-firebase-measurement-connector-19.0.0/AndroidManifest.xml:22:5-23:19
-MERGED from [com.google.firebase:firebase-measurement-connector:19.0.0] /Users/harshitladdha/.gradle/caches/transforms-3/2e0e9b067a28822cf9f75b792cffc99c/transformed/jetified-firebase-measurement-connector-19.0.0/AndroidManifest.xml:22:5-23:19
 MERGED from [com.google.android.gms:play-services-basement:18.1.0] /Users/harshitladdha/.gradle/caches/transforms-3/86b6b2039058fdb8f6768123e1dfe02a/transformed/jetified-play-services-basement-18.1.0/AndroidManifest.xml:20:5-24:19
 MERGED from [com.google.android.gms:play-services-basement:18.1.0] /Users/harshitladdha/.gradle/caches/transforms-3/86b6b2039058fdb8f6768123e1dfe02a/transformed/jetified-play-services-basement-18.1.0/AndroidManifest.xml:20:5-24:19
 MERGED from [androidx.emoji2:emoji2:1.2.0] /Users/harshitladdha/.gradle/caches/transforms-3/899313f939d9438b9e0f376dbed15e53/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:23:5-33:19
@@ -425,16 +430,16 @@ activity#com.dad.simplecropping.CropImage
 ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:78:9-61
 	android:name
 		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:78:19-59
-receiver#com.dad.GcmBroadcastReceiver
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:80:9-91:20
+receiver#com.dad.MyFirebaseMessagingReceiver
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:80:9-90:20
 	android:exported
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:83:17-40
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:83:13-36
 	android:permission
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:82:17-77
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:82:13-73
 	android:name
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:81:17-53
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:81:13-56
 intent-filter#action:name:com.google.android.c2dm.intent.RECEIVE+action:name:com.google.android.c2dm.intent.REGISTRATION+category:name:com.tigerlight.dad
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:84:13-90:29
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:84:13-89:29
 action#com.google.android.c2dm.intent.RECEIVE
 ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:85:17-80
 	android:name
@@ -444,93 +449,119 @@ ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/
 	android:name
 		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:87:25-83
 category#com.tigerlight.dad
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:89:17-62
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:88:17-62
 	android:name
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:89:27-60
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:88:27-60
 receiver#com.dad.blework.BootReceiver
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:92:9-99:20
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:91:9-98:20
 	android:enabled
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:94:17-39
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:93:17-39
 	android:exported
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:95:17-40
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:94:17-40
 	android:name
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:93:17-53
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:92:17-53
 intent-filter#action:name:android.intent.action.BOOT_COMPLETED
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:96:13-98:29
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:95:13-97:29
 action#android.intent.action.BOOT_COMPLETED
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:97:17-78
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:96:17-78
 	android:name
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:97:25-76
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:96:25-76
 receiver#com.dad.blework.AlarmReceiver
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:100:9-58
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:99:9-58
 	android:name
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:100:19-56
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:99:19-56
 receiver#com.dad.blework.BleReceiver
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:101:9-56
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:100:9-56
 	android:name
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:101:19-54
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:100:19-54
 service#com.dad.blework.BleService
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:103:9-54
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:102:9-54
 	android:name
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:103:18-52
-service#com.dad.GcmIntentService
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:104:9-52
-	android:name
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:104:18-50
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:102:18-52
 receiver#com.dad.AlarmServiceBroadcastReciever
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:106:9-113:20
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:103:9-110:20
 	android:enabled
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:108:17-39
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:105:17-39
 	android:exported
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:109:17-40
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:106:17-40
 	android:name
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:107:17-62
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:104:17-62
 receiver#com.dad.BleBroadCast
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:114:9-121:20
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:111:9-118:20
 	android:enabled
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:116:17-39
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:113:17-39
 	android:exported
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:117:17-40
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:114:17-40
 	android:name
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:115:17-45
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:112:17-45
 service#com.dad.LocationBroadcastServiceNew
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:130:9-63
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:127:9-63
 	android:name
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:130:18-61
-meta-data#com.google.android.geo.API_KEY
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:132:9-134:74
-	android:value
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:134:17-72
-	android:name
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:133:17-62
-meta-data#com.google.android.gms.version
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:135:9-137:72
-MERGED from [com.google.android.gms:play-services-basement:18.1.0] /Users/harshitladdha/.gradle/caches/transforms-3/86b6b2039058fdb8f6768123e1dfe02a/transformed/jetified-play-services-basement-18.1.0/AndroidManifest.xml:21:9-23:69
-MERGED from [com.google.android.gms:play-services-basement:18.1.0] /Users/harshitladdha/.gradle/caches/transforms-3/86b6b2039058fdb8f6768123e1dfe02a/transformed/jetified-play-services-basement-18.1.0/AndroidManifest.xml:21:9-23:69
-	android:value
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:137:17-70
-	android:name
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:136:17-62
-meta-data#io.fabric.ApiKey
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:138:9-140:75
-	android:value
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:140:17-73
-	android:name
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:139:17-48
-receiver#com.dad.recievers.AlertSentReceiver
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:142:9-149:20
-	android:enabled
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:144:17-39
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:127:18-61
+service#com.dad.MyFirebaseMessagingService
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:128:9-134:19
 	android:exported
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:145:17-41
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:130:13-37
 	android:name
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:143:17-60
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:129:13-55
+intent-filter#action:name:com.google.firebase.MESSAGING_EVENT
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:131:13-133:29
+action#com.google.firebase.MESSAGING_EVENT
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:132:17-78
+	android:name
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:132:25-75
+meta-data#com.google.android.geo.API_KEY
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:136:9-138:74
+	android:value
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:138:17-72
+	android:name
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:137:17-62
+meta-data#com.google.android.gms.version
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:139:9-141:72
+MERGED from [com.google.android.gms:play-services-basement:18.1.0] /Users/harshitladdha/.gradle/caches/transforms-3/86b6b2039058fdb8f6768123e1dfe02a/transformed/jetified-play-services-basement-18.1.0/AndroidManifest.xml:21:9-23:69
+MERGED from [com.google.android.gms:play-services-basement:18.1.0] /Users/harshitladdha/.gradle/caches/transforms-3/86b6b2039058fdb8f6768123e1dfe02a/transformed/jetified-play-services-basement-18.1.0/AndroidManifest.xml:21:9-23:69
+	android:value
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:141:17-70
+	android:name
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:140:17-62
+meta-data#io.fabric.ApiKey
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:142:9-144:75
+	android:value
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:144:17-73
+	android:name
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:143:17-48
+meta-data#com.google.firebase.messaging.default_notification_icon
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:146:9-148:53
+	android:resource
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:148:13-50
+	android:name
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:147:13-83
+meta-data#com.google.firebase.messaging.default_notification_color
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:150:9-152:53
+	android:resource
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:152:13-50
+	android:name
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:151:13-84
+meta-data#com.google.firebase.messaging.default_notification_channel_id
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:154:9-156:71
+	android:value
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:156:13-68
+	android:name
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:155:13-89
+receiver#com.dad.recievers.AlertSentReceiver
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:158:9-165:20
+	android:enabled
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:160:17-39
+	android:exported
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:161:17-41
+	android:name
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:159:17-60
 intent-filter#action:name:com.tigerlight.action.alert_sent
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:146:13-148:29
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:162:13-164:29
 action#com.tigerlight.action.alert_sent
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:147:17-75
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:163:17-75
 	android:name
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:147:25-72
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:163:25-72
 uses-sdk
 INJECTED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml
@@ -539,14 +570,14 @@ MERGED from [com.google.firebase:firebase-crashlytics:18.6.0] /Users/harshitladd
 MERGED from [com.google.firebase:firebase-crashlytics:18.6.0] /Users/harshitladdha/.gradle/caches/transforms-3/dd50a7b0414d69fd47fd3b2829d4388c/transformed/jetified-firebase-crashlytics-18.6.0/AndroidManifest.xml:5:5-44
 MERGED from [com.google.firebase:firebase-analytics:21.5.0] /Users/harshitladdha/.gradle/caches/transforms-3/32a277a25a4aee170e4778d21094b9a1/transformed/jetified-firebase-analytics-21.5.0/AndroidManifest.xml:5:5-44
 MERGED from [com.google.firebase:firebase-analytics:21.5.0] /Users/harshitladdha/.gradle/caches/transforms-3/32a277a25a4aee170e4778d21094b9a1/transformed/jetified-firebase-analytics-21.5.0/AndroidManifest.xml:5:5-44
+MERGED from [com.google.firebase:firebase-messaging:23.4.0] /Users/harshitladdha/.gradle/caches/transforms-3/53664f69ba51e470663ed71a6f80af76/transformed/jetified-firebase-messaging-23.4.0/AndroidManifest.xml:20:5-44
+MERGED from [com.google.firebase:firebase-messaging:23.4.0] /Users/harshitladdha/.gradle/caches/transforms-3/53664f69ba51e470663ed71a6f80af76/transformed/jetified-firebase-messaging-23.4.0/AndroidManifest.xml:20:5-44
 MERGED from [de.hdodenhof:circleimageview:2.2.0] /Users/harshitladdha/.gradle/caches/transforms-3/460414a9a2f6bb549f9a756f24e64f44/transformed/jetified-circleimageview-2.2.0/AndroidManifest.xml:5:5-7:41
 MERGED from [de.hdodenhof:circleimageview:2.2.0] /Users/harshitladdha/.gradle/caches/transforms-3/460414a9a2f6bb549f9a756f24e64f44/transformed/jetified-circleimageview-2.2.0/AndroidManifest.xml:5:5-7:41
 MERGED from [androidx.legacy:legacy-support-v13:1.0.0] /Users/harshitladdha/.gradle/caches/transforms-3/e7038edf5a51c50739bc8b9f10c66325/transformed/legacy-support-v13-1.0.0/AndroidManifest.xml:20:5-44
 MERGED from [androidx.legacy:legacy-support-v13:1.0.0] /Users/harshitladdha/.gradle/caches/transforms-3/e7038edf5a51c50739bc8b9f10c66325/transformed/legacy-support-v13-1.0.0/AndroidManifest.xml:20:5-44
 MERGED from [androidx.legacy:legacy-support-v4:1.0.0] /Users/harshitladdha/.gradle/caches/transforms-3/b3f04652da647f51ef3124dbc74673f2/transformed/legacy-support-v4-1.0.0/AndroidManifest.xml:20:5-44
 MERGED from [androidx.legacy:legacy-support-v4:1.0.0] /Users/harshitladdha/.gradle/caches/transforms-3/b3f04652da647f51ef3124dbc74673f2/transformed/legacy-support-v4-1.0.0/AndroidManifest.xml:20:5-44
-MERGED from [com.google.android.gms:play-services-gcm:17.0.0] /Users/harshitladdha/.gradle/caches/transforms-3/fce5e56e7f4256ad8db2468358e79d0d/transformed/jetified-play-services-gcm-17.0.0/AndroidManifest.xml:20:5-44
-MERGED from [com.google.android.gms:play-services-gcm:17.0.0] /Users/harshitladdha/.gradle/caches/transforms-3/fce5e56e7f4256ad8db2468358e79d0d/transformed/jetified-play-services-gcm-17.0.0/AndroidManifest.xml:20:5-44
 MERGED from [com.google.android.gms:play-services-places:17.0.0] /Users/harshitladdha/.gradle/caches/transforms-3/3aa73e029227e28361614cccb27d53cc/transformed/jetified-play-services-places-17.0.0/AndroidManifest.xml:20:5-44
 MERGED from [com.google.android.gms:play-services-places:17.0.0] /Users/harshitladdha/.gradle/caches/transforms-3/3aa73e029227e28361614cccb27d53cc/transformed/jetified-play-services-places-17.0.0/AndroidManifest.xml:20:5-44
 MERGED from [com.google.android.gms:play-services-maps:18.2.0] /Users/harshitladdha/.gradle/caches/transforms-3/327efc0db840f739ee7304421a865d61/transformed/jetified-play-services-maps-18.2.0/AndroidManifest.xml:20:5-44
@@ -601,28 +632,30 @@ MERGED from [androidx.privacysandbox.ads:ads-adservices-java:1.0.0-beta05] /User
 MERGED from [androidx.privacysandbox.ads:ads-adservices-java:1.0.0-beta05] /Users/harshitladdha/.gradle/caches/transforms-3/cd351d8a163c625e7faf5e7298ce4f5a/transformed/jetified-ads-adservices-java-1.0.0-beta05/AndroidManifest.xml:5:5-44
 MERGED from [androidx.privacysandbox.ads:ads-adservices:1.0.0-beta05] /Users/harshitladdha/.gradle/caches/transforms-3/ce686c9a62c5d40ef06d649fc631cfa5/transformed/jetified-ads-adservices-1.0.0-beta05/AndroidManifest.xml:20:5-44
 MERGED from [androidx.privacysandbox.ads:ads-adservices:1.0.0-beta05] /Users/harshitladdha/.gradle/caches/transforms-3/ce686c9a62c5d40ef06d649fc631cfa5/transformed/jetified-ads-adservices-1.0.0-beta05/AndroidManifest.xml:20:5-44
-MERGED from [com.google.android.gms:play-services-iid:17.0.0] /Users/harshitladdha/.gradle/caches/transforms-3/4571dba7a66841d1877b903ffa9ab95f/transformed/jetified-play-services-iid-17.0.0/AndroidManifest.xml:20:5-44
-MERGED from [com.google.android.gms:play-services-iid:17.0.0] /Users/harshitladdha/.gradle/caches/transforms-3/4571dba7a66841d1877b903ffa9ab95f/transformed/jetified-play-services-iid-17.0.0/AndroidManifest.xml:20:5-44
-MERGED from [com.google.android.gms:play-services-base:18.1.0] /Users/harshitladdha/.gradle/caches/transforms-3/efa9582a9a7d9aa2e4e3160784ffc99e/transformed/jetified-play-services-base-18.1.0/AndroidManifest.xml:18:5-43
-MERGED from [com.google.android.gms:play-services-base:18.1.0] /Users/harshitladdha/.gradle/caches/transforms-3/efa9582a9a7d9aa2e4e3160784ffc99e/transformed/jetified-play-services-base-18.1.0/AndroidManifest.xml:18:5-43
 MERGED from [com.google.firebase:firebase-common:20.4.2] /Users/harshitladdha/.gradle/caches/transforms-3/9f49427979fa2218fff24976cbbfe09a/transformed/jetified-firebase-common-20.4.2/AndroidManifest.xml:19:5-44
 MERGED from [com.google.firebase:firebase-common:20.4.2] /Users/harshitladdha/.gradle/caches/transforms-3/9f49427979fa2218fff24976cbbfe09a/transformed/jetified-firebase-common-20.4.2/AndroidManifest.xml:19:5-44
+MERGED from [com.google.firebase:firebase-measurement-connector:19.0.0] /Users/harshitladdha/.gradle/caches/transforms-3/2e0e9b067a28822cf9f75b792cffc99c/transformed/jetified-firebase-measurement-connector-19.0.0/AndroidManifest.xml:20:5-44
+MERGED from [com.google.firebase:firebase-measurement-connector:19.0.0] /Users/harshitladdha/.gradle/caches/transforms-3/2e0e9b067a28822cf9f75b792cffc99c/transformed/jetified-firebase-measurement-connector-19.0.0/AndroidManifest.xml:20:5-44
+MERGED from [com.google.firebase:firebase-iid-interop:17.1.0] /Users/harshitladdha/.gradle/caches/transforms-3/037bb4fc97af49a5edeab554b0a0069b/transformed/jetified-firebase-iid-interop-17.1.0/AndroidManifest.xml:5:5-44
+MERGED from [com.google.firebase:firebase-iid-interop:17.1.0] /Users/harshitladdha/.gradle/caches/transforms-3/037bb4fc97af49a5edeab554b0a0069b/transformed/jetified-firebase-iid-interop-17.1.0/AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-cloud-messaging:17.1.0] /Users/harshitladdha/.gradle/caches/transforms-3/9b19b4b9f10d4aab72e0655ba128ed18/transformed/jetified-play-services-cloud-messaging-17.1.0/AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-cloud-messaging:17.1.0] /Users/harshitladdha/.gradle/caches/transforms-3/9b19b4b9f10d4aab72e0655ba128ed18/transformed/jetified-play-services-cloud-messaging-17.1.0/AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-stats:17.0.2] /Users/harshitladdha/.gradle/caches/transforms-3/60463452b0a877283b9258074a3a4b0c/transformed/jetified-play-services-stats-17.0.2/AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-stats:17.0.2] /Users/harshitladdha/.gradle/caches/transforms-3/60463452b0a877283b9258074a3a4b0c/transformed/jetified-play-services-stats-17.0.2/AndroidManifest.xml:5:5-44
 MERGED from [com.google.android.gms:play-services-places-placereport:17.0.0] /Users/harshitladdha/.gradle/caches/transforms-3/a855f7f2e453243e3aa0c2d6e246c9bf/transformed/jetified-play-services-places-placereport-17.0.0/AndroidManifest.xml:20:5-44
 MERGED from [com.google.android.gms:play-services-places-placereport:17.0.0] /Users/harshitladdha/.gradle/caches/transforms-3/a855f7f2e453243e3aa0c2d6e246c9bf/transformed/jetified-play-services-places-placereport-17.0.0/AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.gms:play-services-base:18.1.0] /Users/harshitladdha/.gradle/caches/transforms-3/efa9582a9a7d9aa2e4e3160784ffc99e/transformed/jetified-play-services-base-18.1.0/AndroidManifest.xml:18:5-43
+MERGED from [com.google.android.gms:play-services-base:18.1.0] /Users/harshitladdha/.gradle/caches/transforms-3/efa9582a9a7d9aa2e4e3160784ffc99e/transformed/jetified-play-services-base-18.1.0/AndroidManifest.xml:18:5-43
 MERGED from [com.google.firebase:firebase-installations-interop:17.1.1] /Users/harshitladdha/.gradle/caches/transforms-3/b4b375d51629f4185538697f80a980e1/transformed/jetified-firebase-installations-interop-17.1.1/AndroidManifest.xml:17:5-44
 MERGED from [com.google.firebase:firebase-installations-interop:17.1.1] /Users/harshitladdha/.gradle/caches/transforms-3/b4b375d51629f4185538697f80a980e1/transformed/jetified-firebase-installations-interop-17.1.1/AndroidManifest.xml:17:5-44
 MERGED from [com.google.android.gms:play-services-tasks:18.0.2] /Users/harshitladdha/.gradle/caches/transforms-3/c0514f22dfa98f2363cc6c3a4f02a981/transformed/jetified-play-services-tasks-18.0.2/AndroidManifest.xml:4:5-43
 MERGED from [com.google.android.gms:play-services-tasks:18.0.2] /Users/harshitladdha/.gradle/caches/transforms-3/c0514f22dfa98f2363cc6c3a4f02a981/transformed/jetified-play-services-tasks-18.0.2/AndroidManifest.xml:4:5-43
-MERGED from [com.google.android.gms:play-services-stats:17.0.2] /Users/harshitladdha/.gradle/caches/transforms-3/60463452b0a877283b9258074a3a4b0c/transformed/jetified-play-services-stats-17.0.2/AndroidManifest.xml:5:5-44
-MERGED from [com.google.android.gms:play-services-stats:17.0.2] /Users/harshitladdha/.gradle/caches/transforms-3/60463452b0a877283b9258074a3a4b0c/transformed/jetified-play-services-stats-17.0.2/AndroidManifest.xml:5:5-44
 MERGED from [com.google.android.gms:play-services-ads-identifier:18.0.0] /Users/harshitladdha/.gradle/caches/transforms-3/2441bc1806669119f767b9014f14f869/transformed/jetified-play-services-ads-identifier-18.0.0/AndroidManifest.xml:20:5-44
 MERGED from [com.google.android.gms:play-services-ads-identifier:18.0.0] /Users/harshitladdha/.gradle/caches/transforms-3/2441bc1806669119f767b9014f14f869/transformed/jetified-play-services-ads-identifier-18.0.0/AndroidManifest.xml:20:5-44
 MERGED from [com.google.android.gms:play-services-measurement-sdk-api:21.5.0] /Users/harshitladdha/.gradle/caches/transforms-3/bdbcbeb1fee8f59ee940c04511a61200/transformed/jetified-play-services-measurement-sdk-api-21.5.0/AndroidManifest.xml:20:5-44
 MERGED from [com.google.android.gms:play-services-measurement-sdk-api:21.5.0] /Users/harshitladdha/.gradle/caches/transforms-3/bdbcbeb1fee8f59ee940c04511a61200/transformed/jetified-play-services-measurement-sdk-api-21.5.0/AndroidManifest.xml:20:5-44
 MERGED from [com.google.android.gms:play-services-measurement-base:21.5.0] /Users/harshitladdha/.gradle/caches/transforms-3/22617b8c2bd8cca8554ecb31a4082c5e/transformed/jetified-play-services-measurement-base-21.5.0/AndroidManifest.xml:5:5-44
 MERGED from [com.google.android.gms:play-services-measurement-base:21.5.0] /Users/harshitladdha/.gradle/caches/transforms-3/22617b8c2bd8cca8554ecb31a4082c5e/transformed/jetified-play-services-measurement-base-21.5.0/AndroidManifest.xml:5:5-44
-MERGED from [com.google.firebase:firebase-measurement-connector:19.0.0] /Users/harshitladdha/.gradle/caches/transforms-3/2e0e9b067a28822cf9f75b792cffc99c/transformed/jetified-firebase-measurement-connector-19.0.0/AndroidManifest.xml:20:5-44
-MERGED from [com.google.firebase:firebase-measurement-connector:19.0.0] /Users/harshitladdha/.gradle/caches/transforms-3/2e0e9b067a28822cf9f75b792cffc99c/transformed/jetified-firebase-measurement-connector-19.0.0/AndroidManifest.xml:20:5-44
 MERGED from [com.google.android.gms:play-services-basement:18.1.0] /Users/harshitladdha/.gradle/caches/transforms-3/86b6b2039058fdb8f6768123e1dfe02a/transformed/jetified-play-services-basement-18.1.0/AndroidManifest.xml:18:5-43
 MERGED from [com.google.android.gms:play-services-basement:18.1.0] /Users/harshitladdha/.gradle/caches/transforms-3/86b6b2039058fdb8f6768123e1dfe02a/transformed/jetified-play-services-basement-18.1.0/AndroidManifest.xml:18:5-43
 MERGED from [androidx.fragment:fragment:1.3.6] /Users/harshitladdha/.gradle/caches/transforms-3/eaff5115f89bb72eb75a285667179c9b/transformed/fragment-1.3.6/AndroidManifest.xml:20:5-22:41
@@ -687,8 +720,8 @@ MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.6.1] /Users/har
 MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.6.1] /Users/harshitladdha/.gradle/caches/transforms-3/733fa16159d286f213843af2388d0cf3/transformed/jetified-lifecycle-viewmodel-savedstate-2.6.1/AndroidManifest.xml:20:5-44
 MERGED from [com.google.android.datatransport:transport-runtime:3.1.9] /Users/harshitladdha/.gradle/caches/transforms-3/434afd0ba3f5d1cc1b6197d6b3606111/transformed/jetified-transport-runtime-3.1.9/AndroidManifest.xml:18:5-20:41
 MERGED from [com.google.android.datatransport:transport-runtime:3.1.9] /Users/harshitladdha/.gradle/caches/transforms-3/434afd0ba3f5d1cc1b6197d6b3606111/transformed/jetified-transport-runtime-3.1.9/AndroidManifest.xml:18:5-20:41
-MERGED from [com.google.android.datatransport:transport-api:3.0.0] /Users/harshitladdha/.gradle/caches/transforms-3/390470f0afbe5f7a0e81a9463835cc7d/transformed/jetified-transport-api-3.0.0/AndroidManifest.xml:18:5-20:41
-MERGED from [com.google.android.datatransport:transport-api:3.0.0] /Users/harshitladdha/.gradle/caches/transforms-3/390470f0afbe5f7a0e81a9463835cc7d/transformed/jetified-transport-api-3.0.0/AndroidManifest.xml:18:5-20:41
+MERGED from [com.google.android.datatransport:transport-api:3.1.0] /Users/harshitladdha/.gradle/caches/transforms-3/aaf0920e2a4ca381852f1e8906994b80/transformed/jetified-transport-api-3.1.0/AndroidManifest.xml:18:5-44
+MERGED from [com.google.android.datatransport:transport-api:3.1.0] /Users/harshitladdha/.gradle/caches/transforms-3/aaf0920e2a4ca381852f1e8906994b80/transformed/jetified-transport-api-3.1.0/AndroidManifest.xml:18:5-44
 MERGED from [com.google.firebase:firebase-components:17.1.5] /Users/harshitladdha/.gradle/caches/transforms-3/8a4b88216a022d446fd4bfab62716a06/transformed/jetified-firebase-components-17.1.5/AndroidManifest.xml:18:5-44
 MERGED from [com.google.firebase:firebase-components:17.1.5] /Users/harshitladdha/.gradle/caches/transforms-3/8a4b88216a022d446fd4bfab62716a06/transformed/jetified-firebase-components-17.1.5/AndroidManifest.xml:18:5-44
 MERGED from [com.github.bumptech.glide:gifdecoder:4.12.0] /Users/harshitladdha/.gradle/caches/transforms-3/7df4eae6d0d0ec8c4b6ee7cccd10d2ab/transformed/jetified-gifdecoder-4.12.0/AndroidManifest.xml:5:5-7:41
@@ -735,6 +768,8 @@ MERGED from [androidx.test.espresso:espresso-idling-resource:3.5.1] /Users/harsh
 		INJECTED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml
 service#com.google.firebase.components.ComponentDiscoveryService
 ADDED from [com.google.firebase:firebase-crashlytics:18.6.0] /Users/harshitladdha/.gradle/caches/transforms-3/dd50a7b0414d69fd47fd3b2829d4388c/transformed/jetified-firebase-crashlytics-18.6.0/AndroidManifest.xml:12:9-21:19
+MERGED from [com.google.firebase:firebase-messaging:23.4.0] /Users/harshitladdha/.gradle/caches/transforms-3/53664f69ba51e470663ed71a6f80af76/transformed/jetified-firebase-messaging-23.4.0/AndroidManifest.xml:54:9-63:19
+MERGED from [com.google.firebase:firebase-messaging:23.4.0] /Users/harshitladdha/.gradle/caches/transforms-3/53664f69ba51e470663ed71a6f80af76/transformed/jetified-firebase-messaging-23.4.0/AndroidManifest.xml:54:9-63:19
 MERGED from [com.google.firebase:firebase-sessions:1.2.0] /Users/harshitladdha/.gradle/caches/transforms-3/b46dc0cc4875fd73c9ba36228fb8e06c/transformed/jetified-firebase-sessions-1.2.0/AndroidManifest.xml:26:9-32:19
 MERGED from [com.google.firebase:firebase-sessions:1.2.0] /Users/harshitladdha/.gradle/caches/transforms-3/b46dc0cc4875fd73c9ba36228fb8e06c/transformed/jetified-firebase-sessions-1.2.0/AndroidManifest.xml:26:9-32:19
 MERGED from [com.google.android.gms:play-services-measurement-api:21.5.0] /Users/harshitladdha/.gradle/caches/transforms-3/b76008b5f880bce1f8c97d096e5912d3/transformed/jetified-play-services-measurement-api-21.5.0/AndroidManifest.xml:34:9-40:19
@@ -767,6 +802,42 @@ ADDED from [com.google.firebase:firebase-crashlytics:18.6.0] /Users/harshitladdh
 		ADDED from [com.google.firebase:firebase-crashlytics:18.6.0] /Users/harshitladdha/.gradle/caches/transforms-3/dd50a7b0414d69fd47fd3b2829d4388c/transformed/jetified-firebase-crashlytics-18.6.0/AndroidManifest.xml:20:17-82
 	android:name
 		ADDED from [com.google.firebase:firebase-crashlytics:18.6.0] /Users/harshitladdha/.gradle/caches/transforms-3/dd50a7b0414d69fd47fd3b2829d4388c/transformed/jetified-firebase-crashlytics-18.6.0/AndroidManifest.xml:19:17-115
+receiver#com.google.firebase.iid.FirebaseInstanceIdReceiver
+ADDED from [com.google.firebase:firebase-messaging:23.4.0] /Users/harshitladdha/.gradle/caches/transforms-3/53664f69ba51e470663ed71a6f80af76/transformed/jetified-firebase-messaging-23.4.0/AndroidManifest.xml:29:9-40:20
+	android:exported
+		ADDED from [com.google.firebase:firebase-messaging:23.4.0] /Users/harshitladdha/.gradle/caches/transforms-3/53664f69ba51e470663ed71a6f80af76/transformed/jetified-firebase-messaging-23.4.0/AndroidManifest.xml:31:13-36
+	android:permission
+		ADDED from [com.google.firebase:firebase-messaging:23.4.0] /Users/harshitladdha/.gradle/caches/transforms-3/53664f69ba51e470663ed71a6f80af76/transformed/jetified-firebase-messaging-23.4.0/AndroidManifest.xml:32:13-73
+	android:name
+		ADDED from [com.google.firebase:firebase-messaging:23.4.0] /Users/harshitladdha/.gradle/caches/transforms-3/53664f69ba51e470663ed71a6f80af76/transformed/jetified-firebase-messaging-23.4.0/AndroidManifest.xml:30:13-78
+intent-filter#action:name:com.google.android.c2dm.intent.RECEIVE
+ADDED from [com.google.firebase:firebase-messaging:23.4.0] /Users/harshitladdha/.gradle/caches/transforms-3/53664f69ba51e470663ed71a6f80af76/transformed/jetified-firebase-messaging-23.4.0/AndroidManifest.xml:33:13-35:29
+meta-data#com.google.android.gms.cloudmessaging.FINISHED_AFTER_HANDLED
+ADDED from [com.google.firebase:firebase-messaging:23.4.0] /Users/harshitladdha/.gradle/caches/transforms-3/53664f69ba51e470663ed71a6f80af76/transformed/jetified-firebase-messaging-23.4.0/AndroidManifest.xml:37:13-39:40
+	android:value
+		ADDED from [com.google.firebase:firebase-messaging:23.4.0] /Users/harshitladdha/.gradle/caches/transforms-3/53664f69ba51e470663ed71a6f80af76/transformed/jetified-firebase-messaging-23.4.0/AndroidManifest.xml:39:17-37
+	android:name
+		ADDED from [com.google.firebase:firebase-messaging:23.4.0] /Users/harshitladdha/.gradle/caches/transforms-3/53664f69ba51e470663ed71a6f80af76/transformed/jetified-firebase-messaging-23.4.0/AndroidManifest.xml:38:17-92
+service#com.google.firebase.messaging.FirebaseMessagingService
+ADDED from [com.google.firebase:firebase-messaging:23.4.0] /Users/harshitladdha/.gradle/caches/transforms-3/53664f69ba51e470663ed71a6f80af76/transformed/jetified-firebase-messaging-23.4.0/AndroidManifest.xml:46:9-53:19
+	android:exported
+		ADDED from [com.google.firebase:firebase-messaging:23.4.0] /Users/harshitladdha/.gradle/caches/transforms-3/53664f69ba51e470663ed71a6f80af76/transformed/jetified-firebase-messaging-23.4.0/AndroidManifest.xml:49:13-37
+	android:directBootAware
+		ADDED from [com.google.firebase:firebase-messaging:23.4.0] /Users/harshitladdha/.gradle/caches/transforms-3/53664f69ba51e470663ed71a6f80af76/transformed/jetified-firebase-messaging-23.4.0/AndroidManifest.xml:48:13-43
+	android:name
+		ADDED from [com.google.firebase:firebase-messaging:23.4.0] /Users/harshitladdha/.gradle/caches/transforms-3/53664f69ba51e470663ed71a6f80af76/transformed/jetified-firebase-messaging-23.4.0/AndroidManifest.xml:47:13-82
+meta-data#com.google.firebase.components:com.google.firebase.messaging.FirebaseMessagingKtxRegistrar
+ADDED from [com.google.firebase:firebase-messaging:23.4.0] /Users/harshitladdha/.gradle/caches/transforms-3/53664f69ba51e470663ed71a6f80af76/transformed/jetified-firebase-messaging-23.4.0/AndroidManifest.xml:57:13-59:85
+	android:value
+		ADDED from [com.google.firebase:firebase-messaging:23.4.0] /Users/harshitladdha/.gradle/caches/transforms-3/53664f69ba51e470663ed71a6f80af76/transformed/jetified-firebase-messaging-23.4.0/AndroidManifest.xml:59:17-82
+	android:name
+		ADDED from [com.google.firebase:firebase-messaging:23.4.0] /Users/harshitladdha/.gradle/caches/transforms-3/53664f69ba51e470663ed71a6f80af76/transformed/jetified-firebase-messaging-23.4.0/AndroidManifest.xml:58:17-122
+meta-data#com.google.firebase.components:com.google.firebase.messaging.FirebaseMessagingRegistrar
+ADDED from [com.google.firebase:firebase-messaging:23.4.0] /Users/harshitladdha/.gradle/caches/transforms-3/53664f69ba51e470663ed71a6f80af76/transformed/jetified-firebase-messaging-23.4.0/AndroidManifest.xml:60:13-62:85
+	android:value
+		ADDED from [com.google.firebase:firebase-messaging:23.4.0] /Users/harshitladdha/.gradle/caches/transforms-3/53664f69ba51e470663ed71a6f80af76/transformed/jetified-firebase-messaging-23.4.0/AndroidManifest.xml:62:17-82
+	android:name
+		ADDED from [com.google.firebase:firebase-messaging:23.4.0] /Users/harshitladdha/.gradle/caches/transforms-3/53664f69ba51e470663ed71a6f80af76/transformed/jetified-firebase-messaging-23.4.0/AndroidManifest.xml:61:17-119
 uses-feature#0x00020000
 ADDED from [com.google.android.gms:play-services-maps:18.2.0] /Users/harshitladdha/.gradle/caches/transforms-3/327efc0db840f739ee7304421a865d61/transformed/jetified-play-services-maps-18.2.0/AndroidManifest.xml:26:5-28:35
 	android:glEsVersion
@@ -911,14 +982,6 @@ ADDED from [androidx.privacysandbox.ads:ads-adservices:1.0.0-beta05] /Users/hars
 		ADDED from [androidx.privacysandbox.ads:ads-adservices:1.0.0-beta05] /Users/harshitladdha/.gradle/caches/transforms-3/ce686c9a62c5d40ef06d649fc631cfa5/transformed/jetified-ads-adservices-1.0.0-beta05/AndroidManifest.xml:25:13-37
 	android:name
 		ADDED from [androidx.privacysandbox.ads:ads-adservices:1.0.0-beta05] /Users/harshitladdha/.gradle/caches/transforms-3/ce686c9a62c5d40ef06d649fc631cfa5/transformed/jetified-ads-adservices-1.0.0-beta05/AndroidManifest.xml:24:13-50
-activity#com.google.android.gms.common.api.GoogleApiActivity
-ADDED from [com.google.android.gms:play-services-base:18.1.0] /Users/harshitladdha/.gradle/caches/transforms-3/efa9582a9a7d9aa2e4e3160784ffc99e/transformed/jetified-play-services-base-18.1.0/AndroidManifest.xml:20:9-22:45
-	android:exported
-		ADDED from [com.google.android.gms:play-services-base:18.1.0] /Users/harshitladdha/.gradle/caches/transforms-3/efa9582a9a7d9aa2e4e3160784ffc99e/transformed/jetified-play-services-base-18.1.0/AndroidManifest.xml:22:19-43
-	android:theme
-		ADDED from [com.google.android.gms:play-services-base:18.1.0] /Users/harshitladdha/.gradle/caches/transforms-3/efa9582a9a7d9aa2e4e3160784ffc99e/transformed/jetified-play-services-base-18.1.0/AndroidManifest.xml:21:19-78
-	android:name
-		ADDED from [com.google.android.gms:play-services-base:18.1.0] /Users/harshitladdha/.gradle/caches/transforms-3/efa9582a9a7d9aa2e4e3160784ffc99e/transformed/jetified-play-services-base-18.1.0/AndroidManifest.xml:20:19-85
 provider#com.google.firebase.provider.FirebaseInitProvider
 ADDED from [com.google.firebase:firebase-common:20.4.2] /Users/harshitladdha/.gradle/caches/transforms-3/9f49427979fa2218fff24976cbbfe09a/transformed/jetified-firebase-common-20.4.2/AndroidManifest.xml:23:9-28:39
 	android:authorities
@@ -937,6 +1000,14 @@ ADDED from [com.google.firebase:firebase-common:20.4.2] /Users/harshitladdha/.gr
 		ADDED from [com.google.firebase:firebase-common:20.4.2] /Users/harshitladdha/.gradle/caches/transforms-3/9f49427979fa2218fff24976cbbfe09a/transformed/jetified-firebase-common-20.4.2/AndroidManifest.xml:37:17-82
 	android:name
 		ADDED from [com.google.firebase:firebase-common:20.4.2] /Users/harshitladdha/.gradle/caches/transforms-3/9f49427979fa2218fff24976cbbfe09a/transformed/jetified-firebase-common-20.4.2/AndroidManifest.xml:36:17-109
+activity#com.google.android.gms.common.api.GoogleApiActivity
+ADDED from [com.google.android.gms:play-services-base:18.1.0] /Users/harshitladdha/.gradle/caches/transforms-3/efa9582a9a7d9aa2e4e3160784ffc99e/transformed/jetified-play-services-base-18.1.0/AndroidManifest.xml:20:9-22:45
+	android:exported
+		ADDED from [com.google.android.gms:play-services-base:18.1.0] /Users/harshitladdha/.gradle/caches/transforms-3/efa9582a9a7d9aa2e4e3160784ffc99e/transformed/jetified-play-services-base-18.1.0/AndroidManifest.xml:22:19-43
+	android:theme
+		ADDED from [com.google.android.gms:play-services-base:18.1.0] /Users/harshitladdha/.gradle/caches/transforms-3/efa9582a9a7d9aa2e4e3160784ffc99e/transformed/jetified-play-services-base-18.1.0/AndroidManifest.xml:21:19-78
+	android:name
+		ADDED from [com.google.android.gms:play-services-base:18.1.0] /Users/harshitladdha/.gradle/caches/transforms-3/efa9582a9a7d9aa2e4e3160784ffc99e/transformed/jetified-play-services-base-18.1.0/AndroidManifest.xml:20:19-85
 provider#androidx.startup.InitializationProvider
 ADDED from [androidx.emoji2:emoji2:1.2.0] /Users/harshitladdha/.gradle/caches/transforms-3/899313f939d9438b9e0f376dbed15e53/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:24:9-32:20
 MERGED from [androidx.lifecycle:lifecycle-process:2.6.1] /Users/harshitladdha/.gradle/caches/transforms-3/af751b2439703410dc06a93e48f7fbe1/transformed/jetified-lifecycle-process-2.6.1/AndroidManifest.xml:24:9-32:20

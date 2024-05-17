@@ -9,7 +9,10 @@ import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Log;
@@ -69,6 +72,8 @@ public class AmOkFragmentI extends BaseFragment {
 
     private boolean isPinCreated = false;
     protected static final String SUCCESS = "success";
+
+    private ActivityResultLauncher<String> requestPermissionLauncher;
     Context context;
 
     @Override
@@ -125,7 +130,6 @@ public class AmOkFragmentI extends BaseFragment {
         tvMainValidatePin.setOnClickListener(this);
         tvMainSavePin.setOnClickListener(this);
         tvCancel.setOnClickListener(this);
-
     }
 
     @Override
@@ -270,6 +274,7 @@ public class AmOkFragmentI extends BaseFragment {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 // Permission was granted, call your method
                 updateLatLong();
+                callSendOkService(etPin.getText().toString());
             } else {
                 // Permission denied, handle accordingly (e.g., show a message or disable functionality)
                 Toast.makeText(getActivity(), "Permission denied", Toast.LENGTH_SHORT).show();
@@ -278,9 +283,12 @@ public class AmOkFragmentI extends BaseFragment {
     }
 
     public void updateLatLong() {
-        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED ||
+            ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
-            gpsTracker = new GPSTracker(getActivity());
+            // Permission is already granted
+            gpsTracker = new GPSTracker(getContext());
             if (gpsTracker.canGetLocation()) {
                 //lattdLastKnown = "" + gpsTracker.getLatitude();
                 //longtdLastKnown = "" + gpsTracker.getLongitude();
@@ -290,7 +298,9 @@ public class AmOkFragmentI extends BaseFragment {
 
             }
         } else {
-            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_LOCATION);
+
+            // Permission is not granted, request it
+            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, MY_PERMISSIONS_REQUEST_LOCATION);
         }
     }
 
@@ -323,7 +333,7 @@ public class AmOkFragmentI extends BaseFragment {
 
         @Override
         protected JSONObject doInBackground(String... params) {
-            if (params.length > 0) {
+            if (params.length > 0 && lattdLastKnown != null && longtdLastKnown != null) {
                 return wsCallSendOk.executeService(params[0], Double.parseDouble(lattdLastKnown), Double.parseDouble(longtdLastKnown));
             } else {
                 return null;

@@ -1,8 +1,34 @@
 package com.dad.registration.fragment;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.gcm.GoogleCloudMessaging;
+import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.AlertDialog;
+import android.app.PendingIntent;
+import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.os.SystemClock;
+import android.provider.MediaStore;
+import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.core.graphics.drawable.RoundedBitmapDrawable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
@@ -20,41 +46,8 @@ import com.dad.simplecropping.CameraUtil;
 import com.dad.simplecropping.Constants;
 import com.dad.util.Preference;
 
-import android.app.Activity;
-import android.app.AlarmManager;
-import android.app.AlertDialog;
-import android.app.PendingIntent;
-import android.app.ProgressDialog;
-import android.content.ActivityNotFoundException;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.net.Uri;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.os.SystemClock;
-import android.provider.MediaStore;
-import androidx.core.graphics.drawable.RoundedBitmapDrawable;
-import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
-import android.text.method.PasswordTransformationMethod;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 
 /**
@@ -98,8 +91,6 @@ public class CreateAccountFragment extends BaseFragment {
     private ProgressDialog progressDialog;
     String croppedFile;
 
-    //gcm
-    private GoogleCloudMessaging gcm;
     private String deviceToken;
     private String regid;
     public static final String PROPERTY_REG_ID = "registration_id";
@@ -140,9 +131,6 @@ public class CreateAccountFragment extends BaseFragment {
 
 //        lat = ((BaseActivity) getActivity()).getLatitude();
 //        log = ((BaseActivity) getActivity()).getLongitude();
-
-        gcmRegistrationProcess();
-
 
         cbToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -604,127 +592,6 @@ public class CreateAccountFragment extends BaseFragment {
         });
         dialog.show();
     }
-
-    // ///////////////////////////////////////////////// GCM Implementation
-    // ///////////////////////////
-
-    private void gcmRegistrationProcess() {
-        if (checkPlayServices()) {
-            gcm = GoogleCloudMessaging.getInstance(getActivity());
-            regid = getRegistrationId(getActivity());
-
-            if (regid.isEmpty()) {
-                registerInBackground();
-            } else {
-                storeRegistrationId(getActivity(), regid);
-            }
-        } else {
-            Log.i(TAG, "No valid Google Play Services APK found.");
-        }
-    }
-
-    private boolean checkPlayServices() {
-        int googlePlayServicesAvailable = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getActivity());
-        if (googlePlayServicesAvailable == ConnectionResult.SUCCESS) {
-            return true;
-        }
-        return false;
-    }
-
-    private void registerInBackground() {
-        new GcmRegistrationtask().execute();
-    }
-
-    /**
-     * Gets the current registration ID for application on GCM service.
-     * <p>
-     * If result is empty, the app needs to register.
-     *
-     * @return registration ID, or empty string if there is no existing
-     * registration ID.
-     */
-    private String getRegistrationId(Context context) {
-        final SharedPreferences prefs = getGCMPreferences(context);
-        String registrationId = prefs.getString(PROPERTY_REG_ID, "");
-        if (registrationId.isEmpty()) {
-            Log.i(TAG, "Registration not found.");
-            return "";
-        }
-        // Check if app was updated; if so, it must clear the registration ID
-        // since the existing regID is not guaranteed to work with the new
-        // app version.
-        int registeredVersion = prefs.getInt(PROPERTY_APP_VERSION, Integer.MIN_VALUE);
-        int currentVersion = getAppVersion(context);
-        if (registeredVersion != currentVersion) {
-            Log.i(TAG, "App version changed.");
-            return "";
-        }
-        return registrationId;
-    }
-
-    /**
-     * @return Application's {@code SharedPreferences}.
-     */
-    private SharedPreferences getGCMPreferences(Context context) {
-        // This sample app persists the registration ID in shared preferences,
-        // but
-        // how you store the regID in your app is up to you.
-        return getActivity().getSharedPreferences(LoginToYourAccountFragment.class.getSimpleName(), Context.MODE_PRIVATE);
-    }
-
-    /**
-     * @return Application's version code from the {@code PackageManager}.
-     */
-    private static int getAppVersion(Context context) {
-        try {
-            PackageInfo packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
-            return packageInfo.versionCode;
-        } catch (PackageManager.NameNotFoundException e) {
-            // should never happen
-            throw new RuntimeException("Could not get package name: " + e);
-        }
-    }
-
-    private class GcmRegistrationtask extends AsyncTask<Void, Void, Void> {
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            try {
-                if (gcm == null) {
-                    gcm = GoogleCloudMessaging.getInstance(getActivity());
-                }
-                regid = gcm.register(SENDER_ID);
-                storeRegistrationId(getActivity(), regid);
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-    }
-
-    /**
-     * Stores the registration ID and app versionCode in the application's
-     * {@code SharedPreferences}.
-     *
-     * @param context application's context.
-     * @param regId   registration ID
-     */
-    private void storeRegistrationId(Context context, String regId) {
-        final int appVersion = getAppVersion(context);
-        Preference preference = Preference.getInstance();
-        preference.savePreferenceData(preference.KEY_DEVICE_TOKEN, regId);
-        preference.savePreferenceData(PROPERTY_APP_VERSION, appVersion);
-
-//        final SharedPreferences prefs = getGCMPreferences(context);
-//        SharedPreferences.Editor editor = prefs.edit();
-//        editor.putString(PROPERTY_REG_ID, regId);
-//        editor.putInt(PROPERTY_APP_VERSION, appVersion);
-//        editor.commit();
-//        Preference.getInstance().savePreferenceData(C.DEVICE_TOKEN, regId);
-    }
-
 
     private static final long SCAN_PERIOD = 1000;
 

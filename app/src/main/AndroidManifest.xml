@@ -3,8 +3,8 @@
           package="com.dad">
 
     <!-- Accessing camera hardware -->
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" android:maxSdkVersion="28" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" android:maxSdkVersion="28" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
@@ -78,14 +78,13 @@
         <activity android:name=".simplecropping.CropImage"/>
 
         <receiver
-                android:name=".GcmBroadcastReceiver"
-                android:permission="com.google.android.c2dm.permission.SEND"
-                android:exported="true">
+            android:name=".MyFirebaseMessagingReceiver"
+            android:permission="com.google.android.c2dm.permission.SEND"
+            android:exported="true">
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE"/>
                 <!-- Receives the registration id. -->
                 <action android:name="com.google.android.c2dm.intent.REGISTRATION"/>
-
                 <category android:name="com.tigerlight.dad"/>
             </intent-filter>
         </receiver>
@@ -101,8 +100,6 @@
         <receiver android:name=".blework.BleReceiver"/>
 
         <service android:name=".blework.BleService"/>
-        <service android:name=".GcmIntentService"/>
-
         <receiver
                 android:name=".AlarmServiceBroadcastReciever"
                 android:enabled="true"
@@ -128,6 +125,13 @@
         <!-- android:process=":LocationService" /> -->
 
         <service android:name=".LocationBroadcastServiceNew"/>
+        <service
+            android:name=".MyFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
 
         <meta-data
                 android:name="com.google.android.geo.API_KEY"
@@ -138,6 +142,18 @@
         <meta-data
                 android:name="io.fabric.ApiKey"
                 android:value="eee033fbcb72caade0049fa3a01835d0764d3cfa"/>
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/app_icon" />
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/colorAccent" />
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="@string/default_notification_channel_id" />
 
         <receiver
                 android:name=".recievers.AlertSentReceiver"

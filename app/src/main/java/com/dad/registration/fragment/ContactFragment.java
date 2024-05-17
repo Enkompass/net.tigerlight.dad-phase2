@@ -14,8 +14,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.AssetFileDescriptor;
 import android.graphics.drawable.ColorDrawable;
 import android.location.LocationManager;
+import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -61,6 +63,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.TimeZone;
 
@@ -661,6 +664,32 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
         }
     }
 
+    private void playAlarmSound() {
+        final AssetFileDescriptor audioFile = getActivity().getResources().openRawResourceFd(R.raw.tigerlightsound);
+
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                MediaPlayer mediaPlayer = new MediaPlayer();
+                try {
+                    mediaPlayer.setDataSource(audioFile.getFileDescriptor(), audioFile.getStartOffset(), audioFile.getLength());
+
+                    mediaPlayer.prepare();
+                    mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                        @Override
+                        public void onCompletion(MediaPlayer mp) {
+                            mp.release();
+                        }
+                    });
+                    mediaPlayer.start();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        thread.run();
+    }
+
     private class AsyncTaskSendPush extends AsyncTask<Void, Void, Void> {
 
         private WsCallSendDanger wsCallSendDanger;
@@ -691,7 +720,7 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
 
         @Override
         protected Void doInBackground(Void... params) {
-
+            playAlarmSound();
             wsCallSendDanger = new WsCallSendDanger(getActivity());
             wsCallSendDanger.executeService(Double.parseDouble(lat), Double.parseDouble(log), timezoneID, accuracy);
             return null;
