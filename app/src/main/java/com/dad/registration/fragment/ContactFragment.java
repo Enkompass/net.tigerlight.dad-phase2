@@ -34,6 +34,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.dad.R;
@@ -71,6 +72,14 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
 
     private static final String TAG = ContactFragment.class.getSimpleName();
     private static final int MY_PERMISSIONS_REQUEST_BLUETOOTH = 1002;
+
+    private static final int REQUEST_BLUETOOTH_PERMISSIONS = 1;
+    private static final String[] REQUIRED_PERMISSIONS = new String[]{
+            Manifest.permission.BLUETOOTH,
+            Manifest.permission.BLUETOOTH_ADMIN,
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+    };
 
     private TextView tvRestoreFromTheServer;
     private TextView tvEmptyView;
@@ -113,6 +122,53 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
         this.dashBoardWithSwipableFragment = dashBoardWithSwipableFragment;
     }
 
+    private void requestBluetoothPermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            ActivityCompat.requestPermissions(getActivity(),
+                    new String[]{
+                            Manifest.permission.BLUETOOTH_SCAN,
+                            Manifest.permission.BLUETOOTH_CONNECT,
+                            Manifest.permission.ACCESS_FINE_LOCATION
+                    },
+                    REQUEST_BLUETOOTH_PERMISSIONS);
+        } else {
+            ActivityCompat.requestPermissions(getActivity(),
+                    new String[]{
+                            Manifest.permission.BLUETOOTH,
+                            Manifest.permission.BLUETOOTH_ADMIN,
+                            Manifest.permission.ACCESS_FINE_LOCATION
+                    },
+                    REQUEST_BLUETOOTH_PERMISSIONS);
+        }
+    }
+
+    private boolean allPermissionsGranted() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            String[] permissionsList = new String[]{
+                    Manifest.permission.BLUETOOTH_SCAN,
+                    Manifest.permission.BLUETOOTH_CONNECT,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+            };
+            for (String permission : permissionsList) {
+                if (ContextCompat.checkSelfPermission(getContext(), permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
+            }
+        } else {
+            String[] permissionsList = new String[]{
+                    Manifest.permission.BLUETOOTH,
+                    Manifest.permission.BLUETOOTH_ADMIN,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+            };
+            for (String permission : permissionsList) {
+                if (ContextCompat.checkSelfPermission(getContext(), permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -122,8 +178,23 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
         new AlertListLoaderThread().start();
         mHandler = new Handler();
 
+        if (!allPermissionsGranted()) {
+            requestBluetoothPermissions();
+        }
+
         final BluetoothManager bluetoothManager = (BluetoothManager) getActivity().getSystemService(Context.BLUETOOTH_SERVICE);
         mBluetoothAdapter = bluetoothManager.getAdapter();
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        mBluetoothAdapter.startDiscovery();
 
         if (mBluetoothAdapter == null) {
             Toast.makeText(getActivity(), R.string.error_bluetooth_not_supported, Toast.LENGTH_SHORT).show();

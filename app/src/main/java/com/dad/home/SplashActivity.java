@@ -59,7 +59,7 @@ public class SplashActivity extends AppCompatActivity {
      * to Login Screen.
      */
     final Runnable runnable = () -> {
-        long time = 1000 * 3;  //For repiting 30 second
+        long time = 100 * 5;  //For repiting 30 second
         boolean isLogin = Preference.getInstance().mSharedPreferences.getBoolean(Constant.IS_LOGIN, false);
 
         if (isLogin) {
