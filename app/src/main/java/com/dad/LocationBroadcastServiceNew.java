@@ -2,6 +2,7 @@ package com.dad;
 
 import static com.dad.registration.util.Utills.isInternetConnected;
 import static com.dad.util.CheckForeground.getActivity;
+import static com.dad.util.Constants.MINIMUM_ACCEPTABLE_ACCURACY;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -23,6 +24,7 @@ import android.location.Location;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
@@ -65,6 +67,7 @@ public class LocationBroadcastServiceNew extends Service implements GoogleApiCli
     public static final long UPDATE_INTERVAL_IN_MILLISECONDS = 5 * 1000;
     public static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS = UPDATE_INTERVAL_IN_MILLISECONDS / 2;
     public static final float DEFAULT_SMALLEST_DISPLACEMENT_DISTANCE_IN_METERS = 100f;
+    public static final int MAXIMUM_ACCURACY_WAIT = 30000;
 
     private GoogleApiClient googleApiClient;
     private AsyncTaskUpdateLocation asyncTaskUpdateLocation;
@@ -371,6 +374,31 @@ public class LocationBroadcastServiceNew extends Service implements GoogleApiCli
         }
     }
 
+    private void sendAlertFromService(final AsyncTask<Void, Void, Void> task) {
+        final CountDownTimer countDownTimer = new CountDownTimer(MAXIMUM_ACCURACY_WAIT, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                int accuracy = Preference.getInstance().mSharedPreferences.getInt(Constant.COMMON_ACCURACY, 0);
+
+                if (accuracy >= MINIMUM_ACCEPTABLE_ACCURACY) {
+                    cancel();
+                    onFinish();
+                }
+            }
+
+            @Override
+            public void onFinish() {
+                if (task.getStatus() == AsyncTask.Status.FINISHED) {
+                    Log.e("LocationBroadcastService", "Trying to execute duplicate task.");
+                } else {
+                    task.execute();
+                }
+            }
+        };
+        countDownTimer.start();
+    }
+
+
 
     @SuppressLint("NewApi")
     public void sendPushNotification() {
@@ -489,7 +517,7 @@ public class LocationBroadcastServiceNew extends Service implements GoogleApiCli
             asyncTaskSendPush.execute();
         } else if (asyncTaskSendPush == null || asyncTaskSendPush.getStatus() == AsyncTask.Status.FINISHED) {
             asyncTaskSendPush = new AsyncTaskSendPush();
-            asyncTaskSendPush.execute();
+            sendAlertFromService(asyncTaskSendPush);
         }
     }
 
