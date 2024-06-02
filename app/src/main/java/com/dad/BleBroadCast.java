@@ -17,7 +17,7 @@ public class BleBroadCast extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        long time = 1000 * 5;  //For repiting 30 second
+        long time = 30000 * 5;  //For repiting 30 second
 
         try {
 

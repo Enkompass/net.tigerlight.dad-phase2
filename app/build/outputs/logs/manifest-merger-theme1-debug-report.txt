@@ -1,9 +1,9 @@
 -- Merging decision tree log ---
 manifest
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:2:1-168:12
-INJECTED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:2:1-168:12
-INJECTED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:2:1-168:12
-INJECTED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:2:1-168:12
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:2:1-163:12
+INJECTED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:2:1-163:12
+INJECTED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:2:1-163:12
+INJECTED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:2:1-163:12
 MERGED from [com.google.firebase:firebase-crashlytics:18.6.0] /Users/harshitladdha/.gradle/caches/transforms-3/dd50a7b0414d69fd47fd3b2829d4388c/transformed/jetified-firebase-crashlytics-18.6.0/AndroidManifest.xml:2:1-24:12
 MERGED from [com.google.firebase:firebase-analytics:21.5.0] /Users/harshitladdha/.gradle/caches/transforms-3/32a277a25a4aee170e4778d21094b9a1/transformed/jetified-firebase-analytics-21.5.0/AndroidManifest.xml:2:1-9:12
 MERGED from [com.google.firebase:firebase-messaging:23.4.0] /Users/harshitladdha/.gradle/caches/transforms-3/53664f69ba51e470663ed71a6f80af76/transformed/jetified-firebase-messaging-23.4.0/AndroidManifest.xml:17:1-66:12
@@ -120,7 +120,7 @@ ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/
 	android:name
 		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:7:22-76
 uses-permission#android.permission.ACCESS_NETWORK_STATE
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:8:5-78
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:8:5-79
 MERGED from [com.google.firebase:firebase-messaging:23.4.0] /Users/harshitladdha/.gradle/caches/transforms-3/53664f69ba51e470663ed71a6f80af76/transformed/jetified-firebase-messaging-23.4.0/AndroidManifest.xml:22:5-79
 MERGED from [com.google.firebase:firebase-messaging:23.4.0] /Users/harshitladdha/.gradle/caches/transforms-3/53664f69ba51e470663ed71a6f80af76/transformed/jetified-firebase-messaging-23.4.0/AndroidManifest.xml:22:5-79
 MERGED from [com.google.android.gms:play-services-maps:18.2.0] /Users/harshitladdha/.gradle/caches/transforms-3/327efc0db840f739ee7304421a865d61/transformed/jetified-play-services-maps-18.2.0/AndroidManifest.xml:23:5-79
@@ -144,7 +144,7 @@ MERGED from [com.google.android.datatransport:transport-runtime:3.1.9] /Users/ha
 	android:name
 		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:8:22-76
 uses-permission#android.permission.ACCESS_WIFI_STATE
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:9:5-75
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:9:5-76
 	android:name
 		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:9:22-73
 uses-permission#android.permission.BLUETOOTH_CONNECT
@@ -156,11 +156,11 @@ ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/
 	android:name
 		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:11:22-70
 uses-permission#android.permission.CHANGE_WIFI_STATE
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:12:5-75
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:12:5-76
 	android:name
 		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:12:22-73
 uses-permission#android.permission.CHANGE_NETWORK_STATE
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:13:5-78
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:13:5-79
 	android:name
 		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:13:22-76
 uses-permission#android.permission.POST_NOTIFICATIONS
@@ -170,11 +170,11 @@ MERGED from [com.google.firebase:firebase-messaging:23.4.0] /Users/harshitladdha
 	android:name
 		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:14:22-74
 uses-permission#android.permission.READ_PHONE_STATE
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:15:5-74
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:15:5-75
 	android:name
 		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:15:22-72
 uses-permission#android.permission.INTERNET
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:16:5-66
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:16:5-67
 MERGED from [com.google.firebase:firebase-crashlytics:18.6.0] /Users/harshitladdha/.gradle/caches/transforms-3/dd50a7b0414d69fd47fd3b2829d4388c/transformed/jetified-firebase-crashlytics-18.6.0/AndroidManifest.xml:7:5-67
 MERGED from [com.google.firebase:firebase-crashlytics:18.6.0] /Users/harshitladdha/.gradle/caches/transforms-3/dd50a7b0414d69fd47fd3b2829d4388c/transformed/jetified-firebase-crashlytics-18.6.0/AndroidManifest.xml:7:5-67
 MERGED from [com.google.android.gms:play-services-maps:18.2.0] /Users/harshitladdha/.gradle/caches/transforms-3/327efc0db840f739ee7304421a865d61/transformed/jetified-play-services-maps-18.2.0/AndroidManifest.xml:24:5-67
@@ -196,35 +196,41 @@ MERGED from [com.google.android.gms:play-services-measurement-sdk-api:21.5.0] /U
 	android:name
 		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:16:22-64
 uses-permission#android.permission.READ_CONTACTS
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:17:5-71
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:17:5-72
 	android:name
 		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:17:22-69
 uses-permission#android.permission.WRITE_EXTERNAL_STORAGE
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:18:5-80
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:18:5-108
+	android:maxSdkVersion
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:18:79-105
 	android:name
 		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:18:22-78
 uses-permission#android.permission.CALL_PHONE
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:19:5-68
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:19:5-69
 	android:name
 		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:19:22-66
 uses-permission#android.permission.CALL_PRIVILEGED
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:20:5-73
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:20:5-74
 	android:name
 		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:20:22-71
 uses-permission#android.permission.BLUETOOTH
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:21:5-67
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:21:5-95
+	android:maxSdkVersion
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:21:66-92
 	android:name
 		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:21:22-65
 uses-permission#android.permission.BLUETOOTH_ADMIN
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:22:5-73
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:22:5-101
+	android:maxSdkVersion
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:22:72-98
 	android:name
 		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:22:22-71
 uses-permission#android.permission.GET_ACCOUNTS
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:23:5-70
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:23:5-71
 	android:name
 		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:23:22-68
 uses-permission#android.permission.WAKE_LOCK
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:24:5-67
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:24:5-68
 MERGED from [com.google.firebase:firebase-messaging:23.4.0] /Users/harshitladdha/.gradle/caches/transforms-3/53664f69ba51e470663ed71a6f80af76/transformed/jetified-firebase-messaging-23.4.0/AndroidManifest.xml:24:5-68
 MERGED from [com.google.firebase:firebase-messaging:23.4.0] /Users/harshitladdha/.gradle/caches/transforms-3/53664f69ba51e470663ed71a6f80af76/transformed/jetified-firebase-messaging-23.4.0/AndroidManifest.xml:24:5-68
 MERGED from [com.google.android.gms:play-services-measurement-api:21.5.0] /Users/harshitladdha/.gradle/caches/transforms-3/b76008b5f880bce1f8c97d096e5912d3/transformed/jetified-play-services-measurement-api-21.5.0/AndroidManifest.xml:24:5-68
@@ -240,7 +246,7 @@ MERGED from [com.google.android.gms:play-services-measurement-sdk-api:21.5.0] /U
 	android:name
 		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:24:22-65
 uses-permission#com.google.android.c2dm.permission.RECEIVE
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:25:5-81
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:25:5-82
 MERGED from [com.google.firebase:firebase-messaging:23.4.0] /Users/harshitladdha/.gradle/caches/transforms-3/53664f69ba51e470663ed71a6f80af76/transformed/jetified-firebase-messaging-23.4.0/AndroidManifest.xml:26:5-82
 MERGED from [com.google.firebase:firebase-messaging:23.4.0] /Users/harshitladdha/.gradle/caches/transforms-3/53664f69ba51e470663ed71a6f80af76/transformed/jetified-firebase-messaging-23.4.0/AndroidManifest.xml:26:5-82
 MERGED from [com.google.android.gms:play-services-cloud-messaging:17.1.0] /Users/harshitladdha/.gradle/caches/transforms-3/9b19b4b9f10d4aab72e0655ba128ed18/transformed/jetified-play-services-cloud-messaging-17.1.0/AndroidManifest.xml:11:5-82
@@ -248,52 +254,60 @@ MERGED from [com.google.android.gms:play-services-cloud-messaging:17.1.0] /Users
 	android:name
 		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:25:22-79
 uses-permission#android.permission.CAMERA
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:26:5-64
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:26:5-65
 	android:name
 		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:26:22-62
 uses-permission#android.permission.RECEIVE_BOOT_COMPLETED
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:27:5-80
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:27:5-81
 	android:name
 		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:27:22-78
 uses-permission#com.sonyericsson.home.permission.BROADCAST_BADGE
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:28:5-87
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:28:5-88
 	android:name
 		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:28:22-85
+uses-permission#android.permission.FOREGROUND_SERVICE
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:29:5-77
+	android:name
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:29:22-74
+uses-permission#android.permission.FOREGROUND_SERVICE_LOCATION
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:30:5-86
+	android:name
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:30:22-83
 uses-feature#android.hardware.location.gps
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:30:5-65
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:32:5-66
 	android:name
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:30:19-63
-permission#com.tigerlight.dad.permission.C2D_MESSAGE
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:32:5-34:50
-	android:protectionLevel
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:34:13-48
-	android:name
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:33:13-69
-uses-permission#com.tigerlight.dad.permission.C2D_MESSAGE
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:36:5-80
-	android:name
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:36:22-78
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:32:19-63
 uses-feature#android.hardware.camera
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:43:5-45:38
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:33:5-85
 	android:required
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:45:13-36
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:33:58-82
 	android:name
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:44:13-51
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:33:19-57
 uses-feature#android.hardware.bluetooth_le
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:46:5-48:38
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:34:5-90
 	android:required
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:48:13-36
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:34:64-87
 	android:name
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:47:13-57
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:34:19-63
 uses-feature#android.hardware.telephony
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:49:5-51:36
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:35:5-88
 	android:required
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:51:9-33
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:35:61-85
 	android:name
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:50:9-50
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:35:19-60
+permission#com.tigerlight.dad.permission.C2D_MESSAGE
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:37:5-39:50
+	android:protectionLevel
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:39:13-48
+	android:name
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:38:13-69
+uses-permission#com.tigerlight.dad.permission.C2D_MESSAGE
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:41:5-80
+	android:name
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:41:22-78
 application
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:53:5-166:19
-INJECTED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:53:5-166:19
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:48:5-161:19
+INJECTED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:48:5-161:19
 MERGED from [com.google.firebase:firebase-crashlytics:18.6.0] /Users/harshitladdha/.gradle/caches/transforms-3/dd50a7b0414d69fd47fd3b2829d4388c/transformed/jetified-firebase-crashlytics-18.6.0/AndroidManifest.xml:11:5-22:19
 MERGED from [com.google.firebase:firebase-crashlytics:18.6.0] /Users/harshitladdha/.gradle/caches/transforms-3/dd50a7b0414d69fd47fd3b2829d4388c/transformed/jetified-firebase-crashlytics-18.6.0/AndroidManifest.xml:11:5-22:19
 MERGED from [com.google.firebase:firebase-analytics:21.5.0] /Users/harshitladdha/.gradle/caches/transforms-3/32a277a25a4aee170e4778d21094b9a1/transformed/jetified-firebase-analytics-21.5.0/AndroidManifest.xml:7:5-20
@@ -379,189 +393,191 @@ MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/harshitladdha/.gradl
 	android:appComponentFactory
 		ADDED from [androidx.core:core:1.9.0] /Users/harshitladdha/.gradle/caches/transforms-3/4c7d80318f062f762d0ecb382d2d92fb/transformed/core-1.9.0/AndroidManifest.xml:28:18-86
 	android:supportsRtl
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:58:13-39
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:53:13-39
 	android:label
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:57:13-45
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:52:13-45
 	android:icon
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:56:13-46
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:51:13-46
 	android:allowBackup
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:55:13-39
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:50:13-39
 	android:theme
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:59:13-44
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:54:13-44
 	android:name
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:54:13-43
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:49:13-43
 activity#com.dad.home.SplashActivity
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:60:9-72:20
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:55:9-67:20
 	android:screenOrientation
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:64:17-55
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:59:17-55
 	android:exported
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:66:17-40
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:61:17-40
 	android:configChanges
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:63:17-78
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:58:17-78
 	android:alwaysRetainTaskState
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:62:17-53
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:57:17-53
 	android:theme
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:65:17-55
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:60:17-55
 	android:name
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:61:17-52
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:56:17-52
 intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:67:13-71:29
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:62:13-66:29
 action#android.intent.action.MAIN
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:68:17-68
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:63:17-68
 	android:name
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:68:25-66
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:63:25-66
 category#android.intent.category.LAUNCHER
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:70:17-76
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:65:17-76
 	android:name
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:70:27-74
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:65:27-74
 activity#com.dad.registration.activity.MainActivity
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:73:9-76:57
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:68:9-71:57
 	android:screenOrientation
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:75:17-55
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:70:17-55
 	android:theme
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:76:17-55
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:71:17-55
 	android:name
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:74:17-67
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:69:17-67
 activity#com.dad.cropimage.CropImage
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:77:9-56
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:72:9-56
 	android:name
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:77:19-54
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:72:19-54
 activity#com.dad.simplecropping.CropImage
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:78:9-61
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:73:9-61
 	android:name
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:78:19-59
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:73:19-59
 receiver#com.dad.MyFirebaseMessagingReceiver
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:80:9-90:20
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:75:9-85:20
 	android:exported
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:83:13-36
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:78:13-36
 	android:permission
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:82:13-73
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:77:13-73
 	android:name
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:81:13-56
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:76:13-56
 intent-filter#action:name:com.google.android.c2dm.intent.RECEIVE+action:name:com.google.android.c2dm.intent.REGISTRATION+category:name:com.tigerlight.dad
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:84:13-89:29
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:79:13-84:29
 action#com.google.android.c2dm.intent.RECEIVE
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:85:17-80
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:80:17-80
 	android:name
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:85:25-78
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:80:25-78
 action#com.google.android.c2dm.intent.REGISTRATION
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:87:17-85
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:82:17-85
 	android:name
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:87:25-83
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:82:25-83
 category#com.tigerlight.dad
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:88:17-62
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:83:17-62
 	android:name
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:88:27-60
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:83:27-60
 receiver#com.dad.blework.BootReceiver
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:91:9-98:20
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:86:9-93:20
 	android:enabled
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:93:17-39
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:88:17-39
 	android:exported
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:94:17-40
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:89:17-40
 	android:name
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:92:17-53
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:87:17-53
 intent-filter#action:name:android.intent.action.BOOT_COMPLETED
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:95:13-97:29
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:90:13-92:29
 action#android.intent.action.BOOT_COMPLETED
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:96:17-78
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:91:17-78
 	android:name
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:96:25-76
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:91:25-76
 receiver#com.dad.blework.AlarmReceiver
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:99:9-58
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:94:9-58
 	android:name
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:99:19-56
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:94:19-56
 receiver#com.dad.blework.BleReceiver
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:100:9-56
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:95:9-56
 	android:name
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:100:19-54
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:95:19-54
 service#com.dad.blework.BleService
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:102:9-54
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:97:9-54
 	android:name
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:102:18-52
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:97:18-52
 receiver#com.dad.AlarmServiceBroadcastReciever
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:103:9-110:20
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:98:9-105:20
 	android:enabled
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:105:17-39
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:100:17-39
 	android:exported
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:106:17-40
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:101:17-40
 	android:name
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:104:17-62
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:99:17-62
 receiver#com.dad.BleBroadCast
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:111:9-118:20
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:106:9-113:20
 	android:enabled
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:113:17-39
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:108:17-39
 	android:exported
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:114:17-40
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:109:17-40
 	android:name
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:112:17-45
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:107:17-45
 service#com.dad.LocationBroadcastServiceNew
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:127:9-63
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:122:9-105
+	android:foregroundServiceType
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:122:62-102
 	android:name
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:127:18-61
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:122:18-61
 service#com.dad.MyFirebaseMessagingService
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:128:9-134:19
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:123:9-129:19
 	android:exported
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:130:13-37
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:125:13-37
 	android:name
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:129:13-55
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:124:13-55
 intent-filter#action:name:com.google.firebase.MESSAGING_EVENT
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:131:13-133:29
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:126:13-128:29
 action#com.google.firebase.MESSAGING_EVENT
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:132:17-78
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:127:17-78
 	android:name
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:132:25-75
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:127:25-75
 meta-data#com.google.android.geo.API_KEY
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:136:9-138:74
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:131:9-133:74
 	android:value
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:138:17-72
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:133:17-72
 	android:name
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:137:17-62
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:132:17-62
 meta-data#com.google.android.gms.version
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:139:9-141:72
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:134:9-136:72
 MERGED from [com.google.android.gms:play-services-basement:18.1.0] /Users/harshitladdha/.gradle/caches/transforms-3/86b6b2039058fdb8f6768123e1dfe02a/transformed/jetified-play-services-basement-18.1.0/AndroidManifest.xml:21:9-23:69
 MERGED from [com.google.android.gms:play-services-basement:18.1.0] /Users/harshitladdha/.gradle/caches/transforms-3/86b6b2039058fdb8f6768123e1dfe02a/transformed/jetified-play-services-basement-18.1.0/AndroidManifest.xml:21:9-23:69
 	android:value
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:141:17-70
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:136:17-70
 	android:name
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:140:17-62
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:135:17-62
 meta-data#io.fabric.ApiKey
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:142:9-144:75
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:137:9-139:75
 	android:value
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:144:17-73
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:139:17-73
 	android:name
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:143:17-48
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:138:17-48
 meta-data#com.google.firebase.messaging.default_notification_icon
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:146:9-148:53
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:141:9-143:53
 	android:resource
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:148:13-50
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:143:13-50
 	android:name
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:147:13-83
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:142:13-83
 meta-data#com.google.firebase.messaging.default_notification_color
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:150:9-152:53
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:145:9-147:53
 	android:resource
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:152:13-50
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:147:13-50
 	android:name
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:151:13-84
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:146:13-84
 meta-data#com.google.firebase.messaging.default_notification_channel_id
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:154:9-156:71
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:149:9-151:71
 	android:value
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:156:13-68
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:151:13-68
 	android:name
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:155:13-89
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:150:13-89
 receiver#com.dad.recievers.AlertSentReceiver
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:158:9-165:20
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:153:9-160:20
 	android:enabled
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:160:17-39
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:155:17-39
 	android:exported
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:161:17-41
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:156:17-41
 	android:name
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:159:17-60
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:154:17-60
 intent-filter#action:name:com.tigerlight.action.alert_sent
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:162:13-164:29
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:157:13-159:29
 action#com.tigerlight.action.alert_sent
-ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:163:17-75
+ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:158:17-75
 	android:name
-		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:163:25-72
+		ADDED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml:158:25-72
 uses-sdk
 INJECTED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from /Users/harshitladdha/work/projects/current/net.tigerlight.dad-phase2/app/src/main/AndroidManifest.xml

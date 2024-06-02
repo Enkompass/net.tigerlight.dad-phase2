@@ -34,8 +34,10 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentManager;
 
 import com.dad.R;
 import com.dad.home.BaseFragment;
@@ -57,6 +59,7 @@ import com.dad.util.BitMapHelper;
 import com.dad.util.Constants;
 import com.dad.util.NetworkAvailability;
 import com.dad.util.Preference;
+import com.dad.util.ProgressDialogFragment;
 import com.dad.util.Util;
 import com.dad.util.WsConstants;
 
@@ -71,6 +74,7 @@ import java.util.TimeZone;
 public class ContactFragment extends BaseFragment implements AdapterView.OnItemClickListener, RecieveElementAdapter.OnDeleteItemClickListner {
 
     private static final String TAG = ContactFragment.class.getSimpleName();
+    private ProgressDialogFragment progressDialogFragment;
     private static final int MY_PERMISSIONS_REQUEST_BLUETOOTH = 1002;
 
     private static final int REQUEST_BLUETOOTH_PERMISSIONS = 1;
@@ -90,7 +94,6 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
     private boolean isEditing;
     private JSONObject jsonobjectToChange;
     private RecieveElementAdapter recieveElementAdapter;
-    private ProgressDialog progressDialog;
     private String timezoneID;
     private static boolean isBTRequestDenied = false;
     private static boolean isGPS_ReqDenied = false;
@@ -128,7 +131,8 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
                     new String[]{
                             Manifest.permission.BLUETOOTH_SCAN,
                             Manifest.permission.BLUETOOTH_CONNECT,
-                            Manifest.permission.ACCESS_FINE_LOCATION
+                            Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.FOREGROUND_SERVICE
                     },
                     REQUEST_BLUETOOTH_PERMISSIONS);
         } else {
@@ -147,7 +151,8 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
             String[] permissionsList = new String[]{
                     Manifest.permission.BLUETOOTH_SCAN,
                     Manifest.permission.BLUETOOTH_CONNECT,
-                    Manifest.permission.ACCESS_FINE_LOCATION
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.FOREGROUND_SERVICE
             };
             for (String permission : permissionsList) {
                 if (ContextCompat.checkSelfPermission(getContext(), permission) != PackageManager.PERMISSION_GRANTED) {
@@ -158,7 +163,7 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
             String[] permissionsList = new String[]{
                     Manifest.permission.BLUETOOTH,
                     Manifest.permission.BLUETOOTH_ADMIN,
-                    Manifest.permission.ACCESS_FINE_LOCATION
+                    Manifest.permission.ACCESS_FINE_LOCATION,
             };
             for (String permission : permissionsList) {
                 if (ContextCompat.checkSelfPermission(getContext(), permission) != PackageManager.PERMISSION_GRANTED) {
@@ -327,10 +332,27 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
         this.isEditing = isEditing;
     }
 
+    public void showLoading() {
+        if (isAdded() && getActivity() != null) {
+            progressDialogFragment = ProgressDialogFragment.newInstance(getString(R.string.TAG_Loading));
+            FragmentManager fragmentManager = ((AppCompatActivity)  getActivity()).getSupportFragmentManager();
+            progressDialogFragment.show(fragmentManager, "progressDialog");
+        }
+    }
+
+    public void hideLoading() {
+        if (progressDialogFragment != null) {
+            progressDialogFragment.dismiss();
+            progressDialogFragment = null;
+        }
+    }
+
     private void loadRecieversListUsingThread(boolean b) {
         handler = new Handler();
         if (b) {
-            progressDialog = ProgressDialog.show(getActivity(), "", getString(R.string.TAG_Loading));
+            showLoading();
+        } else {
+            hideLoading();
         }
 
         new Thread(new Runnable() {
@@ -372,7 +394,7 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
 
                                 listView.setOnItemClickListener(ContactFragment.this);
                             }
-                            progressDialog.dismiss();
+                            hideLoading();
                         } catch (Exception ex) {
                             Log.e(TAG, ex.getMessage());
                         }
@@ -539,36 +561,28 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
     Handler handlerDelete = new Handler();
 
     private void deleteByThread() {
-        progressDialog = ProgressDialog.show(getActivity(), "", getString(R.string.TAG_Loading));
-        new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-                String contact_user_id = jsonobjectToChange.optString("userid");
-                WsCallDeleteContact wsCallDeleteContact = new WsCallDeleteContact(getActivity());
-                wsCallDeleteContact.executeService(contact_user_id);
-                if (wsCallDeleteContact.isSuccess()) {
-                    String email = jsonobjectToChange.optString(new WsConstants().PARAMS_EMAIL);
-                    BitMapHelper.deleteImageFromStorage(getActivity(), "" + email, Preference.getInstance().mSharedPreferences.getString(email, ""));
-                    isJustDataDeleted = true;
-                }
-
-                handlerDelete.post(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        //progressDialog.dismiss();
-                        if (isJustDataDeleted) {
-                            if (!isInternetConnected(getActivity())) {
-                                Toast.makeText(getActivity(), getString(R.string.alert_check_connection), Toast.LENGTH_SHORT).show();
-                                return;
-                            }
-                            loadRecieversListUsingThread(false);
-                        }
-                    }
-                });
-
+        showLoading();
+        new Thread(() -> {
+            String contact_user_id = jsonobjectToChange.optString("userid");
+            WsCallDeleteContact wsCallDeleteContact = new WsCallDeleteContact(getActivity());
+            wsCallDeleteContact.executeService(contact_user_id);
+            if (wsCallDeleteContact.isSuccess()) {
+                String email = jsonobjectToChange.optString(new WsConstants().PARAMS_EMAIL);
+                BitMapHelper.deleteImageFromStorage(getActivity(), "" + email, Preference.getInstance().mSharedPreferences.getString(email, ""));
+                isJustDataDeleted = true;
             }
+
+            handlerDelete.post(() -> {
+                //progressDialog.dismiss();
+                if (isJustDataDeleted) {
+                    if (!isInternetConnected(getActivity())) {
+                        Toast.makeText(getActivity(), getString(R.string.alert_check_connection), Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    loadRecieversListUsingThread(false);
+                }
+            });
+
         }).start();
 
     }
@@ -723,7 +737,7 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
             isAllredyShown = true;
             Toast.makeText(getActivity(), getString(R.string.TAG_SENDING_ALERT), Toast.LENGTH_SHORT).show();
             ((MainActivity) getActivity()).updateLatLong();
-            new PushForReciever().start();
+//            new PushForReciever().start();
             if (mBluetoothAdapter != null) {
                 mBluetoothAdapter.stopLeScan(bleHelper.getmLeScanCallback());
             }

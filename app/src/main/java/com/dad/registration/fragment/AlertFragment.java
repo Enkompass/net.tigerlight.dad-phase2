@@ -19,6 +19,7 @@ import com.dad.swipemenulistview.SwipeMenuListView;
 import com.dad.util.CheckForeground;
 import com.dad.util.Constants;
 import com.dad.util.Preference;
+import com.dad.util.ProgressDialogFragment;
 import com.dad.util.Util;
 
 import org.json.JSONArray;
@@ -29,7 +30,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Fragment;
-import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -42,7 +42,11 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentManager;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -70,7 +74,6 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
     private Switch swTestMode;
     private SwipeMenuListView lvAlerts;
     private AlertAdapter alertAdapter;
-    private ProgressDialog progressDialog;
     private static final String SUCCESS = "success";
     private boolean isDataAvailable = false;
     private boolean isJustDataDeleted = false;
@@ -86,11 +89,27 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
     private AsyncTaskResetCount asyncTaskResetCount;
     public static int count = 0;
     private boolean mIsSentAlertReceiverRegistered = false;
+    private ProgressDialogFragment progressDialogFragment;
 
     private DashBoardWithSwipableFragment dashBoardWithSwipableFragment;
 
     public AlertFragment() {
 
+    }
+
+    public void showLoading() {
+        if (isAdded() && getActivity() != null) {
+            progressDialogFragment = ProgressDialogFragment.newInstance(getString(R.string.TAG_Loading));
+            FragmentManager fragmentManager = ((AppCompatActivity)  getActivity()).getSupportFragmentManager();
+            progressDialogFragment.show(fragmentManager, "progressDialog");
+        }
+    }
+
+    public void hideLoading() {
+        if (progressDialogFragment != null) {
+            progressDialogFragment.dismiss();
+            progressDialogFragment = null;
+        }
     }
 
     public AlertFragment(DashBoardWithSwipableFragment dashBoardWithSwipableFragment) {
@@ -132,12 +151,9 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
             Toast.makeText(getActivity(), getString(R.string.alert_check_connection), Toast.LENGTH_SHORT).show();
             return;
         }
-        progressDialog = ProgressDialog.show(getActivity(), "", getString(R.string.TAG_Loading));
-        progressDialog.show();
+        showLoading();
 
         new AlertListLoaderThread().start();
-
-
     }
 
     @Override
@@ -163,9 +179,7 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
             mIsSentAlertReceiverRegistered = false;
         }
 
-        if (progressDialog != null) {
-            progressDialog.dismiss();
-        }
+        hideLoading();
     }
 
     @Override
@@ -227,11 +241,11 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
         if (isChecked) {
             Preference.getInstance().savePreferenceData(Constant.IS_CHECKED, isChecked);
 
-            callCrowdAlertModeServiceON(1);
+            callCrowdAlertModeServiceON();
         } else {
             Preference.getInstance().savePreferenceData(Constant.IS_CHECKED, isChecked);
 
-            callCrowdAlertModeServiceOFF(0);
+            callCrowdAlertModeServiceOFF();
 
         }
     }
@@ -322,6 +336,7 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
         public void run() {
             try {
                 final WsCallGetAlertCount wsCallGetAlertCount;
+                showLoading();
                 wsCallGetAlertCount = new WsCallGetAlertCount(getActivity());
                 String email = Preference.getInstance().mSharedPreferences.getString(Constant.KEY_EMAIL, "");
                 JSONObject jsonRecieved = wsCallGetAlertCount.executeService(email, "" + 0);
@@ -337,11 +352,16 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
                         isDataAvailable = false;
                     }
                 }
+                hideLoading();
 
             } catch (JSONException e) {
                 e.printStackTrace();
+                hideLoading();
             }
-            getActivity().runOnUiThread(new AlertListDataHandler(null));
+
+            if (getActivity() != null) {
+                getActivity().runOnUiThread(new AlertListDataHandler(null));
+            }
         }
     }
 
@@ -381,15 +401,14 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
                     e.printStackTrace();
                 }
             }
-            progressDialog.cancel();
+            hideLoading();
         }
 
     }
 
     private void deleteUsingThread(final int position) {
         final Handler handler = new Handler();
-        final ProgressDialog progressDialog = ProgressDialog.show(getActivity(), "", getString(R.string.TAG_DELETING));
-        progressDialog.show();
+        showLoading();
         new Thread(new Runnable() {
 
             private int response = 5;
@@ -406,30 +425,26 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
                     response = 2;
                 }
 
-                handler.post(new Runnable() {
+                handler.post(() -> {
+                    if (response == 2) {
+                        Toast.makeText(getActivity(), getString(R.string.TAG_COULD_NOT_DELETE_MSG), Toast.LENGTH_SHORT).show();
+                        hideLoading();
+                        return;
+                    }
 
-                    @Override
-                    public void run() {
-                        if (response == 2) {
-                            Toast.makeText(getActivity(), getString(R.string.TAG_COULD_NOT_DELETE_MSG), Toast.LENGTH_SHORT).show();
-                            progressDialog.dismiss();
-                            return;
+                    if (response == 1) {
+                        isJustDataDeleted = false;
+                        Toast.makeText(getActivity(), getString(R.string.dialog_delete_alert_title), Toast.LENGTH_SHORT).show();
+                        updateJsonArray(position);
+                        int alertCount = Preference.getInstance().mSharedPreferences.getInt("total_count", 0);
+
+                        alertCount = alertCount - 1;
+                        if (alertCount < 0) {
                         }
-
-                        if (response == 1) {
-                            isJustDataDeleted = false;
-                            Toast.makeText(getActivity(), getString(R.string.dialog_delete_alert_title), Toast.LENGTH_SHORT).show();
-                            updateJsonArray(position);
-                            int alertCount = Preference.getInstance().mSharedPreferences.getInt("total_count", 0);
-
-                            alertCount = alertCount - 1;
-                            if (alertCount < 0) {
-                            }
-                            Preference.getInstance().savePreferenceData("total_count", alertCount);
-                            dashBoardWithSwipableFragment.updateCount();
-                            alertAdapter.remove(position);
-                            progressDialog.dismiss();
-                        }
+                        Preference.getInstance().savePreferenceData("total_count", alertCount);
+                        dashBoardWithSwipableFragment.updateCount();
+                        alertAdapter.remove(position);
+                        hideLoading();
                     }
                 });
             }
@@ -473,8 +488,7 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
     private void callSenDangerServiceRecievingListScreen() {
         if (Utills.isInternetConnected(getActivity())) {
             if (asyncTaskSendPush != null && asyncTaskSendPush.getStatus() == AsyncTask.Status.PENDING) {
-                //asyncTaskSendPush.execute();
-                sendAlert(asyncTaskSendPush);
+                asyncTaskSendPush.execute();
             } else if (asyncTaskSendPush == null || asyncTaskSendPush.getStatus() == AsyncTask.Status.FINISHED) {
                 asyncTaskSendPush = new AsyncTaskSendPush();
                 sendAlert(asyncTaskSendPush);
@@ -552,9 +566,7 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
             super.onPostExecute(aVoid);
             if (!isCancelled()) {
                 if (wsCallSendDanger.isSuccess()) {
-                    progressDialog.dismiss();
-
-
+                    hideLoading();
                     final Dialog dialog = new Dialog(getActivity(), R.style.AppDialogTheme);
                     dialog.setContentView(R.layout.custom_progress_layout);
                     final TextView tvTitle = (TextView) dialog.findViewById(R.id.dialog_tvTitlee);
@@ -564,18 +576,16 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
                     tvTitle.setText(getString(R.string.custom_progess_dialog_tv_title));
                     tvMessage.setText(getString(R.string.custom_progess_dialog_tv_msg));
                     tvPosButton.setText(getString(R.string.custom_progess_dialog_tv_ok));
-                    tvPosButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            dialog.dismiss();
-                        }
+                    tvPosButton.setOnClickListener(view -> {
+                        dialog.dismiss();
+                        new AlertListLoaderThread().start();
                     });
 
                     dialog.show();
                 } else {
 //                    Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_SOME_WENT_WRONG_MSG), getString(R.string.ok), "", false, false);
                     Toast.makeText(getActivity(), getString(R.string.TAG_SOME_WENT_WRONG_MSG), Toast.LENGTH_SHORT).show();
-                    progressDialog.dismiss();
+                    hideLoading();
                 }
             }
         }
@@ -598,8 +608,7 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
 
     private void sendAlert(final AsyncTask<Void, Void, Void> task)
     {
-        progressDialog = ProgressDialog.show(getActivity(), "", getString(R.string.TAG_SENDING_ALERT));
-        progressDialog.show();
+        showLoading();
 
         final Intent serviceIntent = new Intent(getActivity(), LocationBroadcastServiceNew.class);
         serviceIntent.putExtra(Constants.Extras.SMALLEST_DISPLACEMENT_VALUE, 0f);
@@ -634,14 +643,7 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
                 }
                 //Stop the LocationService after allowing a few seconds to ensure that the service has time connect. This is necessary since the accuracy could already meet the criteria from a request. It will automatically be restarted by the repeating AlarmManager every 1 minute.
                 Handler handler = new Handler();
-                handler.postDelayed(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        getActivity().stopService(serviceIntent);
-                    }
-                }, 3000);
+                handler.postDelayed(() -> getActivity().stopService(serviceIntent), 3000);
             }
         };
 
@@ -677,7 +679,7 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
                 } else {
                     Toast.makeText(getActivity(), getString(R.string.TAG_SOME_WENT_WRONG_MSG), Toast.LENGTH_SHORT).show();
                 }
-                progressDialog.dismiss();
+                hideLoading();
             }
         }
     }
@@ -708,12 +710,7 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
                         mediaPlayer.setDataSource(audioFile.getFileDescriptor(), audioFile.getStartOffset(), audioFile.getLength());
 
                     mediaPlayer.prepare();
-                    mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                        @Override
-                        public void onCompletion(MediaPlayer mp) {
-                            mp.release();
-                        }
-                    });
+                    mediaPlayer.setOnCompletionListener(MediaPlayer::release);
                     mediaPlayer.start();
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -723,13 +720,13 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
             thread.run();
     }
 
-    private void callCrowdAlertModeServiceON(int status) {
+    private void callCrowdAlertModeServiceON() {
         if (Utills.isInternetConnected(getActivity())) {
             if (asyncTaskCrowdAlertOn != null && asyncTaskCrowdAlertOn.getStatus() == AsyncTask.Status.PENDING) {
-                asyncTaskCrowdAlertOn.execute(new Integer(status));
+                asyncTaskCrowdAlertOn.execute(1);
             } else if (asyncTaskCrowdAlertOn == null || asyncTaskCrowdAlertOn.getStatus() == AsyncTask.Status.FINISHED) {
                 asyncTaskCrowdAlertOn = new AsyncCrowdAlertModeOn();
-                asyncTaskCrowdAlertOn.execute(new Integer(status));
+                asyncTaskCrowdAlertOn.execute(1);
             }
         } else {
             Utills.displayDialogNormalMessage(getString(R.string.app_name), getString(R.string.TAG_INTERNET_AVAILABILITY), getActivity());
@@ -751,7 +748,7 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
         @Override
         protected Void doInBackground(Integer... integers) {
 
-            status = integers[0].intValue();
+            status = integers[0];
             wsCrowdAlert.executeService(status);
             return null;
         }
@@ -767,13 +764,13 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
     }
 
 
-    private void callCrowdAlertModeServiceOFF(int status) {
+    private void callCrowdAlertModeServiceOFF() {
         if (Utills.isInternetConnected(getActivity())) {
             if (asyncTaskCrowdAlertOff != null && asyncTaskCrowdAlertOff.getStatus() == AsyncTask.Status.PENDING) {
-                asyncTaskCrowdAlertOff.execute(new Integer(status));
+                asyncTaskCrowdAlertOff.execute(0);
             } else if (asyncTaskCrowdAlertOff == null || asyncTaskCrowdAlertOff.getStatus() == AsyncTask.Status.FINISHED) {
                 asyncTaskCrowdAlertOff = new AsyncCrowdAlertModeOff();
-                asyncTaskCrowdAlertOff.execute(new Integer(status));
+                asyncTaskCrowdAlertOff.execute(0);
             }
         } else {
             Utills.displayDialogNormalMessage(getString(R.string.app_name), getString(R.string.TAG_INTERNET_AVAILABILITY), getActivity());
@@ -794,7 +791,7 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
         @Override
         protected Void doInBackground(Integer... integers) {
 
-            staus = integers[0].intValue();
+            staus = integers[0];
             wsCrowdAlert.executeService(staus);
 
             return null;

@@ -26,9 +26,11 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="com.sonyericsson.home.permission.BROADCAST_BADGE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
 
     <uses-feature android:name="android.hardware.location.gps" />
-    <uses-feature android:name="android.hardware.camera" android:required="true" />
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
     <uses-feature android:name="android.hardware.bluetooth_le" android:required="true" />
     <uses-feature android:name="android.hardware.telephony" android:required="false" />
 
@@ -117,7 +119,7 @@
         <!-- android:icon="@drawable/app_icon" -->
         <!-- android:process=":LocationService" /> -->
 
-        <service android:name=".LocationBroadcastServiceNew"/>
+        <service android:name=".LocationBroadcastServiceNew" android:foregroundServiceType="location" />
         <service
             android:name=".MyFirebaseMessagingService"
             android:exported="false">

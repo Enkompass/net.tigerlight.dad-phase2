@@ -1,10 +1,15 @@
 package com.dad;
 
+import static com.dad.registration.util.Utills.isInternetConnected;
 import static com.dad.util.CheckForeground.getActivity;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
@@ -21,14 +26,17 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
-import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
 
 import com.dad.recievers.BLEHelper;
+import com.dad.registration.activity.MainActivity;
+import com.dad.registration.fragment.AlertFragment;
 import com.dad.registration.util.Constant;
 import com.dad.registration.util.Utills;
 import com.dad.settings.webservices.WsCallDADTest;
@@ -45,10 +53,15 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
 import java.io.IOException;
+import java.util.Calendar;
+import java.util.TimeZone;
 
 public class LocationBroadcastServiceNew extends Service implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     public final String TAG = getClass().getSimpleName();
+
+    private static final String CHANNEL_ID = "LocationServiceChannel";
+
     public static final long UPDATE_INTERVAL_IN_MILLISECONDS = 5 * 1000;
     public static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS = UPDATE_INTERVAL_IN_MILLISECONDS / 2;
     public static final float DEFAULT_SMALLEST_DISPLACEMENT_DISTANCE_IN_METERS = 100f;
@@ -58,8 +71,11 @@ public class LocationBroadcastServiceNew extends Service implements GoogleApiCli
     private float mSmallestDisplacementValue = DEFAULT_SMALLEST_DISPLACEMENT_DISTANCE_IN_METERS;
     private BluetoothAdapter mBluetoothAdapter;
     private Handler mHandler;
-    private boolean isBleSupported;
     private BLEHelper bleHelper;
+    private Handler handler;
+    private int accuracy;
+    private String timezoneID;
+
 
     @Override
     public void onCreate() {
@@ -70,18 +86,64 @@ public class LocationBroadcastServiceNew extends Service implements GoogleApiCli
         filter2.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
         filter2.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
         filter2.addAction(BluetoothAdapter.ACTION_SCAN_MODE_CHANGED);
+        handler = new Handler();
         registerReceiver(mBroadcastReceiver2, filter2);
         buildGoogleApiClient();
+        createNotificationChannel();
+        final BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        bluetoothManager.getAdapter().startDiscovery();
+        if (isInternetConnected(getApplicationContext())) {
+            getLatLong();
+            if (!Preference.getInstance().mSharedPreferences.getBoolean(Constant.ISLOGEDD_OUT, false)) {
+                serchiBeaconAvailability();
+            }
+        }
+        Calendar cal = Calendar.getInstance();
+        TimeZone tz = cal.getTimeZone();
+        timezoneID = tz.getID();
+        if (isInternetConnected(getApplicationContext())) {
+            getLatLong();
+            if (!Preference.getInstance().mSharedPreferences.getBoolean(Constant.ISLOGEDD_OUT, false)) {
+                serchiBeaconAvailability();
+            }
+        }
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        Intent notificationIntent = new Intent(this, MainActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE);
+
+        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setContentTitle("Location Service")
+                .setContentText("Your location is being tracked")
+                .setSmallIcon(R.drawable.dadwhite)
+                .setContentIntent(pendingIntent)
+                .build();
+
+        startForeground(1, notification);
+
+        // Do your background work here
         Log.d(TAG, "onStartCommand");
         mSmallestDisplacementValue = DEFAULT_SMALLEST_DISPLACEMENT_DISTANCE_IN_METERS;
         if (intent != null) {
             mSmallestDisplacementValue = intent.getFloatExtra(Constants.Extras.SMALLEST_DISPLACEMENT_VALUE, DEFAULT_SMALLEST_DISPLACEMENT_DISTANCE_IN_METERS);
         }
-        return super.onStartCommand(intent, flags, startId);
+        super.onStartCommand(intent, flags, startId);
+        return START_NOT_STICKY;
+    }
+
+    private void createNotificationChannel() {
+        NotificationChannel serviceChannel = new NotificationChannel(
+                CHANNEL_ID,
+                "Location Service Channel",
+                NotificationManager.IMPORTANCE_DEFAULT
+        );
+        NotificationManager manager = getSystemService(NotificationManager.class);
+        manager.createNotificationChannel(serviceChannel);
     }
 
     @Override
@@ -139,7 +201,7 @@ public class LocationBroadcastServiceNew extends Service implements GoogleApiCli
     }
 
     @Override
-    public void onLocationChanged(Location location) {
+    public void onLocationChanged(@NonNull Location location) {
         sendLocationUpdate(location);
     }
 
@@ -162,6 +224,8 @@ public class LocationBroadcastServiceNew extends Service implements GoogleApiCli
     private void sendLocationUpdate(final Location location) {
         if (location != null) {
             callLocationUpdateService(location.getLatitude(), location.getLongitude());
+            latitude = location.getLatitude();
+            longitude = location.getLongitude();
             Preference.getInstance().savePreferenceData(Constant.COMMON_LATITUDE, String.valueOf(location.getLatitude()));
             Preference.getInstance().savePreferenceData(Constant.COMMON_LONGITUDE, String.valueOf(location.getLongitude()));
             Preference.getInstance().savePreferenceData(Constant.COMMON_ACCURACY, (int) location.getAccuracy());
@@ -181,6 +245,7 @@ public class LocationBroadcastServiceNew extends Service implements GoogleApiCli
         }
     }
 
+    @SuppressLint("StaticFieldLeak")
     private class AsyncTaskUpdateLocation extends AsyncTask<Void, Void, Void> {
         private WsCallUpdateLocation wsCallUpdateLocation;
         double latitude;
@@ -225,9 +290,9 @@ public class LocationBroadcastServiceNew extends Service implements GoogleApiCli
                         BLEHelper.IsFirst = false;
                         Log.d(TAG, "ACTION_DISCOVERY_FINISHED");
                         break;
-                    case BluetoothAdapter.ACTION_SCAN_MODE_CHANGED:
-                        serchiBeaconAvailability();
-                        break;
+//                    case BluetoothAdapter.ACTION_SCAN_MODE_CHANGED:
+//                        serchiBeaconAvailability();
+//                        break;
                 }
             }
         }
@@ -243,64 +308,40 @@ public class LocationBroadcastServiceNew extends Service implements GoogleApiCli
         final BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
         if (bluetoothManager != null) {
             mBluetoothAdapter = bluetoothManager.getAdapter();
-            isBleSupported = true;
             bleHelper = new BLEHelper(this, true);
             mHandler = new Handler();
 
-            if (mBluetoothAdapter != null && isBleSupported && !mBluetoothAdapter.isEnabled()) {
+            if (mBluetoothAdapter != null && !mBluetoothAdapter.isEnabled()) {
                 return;
             }
 
-            scanLeDevice(true);
+            scanLeDevice();
         }
     }
 
     private static final long SCAN_PERIOD = 10000;  // Adjust scan period as needed
 
     @SuppressLint("NewApi")
-    private void scanLeDevice(final boolean enable) {
-        if (enable) {
-            mHandler.postDelayed(() -> {
-                if (mBluetoothAdapter != null) {
-                    if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
-                        return;
-                    }
-                    mBluetoothAdapter.stopLeScan(bleHelper.getmLeScanCallback());
+    private void scanLeDevice() {
+        mHandler.postDelayed(() -> {
+            if (mBluetoothAdapter != null) {
+                if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
+                    return;
                 }
-            }, SCAN_PERIOD);
-
-            if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.BLUETOOTH_SCAN) == PackageManager.PERMISSION_GRANTED && mBluetoothAdapter != null) {
-                mBluetoothAdapter.startLeScan(bleHelper.getmLeScanCallback());
-            }
-        } else {
-            if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.BLUETOOTH_SCAN) == PackageManager.PERMISSION_GRANTED && mBluetoothAdapter != null) {
                 mBluetoothAdapter.stopLeScan(bleHelper.getmLeScanCallback());
             }
+        }, SCAN_PERIOD);
+
+        if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.BLUETOOTH_SCAN) == PackageManager.PERMISSION_GRANTED && mBluetoothAdapter != null) {
+            mBluetoothAdapter.startLeScan(bleHelper.getmLeScanCallback());
         }
     }
 
-    private String latitude;
-    private String longitude;
-    private int accuracy;
-    private String timezoneID;
-    private Handler handler;
-    private AsyncTaskSendCrowdAlert asyncTaskSendPush;
+    private Double latitude;
+    private Double longitude;
+    private AsyncTaskSendPush asyncTaskSendPush;
     private AsyncTaskTestMode asyncTaskTestMode;
     private AsyncTestMode asyncTestMode;
-
-    private void getLatLong() {
-        GPSTracker gpsTracker = new GPSTracker(getApplicationContext());
-        if (gpsTracker.canGetLocation()) {
-            latitude = String.valueOf(gpsTracker.getLatitude());
-            longitude = String.valueOf(gpsTracker.getLongitude());
-            accuracy = (int) gpsTracker.getAccuracy();
-
-            Log.d(TAG, latitude);
-            Log.d(TAG, longitude);
-            Log.d(TAG, String.valueOf(accuracy));
-        }
-
-    }
 
     private static final long MIN_ALERT_TIME_INTERVEL = 2 * 60 * 1000;
 
@@ -317,8 +358,6 @@ public class LocationBroadcastServiceNew extends Service implements GoogleApiCli
     private class PushForCrowdAlert extends Thread {
         @Override
         public void run() {
-//            String userId = Preference.getInstance().mSharedPreferences.getString(C.USER_ID, "");
-//            new ServerResponseHelper().requestToPushForCrowdAlert(latitude, longitude, userId, timezoneID);
             callSenDangerServiceRecievingListScreen();
 
         }
@@ -328,9 +367,6 @@ public class LocationBroadcastServiceNew extends Service implements GoogleApiCli
     private class TestModeService extends Thread {
         @Override
         public void run() {
-//            String userId = Preference.getInstance().mSharedPreferences.getString(C.USER_ID, "");
-//            new ServerResponseHelper().requestToPushForCrowdAlert(latitude, longitude, userId, timezoneID);
-//            callTestModeService();
             callTestMode();
         }
     }
@@ -348,7 +384,7 @@ public class LocationBroadcastServiceNew extends Service implements GoogleApiCli
                 return;
             }
 
-            Preference.getInstance().savePreferenceData(Constant.LAST_LOG_TIME, "" + System.currentTimeMillis());
+            Preference.getInstance().savePreferenceData(Constant.LAST_LOG_TIME, String.valueOf(System.currentTimeMillis()));
 
             new TestModeService().start();
 //            new PushForCrowdAlert().start();
@@ -363,14 +399,7 @@ public class LocationBroadcastServiceNew extends Service implements GoogleApiCli
             if (!CheckForeground.isInForeGround()) {
                 return;
             }
-            handler.post(new Runnable() {
-
-                @Override
-                public void run() {
-                    Toast.makeText(getApplicationContext(), getString(R.string.TAG_SENDING_ALERT), Toast.LENGTH_SHORT).show();
-
-                }
-            });
+            handler.post(() -> Toast.makeText(getApplicationContext(), getString(R.string.TAG_SENDING_ALERT), Toast.LENGTH_SHORT).show());
 
         } else {
 
@@ -394,33 +423,13 @@ public class LocationBroadcastServiceNew extends Service implements GoogleApiCli
             if (!CheckForeground.isInForeGround()) {
                 return;
             }
-            handler.post(new Runnable() {
-
-                @Override
-                public void run() {
-                    Toast.makeText(getApplicationContext(), getString(R.string.TAG_SENDING_ALERT), Toast.LENGTH_SHORT).show();
-
-                }
-            });
+            handler.post(() -> Toast.makeText(getApplicationContext(), getString(R.string.TAG_SENDING_ALERT), Toast.LENGTH_SHORT).show());
         }
 
 
     }
 
-    private void callTestModeService() {
-        if (Utills.isInternetConnected(getActivity())) {
-            if (asyncTaskTestMode != null && asyncTaskTestMode.getStatus() == AsyncTask.Status.PENDING) {
-                asyncTaskTestMode.execute();
-            } else if (asyncTaskTestMode == null || asyncTaskTestMode.getStatus() == AsyncTask.Status.FINISHED) {
-                asyncTaskTestMode = new AsyncTaskTestMode();
-                asyncTaskTestMode.execute();
-            }
-        } else {
-            Utills.displayDialogNormalMessage(getString(R.string.app_name), getString(R.string.TAG_INTERNET_AVAILABILITY), getActivity());
-        }
-
-    }
-
+    @SuppressLint("StaticFieldLeak")
     private class AsyncTaskTestMode extends AsyncTask<Void, Void, Void> {
         private WsCallDADTest wsCallDADTest;
 
@@ -461,7 +470,7 @@ public class LocationBroadcastServiceNew extends Service implements GoogleApiCli
         long lastLoggedTime = 0;
         try {
             lastLoggedTime = Long.parseLong(lastLoggedTimeString);
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
         if ((currentTimeMillis - lastLoggedTime) <= MIN_ALERT_TIME_INTERVEL) {
             return false;
@@ -479,7 +488,7 @@ public class LocationBroadcastServiceNew extends Service implements GoogleApiCli
         if (asyncTaskSendPush != null && asyncTaskSendPush.getStatus() == AsyncTask.Status.PENDING) {
             asyncTaskSendPush.execute();
         } else if (asyncTaskSendPush == null || asyncTaskSendPush.getStatus() == AsyncTask.Status.FINISHED) {
-            asyncTaskSendPush = new AsyncTaskSendCrowdAlert();
+            asyncTaskSendPush = new AsyncTaskSendPush();
             asyncTaskSendPush.execute();
         }
     }
@@ -507,50 +516,51 @@ public class LocationBroadcastServiceNew extends Service implements GoogleApiCli
                     mediaPlayer.setDataSource(audioFile.getFileDescriptor(), audioFile.getStartOffset(), audioFile.getLength());
 
                     mediaPlayer.prepare();
-                    mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                        @Override
-                        public void onCompletion(MediaPlayer mp) {
-                            mp.release();
-                        }
-                    });
+                    mediaPlayer.setOnCompletionListener(MediaPlayer::release);
                     mediaPlayer.start();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         });
-        thread.run();
+        thread.start();
     }
 
+    private void getLatLong() {
+        GPSTracker gpsTracker = new GPSTracker(getApplicationContext());
+        if (gpsTracker.canGetLocation()) {
+            latitude = gpsTracker.getLatitude();
+            longitude = gpsTracker.getLongitude();
+            accuracy = (int) gpsTracker.getAccuracy();
+            Log.d(TAG, String.valueOf(accuracy));
+        }
+    }
 
-    class AsyncTaskSendCrowdAlert extends AsyncTask<Void, Void, Void> {
+    @SuppressLint("StaticFieldLeak")
+    class AsyncTaskSendPush extends AsyncTask<Void, Void, Void> {
 
         private WsCallSendDanger wsCallSendDanger;
+        String lat = Preference.getInstance().mSharedPreferences.getString(Constant.COMMON_LATITUDE, "0.01");
+        String log = Preference.getInstance().mSharedPreferences.getString(Constant.COMMON_LONGITUDE, "0.01");
+        int accuracy = Preference.getInstance().mSharedPreferences.getInt(Constant.COMMON_ACCURACY, 0);
 //        private ProgressDialog progressDialog;
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-//            progressDialog = new ProgressDialog(getActivity());
-//            progressDialog.show();
-//            progressDialog.setContentView(R.layout.progress_layout);
-//            progressDialog.setCancelable(false);
         }
 
         @Override
         protected Void doInBackground(Void... params) {
-            playAlarmSound();
             wsCallSendDanger = new WsCallSendDanger(getApplicationContext());
-            wsCallSendDanger.executeService(Double.parseDouble(latitude), Double.parseDouble(longitude), timezoneID, accuracy);
+            wsCallSendDanger.executeService(Double.parseDouble(lat), Double.parseDouble(log), timezoneID, accuracy);
+            playAlarmSound();
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-//            if (progressDialog != null && progressDialog.isShowing()) {
-//                progressDialog.dismiss();
-//            }
             if (!isCancelled()) {
                 if (wsCallSendDanger.isSuccess())
                 {
@@ -622,58 +632,13 @@ public class LocationBroadcastServiceNew extends Service implements GoogleApiCli
 
 
                                 }
-                            } /*else if (Preference.getInstance().mSharedPreferences.getString(Constants.Preferences.Keys.OLD_UUID_KEY, "").equalsIgnoreCase("FD8C0AA6D40411E5AB30625662870761"))*/
-                            else if (Preference.getInstance().mSharedPreferences.getString(Constants.Preferences.Keys.OLD_UUID_KEY, "").equalsIgnoreCase(Constants.OLD_UUID))
-                            {
-
-                                final String major = preference.mSharedPreferences.getString(Constants.Preferences.Keys.OLD_MAJOR_KEY, "");
-                                final String minor = preference.mSharedPreferences.getString("old_minor", "");
-
-                                if (!minor.equals("") && !major.equals(""))
-                                {
-                                    double doubleminor = Double.parseDouble(minor) / 1000;
-                                    double doublemajor = Double.parseDouble(major) / 1000;
-
-                                    if (doubleminor >= -3.0 && doublemajor >= 2.5)
-                                    {
-
-//                                    tvMsgLeve.setText("GOOD D.A.D BATTERY");
-//                                    tvMsgLeve.setBackgroundColor(getResources().getColor(R.color.color_green));
-
-                                    }
-                                    else if (doubleminor >= -2.499 && doublemajor >= 2.0)
-                                    {
-
-//                                    tvMsgLeve.setText("LOW D.A.D BATTERY");
-//                                    tvMsgLeve.setBackgroundColor(getResources().getColor(R.color.color_yello));
-                                    }
-                                    else if (doubleminor < 2.0 && doublemajor < 2.0)
-                                    {
-//                                    tvMsgLeve.setText("REPLACE D.A.D BATTERY");
-//                                    tvMsgLeve.setBackgroundColor(getResources().getColor(R.color.color_alert_red));
-                                    }
-                                    else
-                                    {
-//                                    tvMsgLeve.setText("GOOD D.A.D BATTERY");
-//                                    tvMsgLeve.setBackgroundColor(getResources().getColor(R.color.color_green));
-                                    }
-
-
-                                }
-
                             }
-
                         }
 
-                        tvPosButtonn.setOnClickListener(new View.OnClickListener()
-                        {
-                            @Override
-                            public void onClick(View view)
-                            {
-                                dialog.dismiss();
-                                sendAlertBroadcast();
+                        tvPosButtonn.setOnClickListener(view -> {
+                            dialog.dismiss();
+                            sendAlertBroadcast();
 
-                            }
                         });
 
                         dialog.show();
@@ -684,6 +649,7 @@ public class LocationBroadcastServiceNew extends Service implements GoogleApiCli
 
     }
 
+    @SuppressLint("StaticFieldLeak")
     class AsyncTestMode extends AsyncTask<Void, Void, Void> {
 
         private WsCallDADTest wsCallDADTest;
@@ -693,10 +659,6 @@ public class LocationBroadcastServiceNew extends Service implements GoogleApiCli
         protected void onPreExecute() {
             super.onPreExecute();
             playAlarmSound();
-//            progressDialog = new ProgressDialog(getActivity());
-//            progressDialog.show();
-//            progressDialog.setContentView(R.layout.progress_layout);
-//            progressDialog.setCancelable(false);
         }
 
         @Override
@@ -709,9 +671,6 @@ public class LocationBroadcastServiceNew extends Service implements GoogleApiCli
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-//            if (progressDialog != null && progressDialog.isShowing()) {
-//                progressDialog.dismiss();
-//            }
             if (!isCancelled()) {
                 if (wsCallDADTest.isSuccess()) {
                     // From here do further logic

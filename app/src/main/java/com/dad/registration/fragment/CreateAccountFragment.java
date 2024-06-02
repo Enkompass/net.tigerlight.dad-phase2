@@ -446,7 +446,7 @@ public class CreateAccountFragment extends BaseFragment {
 //                    }
 
 
-                    long time = 1000 * 3;  //For repiting 30 second
+                    long time = 10000 * 3;  //For repiting 30 second
 
                     if (!Utills.isMyServiceRunning(LocationBroadcastServiceNew.class, getActivity())) {
 
@@ -593,7 +593,7 @@ public class CreateAccountFragment extends BaseFragment {
         dialog.show();
     }
 
-    private static final long SCAN_PERIOD = 1000;
+    private static final long SCAN_PERIOD = 5000;
 
     private void startBackgroundThreadForBLE() {
         AlarmManager alarmManagerForBLE = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);

@@ -85,7 +85,6 @@ public class BleService extends IntentService {
             Log.d(TAG, longitude);
             Log.d(TAG, String.valueOf(accuracy));
         }
-
     }
 
     @Override

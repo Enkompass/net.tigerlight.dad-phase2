@@ -409,7 +409,7 @@ public class LoginToYourAccountFragment extends BaseFragment implements Compound
     }
 
 
-    private static final long SCAN_PERIOD = 1000;
+    private static final long SCAN_PERIOD = 5000;
 
     private void startBackgroundThreadForBLE() {
         AlarmManager alarmManagerForBLE = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
