@@ -1,9 +1,5 @@
 package com.dad.registration.fragment;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.gcm.GoogleCloudMessaging;
-
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.dad.LocationBroadcastServiceNew;
@@ -66,12 +62,10 @@ public class CreateAccountFragment extends BaseFragment {
 
     private String userChoosenTask;
 
-
     //TO check whether image taken or not
     private boolean isImageUpdated;
     //To store the cropped path
     private String path;
-
 
     //for lat and long
     private double lat;
@@ -81,8 +75,6 @@ public class CreateAccountFragment extends BaseFragment {
     private View view;
     private TextView tvCancel;
     private TextView tvSave;
-    //    private TextView tvSHow;
-//    private TextView tvHide;
     private TextView tvCheckEnteries;
     private ImageView imProfile;
 
@@ -93,33 +85,17 @@ public class CreateAccountFragment extends BaseFragment {
     private EditText etRePassword;
     private CheckBox cbToggle;
 
-
     private AsyncTaskSignUp asyncTaskSignUp;
     private ProgressDialog progressDialog;
     String croppedFile;
 
-    //gcm
-    private GoogleCloudMessaging gcm;
     private String deviceToken;
-    private String regid;
-    public static final String PROPERTY_REG_ID = "registration_id";
-    private static final String PROPERTY_APP_VERSION = "appVersion";
-    /**
-     * Substitute you own sender ID here. This is the project number you got
-     * from the API Console, as described in "Getting Started."
-     */
-//    private String SENDER_ID = "308732044105";
-    private String SENDER_ID = "32989397760";
     private String tempPath;
     private File imageFile;
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
         view = inflater.inflate(R.layout.fragment_create_account, container, false);
-
-
         return view;
     }
 
@@ -138,12 +114,6 @@ public class CreateAccountFragment extends BaseFragment {
 
         cbToggle = (CheckBox) view.findViewById(R.id.fragment_create_account_toggle_cb);
 
-//        lat = ((BaseActivity) getActivity()).getLatitude();
-//        log = ((BaseActivity) getActivity()).getLongitude();
-
-        gcmRegistrationProcess();
-
-
         cbToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
@@ -157,7 +127,6 @@ public class CreateAccountFragment extends BaseFragment {
                     etPassword.setTransformationMethod(new PasswordTransformationMethod());
                     etPassword.setSelection(start, end);
                 } else {
-
                     cbToggle.setText(getString(R.string.hide));
                     start = etPassword.getSelectionStart();
                     end = etPassword.getSelectionEnd();
@@ -173,11 +142,9 @@ public class CreateAccountFragment extends BaseFragment {
         tvCheckEnteries.setOnClickListener(this);
     }
 
-
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
     }
 
     @Override
@@ -195,20 +162,15 @@ public class CreateAccountFragment extends BaseFragment {
             validateFragment();
         } else if (v.getId() == tvCancel.getId()) {
             getActivity().onBackPressed();
-        } else if (v.getId() == tvSave.getId()) {
-
         } else if (v.getId() == tvCheckEnteries.getId()) {
-
-
+            // Handle tvCheckEnteries click event
         } else if (v.getId() == imProfile.getId()) {
             selectImage();
         }
     }
 
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
         if (resultCode != Activity.RESULT_OK) {
             return;
         }
@@ -224,7 +186,6 @@ public class CreateAccountFragment extends BaseFragment {
                     }
                     startCropImage();
                 } catch (Exception e) {
-//                    Utils.displayMessageDialog(this, e.getMessage());
                     e.printStackTrace();
                 }
                 break;
@@ -245,17 +206,14 @@ public class CreateAccountFragment extends BaseFragment {
                         isImageUpdated = true;
                     }
                 }.getView());
-
                 break;
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-
     private void selectImage() {
         final CharSequence[] items = {getString(R.string.TAG_TAKE_PHOTO), getString(R.string.TAG_CHOOSE_FROM_GALLERY),
                 getString(R.string.fragment_create_account_tv_cancel)};
-
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(getString(R.string.TAG_ADD_Photo));
@@ -266,18 +224,12 @@ public class CreateAccountFragment extends BaseFragment {
                 if (items[item].equals(getString(R.string.TAG_TAKE_PHOTO))) {
                     userChoosenTask = getString(R.string.TAG_TAKE_PHOTO);
                     gotoCamera();
-//
-
-
                 } else if (items[item].equals(getString(R.string.TAG_CHOOSE_FROM_GALLERY))) {
                     userChoosenTask = getString(R.string.TAG_CHOOSE_FROM_GALLERY);
                     gotoGallery();
-//
-
                 } else if (items[item].equals(getString(R.string.fragment_create_account_tv_cancel))) {
                     dialog.dismiss();
                 }
-
             }
         });
         builder.show();
@@ -303,7 +255,6 @@ public class CreateAccountFragment extends BaseFragment {
         startActivityForResult(photoPickerIntent, Constants.REQUEST_CODE_GALLERY);
     }
 
-
     // Crop Image
     private void startCropImage() {
         if (imageFile != null) {
@@ -320,67 +271,41 @@ public class CreateAccountFragment extends BaseFragment {
         }
     }
 
-
     private void validateFragment() {
-
         if (etUserName.getText().toString().trim().equalsIgnoreCase("")) {
             Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_FIRSTNAME_EMPTYMSG), getString(R.string.TAG_OK), "", false, false);
             etUserName.requestFocus();
-
         } else if (etPhoneNo.getText().toString().trim().equalsIgnoreCase("")) {
             Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_PHONE_NO_EMPTYMSG), getString(R.string.TAG_OK), "", false, false);
             etPhoneNo.requestFocus();
-
-        }
-
-//        else if (etPhoneNo.getText().toString().trim().length() < 10) {
-//            Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_PHONE_NO_MIN_TEN_MSG), getString(android.R.string.ok), "", false, false);
-//            etPhoneNo.requestFocus();
-//
-//        }
-//
-        else if (etEmailId.getText().toString().trim().equals("")) {
+        } else if (etEmailId.getText().toString().trim().equals("")) {
             Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_EMAIL_ID), getString(R.string.TAG_OK), "", false, false);
             etEmailId.requestFocus();
-
         } else if (!Utills.isValidEmail(etEmailId.getText().toString().trim())) {
             Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_ENTER_VALID_EMAIL), getString(R.string.TAG_OK), "", false, false);
             etEmailId.requestFocus();
-
         } else if (etPassword.getText().toString().trim().equalsIgnoreCase("")) {
             Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_PASSWORD_EMPTYMSG), getString(R.string.TAG_OK), "", false, false);
             etPassword.requestFocus();
-
         } else if (etPassword.getText().toString().trim().length() < 7) {
             Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_PASSWORD_LENGTHMSG), getString(R.string.TAG_OK), "", false, false);
             etPassword.requestFocus();
-        }
-
-//        *//* else if (!Utills.validatePassword(etPassword.getText().toString())) {
-//            Utills.displayDialog(getActivity(), getString(R.string.app_name), "Valid Password", getString(android.R.string.ok), "", false, false);
-//        }*/
-
-        else if (etRePassword.getText().toString().trim().equalsIgnoreCase("")) {
+        } else if (etRePassword.getText().toString().trim().equalsIgnoreCase("")) {
             Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_RE_PASSWORD_EMPTYMSG), getString(R.string.TAG_OK), "", false, false);
             etRePassword.requestFocus();
-
         } else if (!etPassword.getText().toString().trim().equalsIgnoreCase("") && !etRePassword.getText().toString().trim().equalsIgnoreCase("")) {
             if (checkPassWordAndConfirmPassword(etPassword.getText().toString().trim(), etRePassword.getText().toString().trim())) {
                 Log.d("From here", "Call service");
                 if (Utills.isOnline(getActivity(), true)) {
                     signUp();
-                    // Utils.displayDialog(this, getString(R.string.app_name), "Account has been created", getString(android.R.string.ok), "", false, true);
                 } else {
                     Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_INTERNET_AVAILABILITY), getString(R.string.TAG_OK), "", false, false);
                 }
-
             } else {
                 Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_PWD_RE_PWD_EMPTYMSG), getString(R.string.TAG_OK), "", false, false);
                 etPassword.requestFocus();
             }
         }
-
-
     }
 
     private void signUp() {
@@ -395,15 +320,6 @@ public class CreateAccountFragment extends BaseFragment {
             Utills.displayDialogNormalMessage(getString(R.string.app_name), getString(R.string.TAG_INTERNET_AVAILABILITY), getActivity());
         }
     }
-
-    /**
-     * This method is used ot check pwd and repwd values.
-     * if match returens true else false.
-     *
-     * @param password
-     * @param confirmPassword
-     * @return
-     */
 
     public boolean checkPassWordAndConfirmPassword(String password, String confirmPassword) {
         boolean pstatus = false;
@@ -451,49 +367,25 @@ public class CreateAccountFragment extends BaseFragment {
                     preference.savePreferenceData(Constant.USER_NAME, etUserNameStr);
                     Preference.getInstance().savePreferenceData(Constant.IS_LOGIN, true);
                     startBackgroundThreadForBLE();
-//
-//                    if (!Utills.isMyServiceRunning(LocationBroadcastServiceNew.class, getActivity())) {
-//                        final Intent intent = new Intent(getActivity(), LocationBroadcastServiceNew.class);
-//                        getActivity().startService(intent);
-//                    }
-
 
                     long time = 1000 * 3;  //For repiting 30 second
 
                     if (!Utills.isMyServiceRunning(LocationBroadcastServiceNew.class, getActivity())) {
-
                         Intent serviceIntent = new Intent(getActivity(), LocationBroadcastServiceNew.class);
                         PendingIntent pendingIntent = PendingIntent.getService(getActivity(), 1001, serviceIntent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
                         AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
                         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), time, pendingIntent);
-
-
-//                getActivity().startService(intent);
                     }
-
-//                    if (!Utills.isMyServiceRunning(BleService.class, getActivity())) {
-//                        Intent serviceIntentBle = new Intent(getActivity(), BleService.class);
-//                        PendingIntent pendingIntentBle = PendingIntent.getService(getActivity(), 1001, serviceIntentBle, PendingIntent.FLAG_CANCEL_CURRENT);
-//                        AlarmManager alarmManagerBle = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
-//                        alarmManagerBle.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), time, pendingIntentBle);
-//
-//                    }
-
 
                     if (isImageUpdated) {
                         new updateProfilePicture().execute();
                     } else {
-
                         Toast.makeText(getActivity(), getString(R.string.TAG_REG_SUC_MSG), Toast.LENGTH_SHORT).show();
-//                        ((MainActivity) getActivity()).replaceFragment(new DashBoardWithSwipableFragment());
                     }
-
                 } else {
                     if (progressDialog != null && progressDialog.isShowing()) {
                         progressDialog.dismiss();
                     }
-
-//                    Utills.displayDialog(getActivity(), getString(R.string.app_name), wsCreateAccount.getMessage(), getString(android.R.string.ok), "", false, false);
                     Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_UNABLE_CREATE_ACCOUNT), getString(R.string.ok), "", false, false);
                 }
             }
@@ -525,30 +417,9 @@ public class CreateAccountFragment extends BaseFragment {
         @Override
         protected Void doInBackground(Void... params) {
             if (Utills.isInternetConnected(getActivity())) {
-
                 wsUploadImage.executeService(path);
-//                response = 0;
-//                JSONObject addedJson = wsUploadImage.executeService(path);
-//                try {
-//                    if (addedJson!= null && addedJson.getInt(KEY_SUCCESS) != 0) {
-//                        int response = addedJson.getInt(KEY_SUCCESS);
-//                        if (response == 1) {
-//                            return KEY_SUCCESS;
-//                        }
-//                    } else {
-//                        response = 2;
-//                        return wsUploadImage.getMessage();
-//                    }
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-//            } else {
-//                response = 1;
-//            }
-//            return KEY_SUCCESS;
             }
             return null;
-
         }
 
         @Override
@@ -562,33 +433,9 @@ public class CreateAccountFragment extends BaseFragment {
             if (!isCancelled()) {
                 if (wsUploadImage.isSuccess()) {
                     ((MainActivity) getActivity()).replaceFragment(new DashBoardWithSwipableFragment());
-//                    replaceChildFragment(new DashBoardWithSwipableFragment(), R.id.activity_registartion_fl_container);
-
                 }
             }
-
-//            switch (response) {
-//                case 2:
-//                    Toast.makeText(getActivity(), "" + result, Toast.LENGTH_SHORT).show();
-//                    break;
-//
-//                case 1:
-//                    Toast.makeText(getActivity(), getString(R.string.alert_check_connection), Toast.LENGTH_SHORT).show();
-//                    break;
-//
-//                default:
-//                    if (result.equals("fail")) {
-//                        Toast.makeText(getActivity(), getString(R.string.TAG_FET_ERROR), Toast.LENGTH_SHORT).show();
-//
-//                    } else {
-//                        Toast.makeText(getActivity(), getString(R.string.TAG_REG_SUC_MSG), Toast.LENGTH_SHORT).show();
-//                        ((MainActivity) getActivity()).replaceFragment(new DashBoardWithSwipableFragment());
-//
-//                    }
-//                    break;
-//            }
         }
-
     }
 
     private void displayDialog(final Activity context, final String title, final String msg, final String strPositiveText) {
@@ -605,127 +452,6 @@ public class CreateAccountFragment extends BaseFragment {
         dialog.show();
     }
 
-    // ///////////////////////////////////////////////// GCM Implementation
-    // ///////////////////////////
-
-    private void gcmRegistrationProcess() {
-        if (checkPlayServices()) {
-            gcm = GoogleCloudMessaging.getInstance(getActivity());
-            regid = getRegistrationId(getActivity());
-
-            if (regid.isEmpty()) {
-                registerInBackground();
-            } else {
-                storeRegistrationId(getActivity(), regid);
-            }
-        } else {
-            Log.i(TAG, "No valid Google Play Services APK found.");
-        }
-    }
-
-    private boolean checkPlayServices() {
-        int googlePlayServicesAvailable = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getActivity());
-        if (googlePlayServicesAvailable == ConnectionResult.SUCCESS) {
-            return true;
-        }
-        return false;
-    }
-
-    private void registerInBackground() {
-        new GcmRegistrationtask().execute();
-    }
-
-    /**
-     * Gets the current registration ID for application on GCM service.
-     * <p>
-     * If result is empty, the app needs to register.
-     *
-     * @return registration ID, or empty string if there is no existing
-     * registration ID.
-     */
-    private String getRegistrationId(Context context) {
-        final SharedPreferences prefs = getGCMPreferences(context);
-        String registrationId = prefs.getString(PROPERTY_REG_ID, "");
-        if (registrationId.isEmpty()) {
-            Log.i(TAG, "Registration not found.");
-            return "";
-        }
-        // Check if app was updated; if so, it must clear the registration ID
-        // since the existing regID is not guaranteed to work with the new
-        // app version.
-        int registeredVersion = prefs.getInt(PROPERTY_APP_VERSION, Integer.MIN_VALUE);
-        int currentVersion = getAppVersion(context);
-        if (registeredVersion != currentVersion) {
-            Log.i(TAG, "App version changed.");
-            return "";
-        }
-        return registrationId;
-    }
-
-    /**
-     * @return Application's {@code SharedPreferences}.
-     */
-    private SharedPreferences getGCMPreferences(Context context) {
-        // This sample app persists the registration ID in shared preferences,
-        // but
-        // how you store the regID in your app is up to you.
-        return getActivity().getSharedPreferences(LoginToYourAccountFragment.class.getSimpleName(), Context.MODE_PRIVATE);
-    }
-
-    /**
-     * @return Application's version code from the {@code PackageManager}.
-     */
-    private static int getAppVersion(Context context) {
-        try {
-            PackageInfo packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
-            return packageInfo.versionCode;
-        } catch (PackageManager.NameNotFoundException e) {
-            // should never happen
-            throw new RuntimeException("Could not get package name: " + e);
-        }
-    }
-
-    private class GcmRegistrationtask extends AsyncTask<Void, Void, Void> {
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            try {
-                if (gcm == null) {
-                    gcm = GoogleCloudMessaging.getInstance(getActivity());
-                }
-                regid = gcm.register(SENDER_ID);
-                storeRegistrationId(getActivity(), regid);
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-    }
-
-    /**
-     * Stores the registration ID and app versionCode in the application's
-     * {@code SharedPreferences}.
-     *
-     * @param context application's context.
-     * @param regId   registration ID
-     */
-    private void storeRegistrationId(Context context, String regId) {
-        final int appVersion = getAppVersion(context);
-        Preference preference = Preference.getInstance();
-        preference.savePreferenceData(preference.KEY_DEVICE_TOKEN, regId);
-        preference.savePreferenceData(PROPERTY_APP_VERSION, appVersion);
-
-//        final SharedPreferences prefs = getGCMPreferences(context);
-//        SharedPreferences.Editor editor = prefs.edit();
-//        editor.putString(PROPERTY_REG_ID, regId);
-//        editor.putInt(PROPERTY_APP_VERSION, appVersion);
-//        editor.commit();
-//        Preference.getInstance().savePreferenceData(C.DEVICE_TOKEN, regId);
-    }
-
-
     private static final long SCAN_PERIOD = 1000;
 
     private void startBackgroundThreadForBLE() {
@@ -734,5 +460,4 @@ public class CreateAccountFragment extends BaseFragment {
         PendingIntent broadcastIntentBle = PendingIntent.getBroadcast(getActivity(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         alarmManagerForBLE.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(), 2 * 60 * SCAN_PERIOD, broadcastIntentBle);
     }
-
 }

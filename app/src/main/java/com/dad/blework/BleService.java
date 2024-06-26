@@ -17,18 +17,23 @@ import android.app.Dialog;
 import android.app.IntentService;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
+import android.bluetooth.le.BluetoothLeScanner;
+import android.bluetooth.le.ScanCallback;
+import android.bluetooth.le.ScanResult;
+import android.bluetooth.le.ScanSettings;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.Calendar;
+import java.util.List;
 import java.util.TimeZone;
 
 import static com.dad.registration.util.Utills.isInternetConnected;
@@ -46,17 +51,17 @@ public class BleService extends IntentService {
     private AsyncTaskSendCrowdAlert asyncTaskSendPush;
     private AsyncTaskTestMode asyncTaskTestMode;
     private AsyncTestMode asyncTestMode;
-
+    private BluetoothLeScanner bluetoothLeScanner;
+    private ScanCallback leScanCallback;
 
     public BleService() {
         super("MyService");
-        handler = new Handler();
+        handler = new Handler(Looper.getMainLooper());
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
-
 
         if (isInternetConnected(getApplicationContext())) {
             getLatLong();
@@ -67,8 +72,6 @@ public class BleService extends IntentService {
         Calendar cal = Calendar.getInstance();
         TimeZone tz = cal.getTimeZone();
         timezoneID = tz.getID();
-
-
     }
 
     private void getLatLong() {
@@ -82,7 +85,6 @@ public class BleService extends IntentService {
             Log.d(TAG, longitude);
             Log.d(TAG, String.valueOf(accuracy));
         }
-
     }
 
     @Override
@@ -98,10 +100,9 @@ public class BleService extends IntentService {
         return START_STICKY;
     }
 
-
     @Override
     protected void onHandleIntent(Intent intent) {
-
+        // Handle the intent here
     }
 
     @Override
@@ -111,10 +112,13 @@ public class BleService extends IntentService {
         if (asyncTaskSendPush != null && asyncTaskSendPush.getStatus() == AsyncTask.Status.RUNNING) {
             asyncTaskSendPush.cancel(true);
         }
-
-
+        if (asyncTaskTestMode != null && asyncTaskTestMode.getStatus() == AsyncTask.Status.RUNNING) {
+            asyncTaskTestMode.cancel(true);
+        }
+        if (asyncTestMode != null && asyncTestMode.getStatus() == AsyncTask.Status.RUNNING) {
+            asyncTestMode.cancel(true);
+        }
     }
-
 
     private boolean isBleSupported;
     private BLEHelper bleHelper;
@@ -133,12 +137,32 @@ public class BleService extends IntentService {
         mBluetoothAdapter = bluetoothManager.getAdapter();
         isBleSupported = true;
         bleHelper = new BLEHelper(this);
-        mHandler = new Handler();
-
+        mHandler = new Handler(Looper.getMainLooper());
 
         if (mBluetoothAdapter != null && isBleSupported && !mBluetoothAdapter.isEnabled()) {
             return;
         }
+
+        bluetoothLeScanner = mBluetoothAdapter.getBluetoothLeScanner();
+        leScanCallback = new ScanCallback() {
+            @Override
+            public void onScanResult(int callbackType, ScanResult result) {
+                super.onScanResult(callbackType, result);
+                // Handle scan result
+            }
+
+            @Override
+            public void onBatchScanResults(List<ScanResult> results) {
+                super.onBatchScanResults(results);
+                // Handle batch scan results
+            }
+
+            @Override
+            public void onScanFailed(int errorCode) {
+                super.onScanFailed(errorCode);
+                // Handle scan failure
+            }
+        };
 
         scanLeDevice(true);
     }
@@ -149,70 +173,54 @@ public class BleService extends IntentService {
     // Stops scanning after 10 seconds.
     private static final long SCAN_PERIOD = 1000;
     private static final long MIN_ALERT_TIME_INTERVEL = 2 * 60 * 1000;
-//    public static String TEST_UUID = "E2C56DB5DFFB48D2B060D0F5A71096E0";
 
     @SuppressLint("NewApi")
     private void scanLeDevice(final boolean enable) {
         if (enable) {
-            // Stops scanning after a pre-defined scan period. Please Note that
-            // this period should be same time as it is defined in Recieving
-            // list screen for bleReciever.
-            mHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if (mBluetoothAdapter != null) {
-                        if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
-                            return;
-                        }
-                        mBluetoothAdapter.stopLeScan(bleHelper.getmLeScanCallback());
+            mHandler.postDelayed(() -> {
+                if (bluetoothLeScanner != null) {
+                    if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
+                        // Handle the case where permission is not granted
+                        return;
                     }
+                    bluetoothLeScanner.stopScan(leScanCallback);
                 }
-
             }, 2 * 60 * SCAN_PERIOD);
-            if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.BLUETOOTH_SCAN) ==
-                    PackageManager.PERMISSION_GRANTED && mBluetoothAdapter != null) {
-                mBluetoothAdapter.startLeScan(bleHelper.getmLeScanCallback());
+
+            if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.BLUETOOTH_SCAN) == PackageManager.PERMISSION_GRANTED && bluetoothLeScanner != null) {
+                ScanSettings settings = new ScanSettings.Builder()
+                        .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
+                        .build();
+                bluetoothLeScanner.startScan(null, settings, leScanCallback);
             }
         } else {
-            if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.BLUETOOTH_SCAN) ==
-                    PackageManager.PERMISSION_GRANTED && mBluetoothAdapter != null) {
-                mBluetoothAdapter.stopLeScan(bleHelper.getmLeScanCallback());
+            if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.BLUETOOTH_SCAN) == PackageManager.PERMISSION_GRANTED && bluetoothLeScanner != null) {
+                bluetoothLeScanner.stopScan(leScanCallback);
             }
         }
     }
-
 
     private class PushForReciever extends Thread {
         @Override
         public void run() {
             String userId = Preference.getInstance().mSharedPreferences.getString(Constant.USER_ID, "");
-//            new ServerResponseHelper().requestToPush(, longitude, userId, timezoneID);
             callSenDangerServiceRecievingListScreen();
         }
-
     }
 
     private class PushForCrowdAlert extends Thread {
         @Override
         public void run() {
-//            String userId = Preference.getInstance().mSharedPreferences.getString(C.USER_ID, "");
-//            new ServerResponseHelper().requestToPushForCrowdAlert(latitude, longitude, userId, timezoneID);
             callSenDangerServiceRecievingListScreen();
-
         }
     }
-
 
     private class TestModeService extends Thread {
         @Override
         public void run() {
-//            String userId = Preference.getInstance().mSharedPreferences.getString(C.USER_ID, "");
-//            new ServerResponseHelper().requestToPushForCrowdAlert(latitude, longitude, userId, timezoneID);
-//            callTestModeService();
             callTestMode();
         }
     }
-
 
     @SuppressLint("NewApi")
     public void sendPushNotification() {
@@ -229,26 +237,17 @@ public class BleService extends IntentService {
             Preference.getInstance().savePreferenceData(Constant.LAST_LOG_TIME, "" + System.currentTimeMillis());
 
             new TestModeService().start();
-//            new PushForCrowdAlert().start();
 
             if (mBluetoothAdapter != null) {
                 if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.BLUETOOTH_SCAN) == PackageManager.PERMISSION_GRANTED) {
                     mBluetoothAdapter.stopLeScan(bleHelper.getmLeScanCallback());
                 }
-
             }
 
             if (!CheckForeground.isInForeGround()) {
                 return;
             }
-            handler.post(new Runnable() {
-
-                @Override
-                public void run() {
-                    Toast.makeText(getApplicationContext(), getString(R.string.TAG_SENDING_ALERT), Toast.LENGTH_SHORT).show();
-
-                }
-            });
+            handler.post(() -> Toast.makeText(getApplicationContext(), getString(R.string.TAG_SENDING_ALERT), Toast.LENGTH_SHORT).show());
 
         } else {
 
@@ -263,7 +262,6 @@ public class BleService extends IntentService {
             Preference.getInstance().savePreferenceData(Constant.LAST_LOG_TIME, "" + System.currentTimeMillis());
 
             new PushForReciever().start();
-//            new PushForCrowdAlert().start();
 
             if (mBluetoothAdapter != null) {
                 mBluetoothAdapter.stopLeScan(bleHelper.getmLeScanCallback());
@@ -272,17 +270,8 @@ public class BleService extends IntentService {
             if (!CheckForeground.isInForeGround()) {
                 return;
             }
-            handler.post(new Runnable() {
-
-                @Override
-                public void run() {
-                    Toast.makeText(getApplicationContext(), getString(R.string.TAG_SENDING_ALERT), Toast.LENGTH_SHORT).show();
-
-                }
-            });
+            handler.post(() -> Toast.makeText(getApplicationContext(), getString(R.string.TAG_SENDING_ALERT), Toast.LENGTH_SHORT).show());
         }
-
-
     }
 
     private void callTestModeService() {
@@ -296,7 +285,6 @@ public class BleService extends IntentService {
         } else {
             Utills.displayDialogNormalMessage(getString(R.string.app_name), getString(R.string.TAG_INTERNET_AVAILABILITY), getActivity());
         }
-
     }
 
     private class AsyncTaskTestMode extends AsyncTask<Void, Void, Void> {
@@ -306,6 +294,9 @@ public class BleService extends IntentService {
         protected void onPreExecute() {
             super.onPreExecute();
             wsCallDADTest = new WsCallDADTest(getActivity());
+            if (getActivity() == null) {
+                cancel(true);
+            }
         }
 
         @Override
@@ -314,24 +305,22 @@ public class BleService extends IntentService {
             return null;
         }
 
-
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             if (!isCancelled()) {
                 if (wsCallDADTest.isSuccess()) {
-                    // From here do further logic
-                    //Toast.makeText(getActivity(), "Successfully ON Test Mode ", Toast.LENGTH_SHORT).show();
-                    Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_TEST_MODE_ON), getString(R.string.ok), "", false, false);
+                    if (getActivity() != null) {
+                        Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_TEST_MODE_ON), getString(R.string.ok), "", false, false);
+                    } else {
+                        Log.e(TAG, "Activity is null");
+                    }
                 } else {
-                    Toast.makeText(getActivity(), getString(R.string.TAG_SOME_WENT_WRONG_MSG), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), getString(R.string.TAG_SOME_WENT_WRONG_MSG), Toast.LENGTH_SHORT).show();
                 }
             }
         }
-
-
     }
-
 
     private boolean isAMinuteOver() {
         long currentTimeMillis = System.currentTimeMillis();
@@ -340,6 +329,7 @@ public class BleService extends IntentService {
         try {
             lastLoggedTime = Long.parseLong(lastLoggedTimeString);
         } catch (Exception e) {
+            Log.e(TAG, "Error parsing last logged time", e);
         }
         if ((currentTimeMillis - lastLoggedTime) <= MIN_ALERT_TIME_INTERVEL) {
             return false;
@@ -349,11 +339,7 @@ public class BleService extends IntentService {
         return true;
     }
 
-
     private void callSenDangerServiceRecievingListScreen() {
-
-//        asyncTaskSendPush = new AsyncTaskSendCrowdAlert();
-
         if (asyncTaskSendPush != null && asyncTaskSendPush.getStatus() == AsyncTask.Status.PENDING) {
             asyncTaskSendPush.execute();
         } else if (asyncTaskSendPush == null || asyncTaskSendPush.getStatus() == AsyncTask.Status.FINISHED) {
@@ -363,9 +349,6 @@ public class BleService extends IntentService {
     }
 
     private void callTestMode() {
-
-//        asyncTaskSendPush = new AsyncTaskSendCrowdAlert();
-
         if (asyncTestMode != null && asyncTestMode.getStatus() == AsyncTask.Status.PENDING) {
             asyncTestMode.execute();
         } else if (asyncTestMode == null || asyncTestMode.getStatus() == AsyncTask.Status.FINISHED) {
@@ -374,19 +357,12 @@ public class BleService extends IntentService {
         }
     }
 
-
     class AsyncTaskSendCrowdAlert extends AsyncTask<Void, Void, Void> {
-
         private WsCallSendDanger wsCallSendDanger;
-//        private ProgressDialog progressDialog;
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-//            progressDialog = new ProgressDialog(getActivity());
-//            progressDialog.show();
-//            progressDialog.setContentView(R.layout.progress_layout);
-//            progressDialog.setCancelable(false);
         }
 
         @Override
@@ -399,16 +375,9 @@ public class BleService extends IntentService {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-//            if (progressDialog != null && progressDialog.isShowing()) {
-//                progressDialog.dismiss();
-//            }
             if (!isCancelled()) {
-                if (wsCallSendDanger.isSuccess())
-                {
-                    // From here do further logic
-
-                    if (getActivity() != null) //TODO:  Band-aid (per Rod) for unknown NPE
-                    {
+                if (wsCallSendDanger.isSuccess()) {
+                    if (getActivity() != null) {
                         final Dialog dialog = new Dialog(getActivity(), R.style.AppDialogTheme);
                         dialog.setContentView(R.layout.custom_progress_layout);
                         final TextView tvTitlee = (TextView) dialog.findViewById(R.id.dialog_tvTitlee);
@@ -422,109 +391,61 @@ public class BleService extends IntentService {
 
                         Log.d("Al_UUID", Preference.getInstance().mSharedPreferences.getString("UUIDHex", ""));
                         Preference preference = Preference.getInstance();
-                        if (preference != null)
-                        {
-                            if (Preference.getInstance().mSharedPreferences.getString(Constants.Preferences.Keys.NEW_UUID_KEY, "").equalsIgnoreCase(Constants.NEW_UUID))
-                            {
-
+                        if (preference != null) {
+                            if (Preference.getInstance().mSharedPreferences.getString(Constants.Preferences.Keys.NEW_UUID_KEY, "").equalsIgnoreCase(Constants.NEW_UUID)) {
                                 final String major = preference.mSharedPreferences.getString(Constants.Preferences.Keys.NEW_MAJOR_KEY, "");
                                 final String minor = preference.mSharedPreferences.getString(Constants.Preferences.Keys.NEW_MINOR_KEY, "");
 
-                                if (!minor.equals("") && !major.equals(""))
-                                {
+                                if (!minor.equals("") && !major.equals("")) {
                                     double doubleminor = Double.parseDouble(minor) / 1000;
                                     double doublemajor = Double.parseDouble(major) / 1000;
 
-                                    if (doubleminor >= -3.0 && doublemajor >= 2.5)
-                                    {
-
+                                    if (doubleminor >= -3.0 && doublemajor >= 2.5) {
                                         tvMsgLeve.setText(getString(R.string.battery_level_good));
                                         tvMsgLeve.setBackgroundColor(getResources().getColor(R.color.color_green));
                                         preference.clearPreferenceItem(Constants.Preferences.Keys.NEW_UUID_KEY);
                                         preference.clearPreferenceItem(Constants.Preferences.Keys.NEW_MAJOR_KEY);
                                         preference.clearPreferenceItem(Constants.Preferences.Keys.NEW_MINOR_KEY);
-
-                                    }
-                                    else if (doubleminor >= -2.499 && doublemajor >= 2.0)
-                                    {
-
+                                    } else if (doubleminor >= -2.499 && doublemajor >= 2.0) {
                                         tvMsgLeve.setText(getString(R.string.battery_level_low));
                                         tvMsgLeve.setBackgroundColor(getResources().getColor(R.color.color_yello));
                                         preference.clearPreferenceItem(Constants.Preferences.Keys.NEW_UUID_KEY);
                                         preference.clearPreferenceItem(Constants.Preferences.Keys.NEW_MAJOR_KEY);
                                         preference.clearPreferenceItem(Constants.Preferences.Keys.NEW_MINOR_KEY);
-                                    }
-                                    else if (doubleminor < 2.0 && doublemajor < 2.0)
-                                    {
+                                    } else if (doubleminor < 2.0 && doublemajor < 2.0) {
                                         tvMsgLeve.setText(getString(R.string.battery_level_replace));
                                         tvMsgLeve.setBackgroundColor(getResources().getColor(R.color.color_alert_red));
                                         preference.clearPreferenceItem(Constants.Preferences.Keys.NEW_UUID_KEY);
                                         preference.clearPreferenceItem(Constants.Preferences.Keys.NEW_MAJOR_KEY);
                                         preference.clearPreferenceItem(Constants.Preferences.Keys.NEW_MINOR_KEY);
-                                    }
-                                    else
-                                    {
+                                    } else {
                                         tvMsgLeve.setText(getString(R.string.battery_level_good));
                                         tvMsgLeve.setBackgroundColor(getResources().getColor(R.color.color_green));
                                         preference.clearPreferenceItem(Constants.Preferences.Keys.NEW_UUID_KEY);
                                         preference.clearPreferenceItem(Constants.Preferences.Keys.NEW_MAJOR_KEY);
                                         preference.clearPreferenceItem(Constants.Preferences.Keys.NEW_MINOR_KEY);
                                     }
-
-
                                 }
-                            } /*else if (Preference.getInstance().mSharedPreferences.getString(Constants.Preferences.Keys.OLD_UUID_KEY, "").equalsIgnoreCase("FD8C0AA6D40411E5AB30625662870761"))*/
-                            else if (Preference.getInstance().mSharedPreferences.getString(Constants.Preferences.Keys.OLD_UUID_KEY, "").equalsIgnoreCase(Constants.OLD_UUID))
-                            {
-
+                            } else if (Preference.getInstance().mSharedPreferences.getString(Constants.Preferences.Keys.OLD_UUID_KEY, "").equalsIgnoreCase(Constants.OLD_UUID)) {
                                 final String major = preference.mSharedPreferences.getString(Constants.Preferences.Keys.OLD_MAJOR_KEY, "");
                                 final String minor = preference.mSharedPreferences.getString("old_minor", "");
 
-                                if (!minor.equals("") && !major.equals(""))
-                                {
+                                if (!minor.equals("") && !major.equals("")) {
                                     double doubleminor = Double.parseDouble(minor) / 1000;
                                     double doublemajor = Double.parseDouble(major) / 1000;
 
-                                    if (doubleminor >= -3.0 && doublemajor >= 2.5)
-                                    {
-
-//                                    tvMsgLeve.setText("GOOD D.A.D BATTERY");
-//                                    tvMsgLeve.setBackgroundColor(getResources().getColor(R.color.color_green));
-
+                                    if (doubleminor >= -3.0 && doublemajor >= 2.5) {
+                                    } else if (doubleminor >= -2.499 && doublemajor >= 2.0) {
+                                    } else if (doubleminor < 2.0 && doublemajor < 2.0) {
+                                    } else {
                                     }
-                                    else if (doubleminor >= -2.499 && doublemajor >= 2.0)
-                                    {
-
-//                                    tvMsgLeve.setText("LOW D.A.D BATTERY");
-//                                    tvMsgLeve.setBackgroundColor(getResources().getColor(R.color.color_yello));
-                                    }
-                                    else if (doubleminor < 2.0 && doublemajor < 2.0)
-                                    {
-//                                    tvMsgLeve.setText("REPLACE D.A.D BATTERY");
-//                                    tvMsgLeve.setBackgroundColor(getResources().getColor(R.color.color_alert_red));
-                                    }
-                                    else
-                                    {
-//                                    tvMsgLeve.setText("GOOD D.A.D BATTERY");
-//                                    tvMsgLeve.setBackgroundColor(getResources().getColor(R.color.color_green));
-                                    }
-
-
                                 }
-
                             }
-
                         }
 
-                        tvPosButtonn.setOnClickListener(new View.OnClickListener()
-                        {
-                            @Override
-                            public void onClick(View view)
-                            {
-                                dialog.dismiss();
-                                sendAlertBroadcast();
-
-                            }
+                        tvPosButtonn.setOnClickListener(view -> {
+                            dialog.dismiss();
+                            sendAlertBroadcast();
                         });
 
                         dialog.show();
@@ -532,21 +453,14 @@ public class BleService extends IntentService {
                 }
             }
         }
-
     }
 
     class AsyncTestMode extends AsyncTask<Void, Void, Void> {
-
         private WsCallDADTest wsCallDADTest;
-//        private ProgressDialog progressDialog;
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-//            progressDialog = new ProgressDialog(getActivity());
-//            progressDialog.show();
-//            progressDialog.setContentView(R.layout.progress_layout);
-//            progressDialog.setCancelable(false);
         }
 
         @Override
@@ -559,29 +473,17 @@ public class BleService extends IntentService {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-//            if (progressDialog != null && progressDialog.isShowing()) {
-//                progressDialog.dismiss();
-//            }
             if (!isCancelled()) {
                 if (wsCallDADTest.isSuccess()) {
-                    // From here do further logic
                     sendAlertBroadcast();
                 }
             }
         }
-
     }
 
-
-    private void sendAlertBroadcast()
-    {
+    private void sendAlertBroadcast() {
         Intent intent = new Intent();
         intent.setAction(Constants.Actions.SENT_ALERT_ACTION);
         sendBroadcast(intent);
     }
 }
-
-
-
-
-

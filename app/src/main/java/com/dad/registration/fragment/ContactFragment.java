@@ -32,6 +32,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.dad.R;
@@ -68,6 +69,7 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
 
     private static final String TAG = ContactFragment.class.getSimpleName();
     private static final int MY_PERMISSIONS_REQUEST_BLUETOOTH = 1002;
+    private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
 
     private TextView tvRestoreFromTheServer;
     private TextView tvEmptyView;
@@ -134,29 +136,25 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
     public void onResume() {
         super.onResume();
 
+        // Check for permissions
+        if (!checkPermissions()) {
+            requestPermissions();
+        } else {
+            // Permissions are already granted, proceed with your logic
+            startForegroundService();
+        }
+
         Calendar cal = Calendar.getInstance();
         TimeZone tz = cal.getTimeZone();
         timezoneID = tz.getID();
-
-        //CheckForeground.onResume(getActivity());
 
         isAllredyShown = false;
 
         if (!Utills.isInternetConnected(getActivity())) {
             Toast.makeText(getActivity(), getString(R.string.alert_check_connection), Toast.LENGTH_SHORT).show();
             return;
-
-
         }
 
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            isBleSupported = false;
-            if (isBleDialogShown) {
-                return;
-            }
-            buildAlertDialogBLENotSupported();
-            return;
-        }
         isBleSupported = true;
         bleHelper = new BLEHelper(ContactFragment.this, false);
 
@@ -168,16 +166,63 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
 
         final LocationManager manager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         if (isBleSupported && !manager.isProviderEnabled(LocationManager.GPS_PROVIDER) && !isGPS_ReqDenied) {
-//            Utills.writeFile("\n\n" + "AT " + new Date() + "   " + "Location is enabled ", getActivity());
             buildAlertMessageNoGps();
             return;
-        } else {
-//            Utills.writeFile("\n\n" + "AT " + new Date() + "   " + "Location is disabled", getActivity());
         }
 
         if (isBleSupported) {
             // scanLeDevice(true);
         }
+    }
+
+    private boolean checkPermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            return ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+                    ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.FOREGROUND_SERVICE) == PackageManager.PERMISSION_GRANTED &&
+                    ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.BLUETOOTH_SCAN) == PackageManager.PERMISSION_GRANTED &&
+                    ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED;
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            return ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+                    ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.FOREGROUND_SERVICE) == PackageManager.PERMISSION_GRANTED &&
+                    ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.BLUETOOTH) == PackageManager.PERMISSION_GRANTED &&
+                    ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.BLUETOOTH_ADMIN) == PackageManager.PERMISSION_GRANTED;
+        } else {
+            return ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+                    ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.BLUETOOTH) == PackageManager.PERMISSION_GRANTED &&
+                    ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.BLUETOOTH_ADMIN) == PackageManager.PERMISSION_GRANTED;
+        }
+    }
+
+    private void requestPermissions() {
+        String[] permissions;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            permissions = new String[]{
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.FOREGROUND_SERVICE,
+                    Manifest.permission.BLUETOOTH_SCAN,
+                    Manifest.permission.BLUETOOTH_CONNECT
+            };
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            permissions = new String[]{
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.FOREGROUND_SERVICE,
+                    Manifest.permission.BLUETOOTH,
+                    Manifest.permission.BLUETOOTH_ADMIN,
+            };
+        } else {
+            permissions = new String[]{
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.BLUETOOTH,
+                    Manifest.permission.BLUETOOTH_ADMIN,
+            };
+        }
+        ActivityCompat.requestPermissions(getActivity(),
+                permissions,
+                REQUEST_PERMISSIONS_REQUEST_CODE);
+    }
+
+    private void startForegroundService() {
+        // Your logic to start the foreground service
     }
 
     private void buildAlertDialogBLENotSupported() {
@@ -253,14 +298,13 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
         this.isEditing = isEditing;
     }
 
-    private void loadRecieversListUsingThread(boolean b) {
+    private void loadRecieversListUsingThread(boolean showProgress) {
         handler = new Handler();
-        if (b) {
+        if (showProgress) {
             progressDialog = ProgressDialog.show(getActivity(), "", getString(R.string.TAG_Loading));
         }
 
         new Thread(new Runnable() {
-
             @Override
             public void run() {
                 final WsCallGetAllContacts wsCallGetAllContacts = new WsCallGetAllContacts(getActivity());
@@ -270,7 +314,6 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
                         isDataAvailable = true;
                         jsonArray = recieverList.optJSONArray("data");
                         listSize = jsonArray.length();
-
                     } else {
                         isDataAvailable = false;
                     }
@@ -282,7 +325,6 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
                         try {
                             if ((isDataAvailable || isJustDataDeleted) && jsonArray != null) {
                                 isJustDataDeleted = false;
-
                                 recieveElementAdapter = new RecieveElementAdapter(getActivity(), ContactFragment.this, jsonArray, isDataAvailable);
                                 listView.setAdapter(recieveElementAdapter);
                                 recieveElementAdapter.notifyDataSetChanged();
@@ -298,76 +340,17 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
 
                                 listView.setOnItemClickListener(ContactFragment.this);
                             }
-                            progressDialog.dismiss();
+                            if (progressDialog != null && progressDialog.isShowing()) {
+                                progressDialog.dismiss();
+                            }
                         } catch (Exception ex) {
                             Log.e(TAG, ex.getMessage());
                         }
                     }
                 });
-
             }
         }).start();
     }
-
-//    private void loadAlertCountUsingThread(boolean b) {
-//        handler = new Handler();
-////        if (b) {
-////            progressDialog = ProgressDialog.show(getActivity(), "", getString(R.string.TAG_Loading));
-////        }
-//
-//        new Thread(new Runnable() {
-//
-//            @Override
-//            public void run() {
-//                final WsCallGetAlertCount wsCallGetAllContacts = new WsCallGetAlertCount(getActivity());
-//                JSONObject recieverList = wsCallGetAllContacts.executeService(Preference.getInstance().mSharedPreferences.getString(Constant.KEY_EMAIL, ""), "");
-//                if (recieverList != null) {
-//                    if (wsCallGetAllContacts.isSuccess()) {
-//                        isDataAvailable = true;
-//                        jsonArray = recieverList.optJSONArray("data");
-//                        int alertCount = recieverList.optJSONArray("data").length();
-//
-//                        if (alertCount < 0) {
-//                            alertCount = 0;
-//                        }
-//                        Preference.getInstance().savePreferenceData("total_count", alertCount);
-//
-//                        listSize = jsonArray.length();
-//
-//                    } else {
-//                        isDataAvailable = false;
-//                    }
-//                }
-//
-//                handler.post(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        if ((isDataAvailable || isJustDataDeleted) && jsonArray != null) {
-//                            isJustDataDeleted = false;
-//                            dashBoardWithSwipableFragment.updateCount();
-//
-////                            recieveElementAdapter = new RecieveElementAdapter(getActivity(), ContactFragment.this, jsonArray, isDataAvailable);
-////                            listView.setAdapter(recieveElementAdapter);
-////                            recieveElementAdapter.notifyDataSetChanged();
-////
-////                            if (jsonArray.length() == 0) {
-////                                tvEmptyView.setVisibility(View.VISIBLE);
-////                                tvEmptyView.setText(getString(R.string.TAG_DATA_NA_MSG));
-////                                llMain.setVisibility(View.GONE);
-////                            } else {
-////                                llMain.setVisibility(View.VISIBLE);
-////                                tvEmptyView.setVisibility(View.GONE);
-////                            }
-////
-////                            listView.setOnItemClickListener(ContactFragment.this);
-//                        }
-////                        progressDialog.dismiss();
-//                    }
-//                });
-//
-//            }
-//        }).start();
-//    }
 
     @Override
     public void trackScreen() {
@@ -452,14 +435,12 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
 
     @Override
     public void onDeleteItemClick(int position) {
-        //if (isEditing()) {
         try {
             jsonobjectToChange = (JSONObject) jsonArray.get(position);
         } catch (JSONException e) {
             e.printStackTrace();
         }
         deleteByThread();
-        //}
     }
 
     Handler handlerDelete = new Handler();
@@ -467,7 +448,6 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
     private void deleteByThread() {
         progressDialog = ProgressDialog.show(getActivity(), "", getString(R.string.TAG_Loading));
         new Thread(new Runnable() {
-
             @Override
             public void run() {
                 String contact_user_id = jsonobjectToChange.optString("userid");
@@ -480,10 +460,8 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
                 }
 
                 handlerDelete.post(new Runnable() {
-
                     @Override
                     public void run() {
-                        //progressDialog.dismiss();
                         if (isJustDataDeleted) {
                             if (!isInternetConnected(getActivity())) {
                                 Toast.makeText(getActivity(), getString(R.string.alert_check_connection), Toast.LENGTH_SHORT).show();
@@ -546,10 +524,7 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
                 if (alertCount < 0) {
                     alertCount = 0;
                 }
-//                Preference.getInstance().savePreferenceData(Constant.ALERT_COUNT, alertCount);
             } else if (issuccess == 0) {
-                //Preference.getInstance().savePreferenceData(Constant.ALERT_COUNT, 0);
-                //((TextView) getView().findViewById(R.id.alertCount)).setText("" + 0);
             }
         }
     }
@@ -565,51 +540,17 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
 
     public static String TEST_UUID = Constants.NEW_UUID;
 
-//    private void scanLeDevice(final boolean enable) {
-//        if (enable) {
-//            // Stops scanning after a pre-defined scan period.
-//            mHandler.postDelayed(new Runnable() {
-//                @Override
-//                public void run() {
-//                    mBluetoothAdapter.stopLeScan(bleHelper.getmLeScanCallback());
-//                    getActivity().invalidateOptionsMenu();
-//                }
-//            }, SCAN_PERIOD);
-//            mBluetoothAdapter.startLeScan(bleHelper.getmLeScanCallback());
-//        } else {
-//            mBluetoothAdapter.stopLeScan(bleHelper.getmLeScanCallback());
-//        }
-//    }
-
     private boolean isAllredyShown;
 
     private class PushForReciever extends Thread {
         @Override
         public void run() {
             String userId = Preference.getInstance().mSharedPreferences.getString(Constant.USER_ID, "");
-//            new ServerResponseHelper().requestToPush(getLatitude() + "", getLongitude() + "", userId, timezoneID);
-
             callSenDangerServiceRecievingListScreen();
-
-
         }
-
-
     }
 
-    //
-//    private class PushForCrowdAlert extends Thread {
-//        @Override
-//        public void run() {
-//            String userId = Preference.getInstance().mSharedPreferences.getString(Constant.USER_ID, "");
-////            new ServerResponseHelper().requestToPushForCrowdAlert(getLatitude() + "", getLongitude() + "", userId, timezoneID);
-//
-//            callSenDangerServiceRecievingListScreen();
-//        }
-//    }
-//
     private void callSenDangerServiceRecievingListScreen() {
-
         if (NetworkAvailability.isOnline(getActivity(), true, true, true)) {
             if (asyncTaskSendPush != null && asyncTaskSendPush.getStatus() == AsyncTask.Status.PENDING) {
                 asyncTaskSendPush.execute();
@@ -620,21 +561,24 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
         } else {
             Toast.makeText(getActivity(), getString(R.string.TAG_INTERNET_AVAILABILITY), Toast.LENGTH_SHORT).show();
         }
-
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        // Check if the request code matches the one you used for requesting permissions
         if (requestCode == MY_PERMISSIONS_REQUEST_BLUETOOTH) {
-            // Check if the permission was granted
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission was granted, call your method
                 sendPushNotification();
             } else {
-                // Permission denied, handle accordingly (e.g., show a message or disable functionality)
-                Toast.makeText(getActivity(), "Permission denied", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Bluetooth Permission denied", Toast.LENGTH_SHORT).show();
+            }
+        } else if (requestCode == REQUEST_PERMISSIONS_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission granted, proceed with your logic
+                startForegroundService();
+            } else {
+                // Permission denied, show a message to the user
+                Toast.makeText(getActivity(), "Location Permission denied", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -645,7 +589,6 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
         }
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.BLUETOOTH_SCAN)
                 == PackageManager.PERMISSION_GRANTED) {
-            // Permission is already granted, proceed with the method
             isAllredyShown = true;
             Toast.makeText(getActivity(), getString(R.string.TAG_SENDING_ALERT), Toast.LENGTH_SHORT).show();
             ((MainActivity) getActivity()).updateLatLong();
@@ -654,7 +597,6 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
                 mBluetoothAdapter.stopLeScan(bleHelper.getmLeScanCallback());
             }
         } else {
-            // Request the location permission
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 requestPermissions(new String[]{Manifest.permission.BLUETOOTH_SCAN}, MY_PERMISSIONS_REQUEST_BLUETOOTH);
             }
@@ -664,44 +606,25 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
     private class AsyncTaskSendPush extends AsyncTask<Void, Void, Void> {
 
         private WsCallSendDanger wsCallSendDanger;
-//        private ProgressDialog progressDialog;
-
-        //        private String strOldPassword = etOldPassword.getText().toString().trim();
-//        private String strNewPassword = etNewPassword.getText().toString().trim();
-        //double log = ((MainActivity) getActivity()).getLongitude();
-        // double lat = ((MainActivity) getActivity()).getLatitude();
         String lat = Preference.getInstance().mSharedPreferences.getString(Constant.COMMON_LATITUDE, "0.01");
         String log = Preference.getInstance().mSharedPreferences.getString(Constant.COMMON_LONGITUDE, "0.01");
         int accuracy = Preference.getInstance().mSharedPreferences.getInt(Constant.COMMON_ACCURACY, 0);
 
-        //        AsyncTaskSendPush(double latitude, double longitude String timezoneID)
-//        {
-//
-//        }
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-//            progressDialog = new ProgressDialog(getActivity());
-//            progressDialog.show();
-////            progressDialog.setContentView(R.layout.progress_layout);
-//            progressDialog.setCancelable(false);
-
-
         }
 
         @Override
         protected Void doInBackground(Void... params) {
-
             wsCallSendDanger = new WsCallSendDanger(getActivity());
             wsCallSendDanger.executeService(Double.parseDouble(lat), Double.parseDouble(log), timezoneID, accuracy);
             return null;
         }
 
-
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-
             if (!isCancelled()) {
                 if (wsCallSendDanger.isSuccess()) {
                     // From here do further logic
@@ -717,7 +640,6 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
         final SwipeMenuCreator creator = new SwipeMenuCreator() {
             @Override
             public void create(SwipeMenu menu) {
-                // create "delete" item
                 final SwipeMenuItem swipeMenuItemDelete = new SwipeMenuItem(getActivity());
                 swipeMenuItemDelete.setBackground(new ColorDrawable(ContextCompat.getColor(getActivity(), R.color.color_alert_red)));
                 swipeMenuItemDelete.setWidth(Utills.dpToPx(getActivity(), 100));
@@ -757,7 +679,6 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
         });
     }
 
-
     private void displayDeleteDialog(final Activity context, final String title, final String msg, final String strPositiveText, final String strNegativeText) {
         final AlertDialog.Builder dialog = new AlertDialog.Builder(context);
         dialog.setTitle(title);
@@ -768,7 +689,6 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
                 dialog.dismiss();
                 if (Utills.isOnline(getActivity(), true)) {
                     deleteByThread();
-                    //callDeleteNotificationService(position, notificationListDataModel.getMType(), notificationListDataModel.getMMemberMessageBoardId());
                 } else {
                     Utills.displayDialogNormalMessage(getString(R.string.app_name), getString(R.string.TAG_INTERNET_AVAILABILITY), getActivity());
                 }
@@ -792,7 +712,6 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
         }
     }
 
-
     private class AlertListLoaderThread extends Thread {
         @Override
         public void run() {
@@ -802,41 +721,31 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
                 String email = Preference.getInstance().mSharedPreferences.getString(Constant.KEY_EMAIL, "");
                 JSONObject jsonRecieved = wsCallGetAlertCount.executeService(email, "" + 0);
                 if (jsonRecieved != null) {
-
-
                     if (jsonRecieved.getInt(SUCCESS) == 1) {
                         isDataAvailable = true;
-//                        jsonArray = jsonRecieved.getJSONArray("data");
-//                        listSize = jsonArray.length();
                         int alertCount = jsonRecieved.optJSONArray("data").length();
 
                         if (alertCount < 0) {
                             alertCount = 0;
                         }
                         Preference.getInstance().savePreferenceData("total_count", alertCount);
-
-//                        getActivity().runOnUiThread(new AlertListDataHandler(jsonRecieved));
+                        Preference.getInstance().savePreferenceData("total_count", alertCount);
                     } else {
                         isDataAvailable = false;
                     }
                 }
-
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-//            getActivity().runOnUiThread(new AlertListDataHandler(null));
         }
     }
 
     private class AsyncTaskResetCount extends AsyncTask<Void, Void, Void> {
         private WsResetCount wsResetCount;
 
-
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-//
-
         }
 
         @Override
@@ -846,7 +755,6 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
             return null;
         }
 
-
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
@@ -855,50 +763,8 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
                     Log.d("Count", "Updated");
                 } else {
                     Toast.makeText(getActivity(), getString(R.string.TAG_SOME_WENT_WRONG_MSG), Toast.LENGTH_SHORT).show();
-
                 }
             }
         }
-
-
     }
-
-
-//    private class AlertListDataHandler implements Runnable {
-//
-//        private JSONObject result;
-//
-//        public AlertListDataHandler(JSONObject result) {
-//            this.result = result;
-//        }
-//
-//        @Override
-//        public void run() {
-//            if ((isDataAvailable || isJustDataDeleted) && result != null) {
-//                try {
-//                    isJustDataDeleted = false;
-//                    jsonArray = result.getJSONArray("data");
-//                    int alertCount = result.optJSONArray("data").length();
-//                    Preference.getInstance().savePreferenceData("total_count", alertCount);
-//
-//                    if (alertCount < 0) {
-//                        alertCount = 0;
-//                    }
-//                    Preference.getInstance().savePreferenceData("alert_count", alertCount);
-//                    dashBoardWithSwipableFragment.updateCount();
-//
-//
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//
-//        }
-//
-//    }
-
-
 }
-
-
-

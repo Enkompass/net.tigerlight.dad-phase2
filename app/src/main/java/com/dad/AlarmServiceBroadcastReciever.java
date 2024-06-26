@@ -18,12 +18,12 @@ public class AlarmServiceBroadcastReciever extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        long time = 1000 * 5;  //For repiting 30 second
+        long time = 1000 * 30;  // For repeating every 30 seconds
 
         try {
             Log.d(TAG, "Starting AlarmServiceBroadcastReciever");
             Intent serviceIntent = new Intent(context, LocationBroadcastServiceNew.class);
-            PendingIntent pendingIntent = PendingIntent.getService(context, 1001, serviceIntent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+            PendingIntent pendingIntent = PendingIntent.getService(context, 1001, serviceIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
             AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
             alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), time, pendingIntent);
 

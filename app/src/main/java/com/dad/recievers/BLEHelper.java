@@ -28,7 +28,7 @@ public class BLEHelper {
 
     private BluetoothAdapter.LeScanCallback mLeScanCallback;
     // private LeDeviceListAdapter mLeDeviceListAdapter;
-    private String TAG = BLEHelper.class.getName();
+    private final String TAG = BLEHelper.class.getName();
     final static char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
     public static final UUID BATTERY_SERVICE_UUID =
             UUID.fromString("0000180f-0000-1000-8000-00805f9b34fb");
@@ -43,85 +43,162 @@ public class BLEHelper {
     @SuppressLint("NewApi")
     public BLEHelper(final BaseFragment settingScreen, final boolean isFromSetting) {
 
+        if (ActivityCompat.checkSelfPermission(settingScreen.getActivity(), Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+            // Permission is not granted, handle accordingly
+            return;
+        }
+        mLeScanCallback = (device, rssi, scanRecord) -> settingScreen.getActivity().runOnUiThread(() -> {
 
-        mLeScanCallback = new BluetoothAdapter.LeScanCallback() {
-
-            @Override
-            public void onLeScan(final BluetoothDevice device, int rssi, final byte[] scanRecord) {
-
-
-                ((Activity) settingScreen.getActivity()).runOnUiThread(new Runnable() {
-
-                    @Override
-                    public void run() {
-
-                        String msg = "";
+            String msg = "";
 
 
-                        for (byte b : scanRecord)
-                            msg += String.format("%02x ", b);
+            for (byte b : scanRecord)
+                msg += String.format("%02x ", b);
 
-                        msg = msg.replaceAll("\\s+", "");
-                        ContactFragment.TEST_UUID = ContactFragment.TEST_UUID.toLowerCase();
-                        ContactFragment.TEST_UUID_PREVIOUS = ContactFragment.TEST_UUID_PREVIOUS.toLowerCase();
+            msg = msg.replaceAll("\\s+", "");
+            ContactFragment.TEST_UUID = ContactFragment.TEST_UUID.toLowerCase();
+            ContactFragment.TEST_UUID_PREVIOUS = ContactFragment.TEST_UUID_PREVIOUS.toLowerCase();
 
 
-                        if (msg.contains(ContactFragment.TEST_UUID)) {
-                            if (isFromSetting) {
+            if (msg.contains(ContactFragment.TEST_UUID)) {
+                if (isFromSetting) {
 //                                restartActivity();
-                            } else {
-                                ((ContactFragment) settingScreen).sendPushNotification();
-                            }
-                        }
-
-                        if (msg.contains(ContactFragment.TEST_UUID_PREVIOUS)) {
-                            if (isFromSetting) {
-//                                restartActivity();
-//                                ((SettingScreen) settingScreen).bleFound();
-                            } else {
-                                ((ContactFragment) settingScreen).sendPushNotification();
-                            }
-                        }
-                    }
-
-                });
+                } else {
+                    ((ContactFragment) settingScreen).sendPushNotification();
+                }
             }
 
-        };
+            if (msg.contains(ContactFragment.TEST_UUID_PREVIOUS)) {
+                if (isFromSetting) {
+//                                restartActivity();
+//                                ((SettingScreen) settingScreen).bleFound();
+                } else {
+                    ((ContactFragment) settingScreen).sendPushNotification();
+                }
+            }
+        });
     }
 
     @SuppressLint("NewApi")
     public BLEHelper(final BleService bleService) {
 
-        mLeScanCallback = new BluetoothAdapter.LeScanCallback() {
+        if (ActivityCompat.checkSelfPermission(bleService, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+            // Permission is not granted, handle accordingly
+            return;
+        }
+        mLeScanCallback = (device, rssi, scanRecord) -> {
 
-            @Override
-            public void onLeScan(final BluetoothDevice device, int rssi, final byte[] scanRecord) {
+            String msg = "";
 
-                String msg = "";
+            for (byte b : scanRecord)
+                msg += String.format("%02x ", b);
 
-                for (byte b : scanRecord)
-                    msg += String.format("%02x ", b);
-
-                msg = msg.replaceAll("\\s+", "");
-                ContactFragment.TEST_UUID = ContactFragment.TEST_UUID.toLowerCase();
-                ContactFragment.TEST_UUID_PREVIOUS = ContactFragment.TEST_UUID_PREVIOUS.toLowerCase();
-
-
-                // Log.v("rss", "" + String.valueOf(rssi));
-
-                // Log.v("Device", "" + device);
-                int serialNumber = (scanRecord[25] & 0xFF) << 24 | (scanRecord[26] & 0xFF) << 16 | (scanRecord[27] & 0xFF) << 8 | scanRecord[28] & 0xFF;
-
-                //Log.e("serial number", "Serial Number is " + serialNumber);
-
-                String UUIDHex = convertBytesToHex(Arrays.copyOfRange(scanRecord, 9, 25));
-                //Log.d("UUID", UUIDHex);
+            msg = msg.replaceAll("\\s+", "");
+            ContactFragment.TEST_UUID = ContactFragment.TEST_UUID.toLowerCase();
+            ContactFragment.TEST_UUID_PREVIOUS = ContactFragment.TEST_UUID_PREVIOUS.toLowerCase();
 
 
+            // Log.v("rss", "" + String.valueOf(rssi));
+
+            // Log.v("Device", "" + device);
+            int serialNumber = (scanRecord[25] & 0xFF) << 24 | (scanRecord[26] & 0xFF) << 16 | (scanRecord[27] & 0xFF) << 8 | scanRecord[28] & 0xFF;
+
+            //Log.e("serial number", "Serial Number is " + serialNumber);
+
+            String UUIDHex = convertBytesToHex(Arrays.copyOfRange(scanRecord, 9, 25));
+            //Log.d("UUID", UUIDHex);
+
+
+            if (UUIDHex.equalsIgnoreCase(Constants.NEW_UUID)) {
+
+
+                Log.d("tigerlight", "found");
+
+                //if (UUIDHex.equals(GELO_UUID)) {
+                // Bytes 25 and 26 of the advertisement packet represent
+                // the major value
+                int major = (scanRecord[25] << 8) | (scanRecord[26] << 0);
+                //Log.e("Major", "Serial Number is " + major);
+
+
+                // Bytes 27 and 28 of the advertisement packet represent
+                // the minor
+                int minor = ((scanRecord[27] & 0xFF) << 8) | (scanRecord[28] & 0xFF);
+                /*Log.d("TAG", "device" + device + " Serial Number is " + serialNumber + " major" + major + " minor" + minor + " rssi" + rssi + "label: " + device.getName());*/
+                Preference.getInstance().savePreferenceData(Constants.Preferences.Keys.NEW_UUID_KEY, String.valueOf(UUIDHex));
+                Preference.getInstance().savePreferenceData(Constants.Preferences.Keys.NEW_MAJOR_KEY, String.valueOf(major));
+                Preference.getInstance().savePreferenceData(Constants.Preferences.Keys.NEW_MINOR_KEY, String.valueOf(minor));
+
+
+                if (msg.contains(ContactFragment.TEST_UUID) || msg.contains(ContactFragment.TEST_UUID_PREVIOUS)) {
+                    bleService.sendPushNotification();
+                    //Log.d("ss", "2");
+
+                }
+
+
+            }
+
+            if (getActivity() != null && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
+            if (UUIDHex.equalsIgnoreCase(Constants.OLD_UUID) && Constants.LAIRD_BEACON_LABEL.equals(device.getName())) {
+                //if (UUIDHex.equalsIgnoreCase(Constants.OLD_UUID)) {
+
+                Log.d("Laird iBeacon", "found");
+                //if (UUIDHex.equals(GELO_UUID)) {
+                // Bytes 25 and 26 of the advertisement packet represent
+                // the major value
+                int major = (scanRecord[25] << 8) | (scanRecord[26]);
+                //Log.e("Major", "Serial Number is " + major);
+                // Bytes 27 and 28 of the advertisement packet represent
+                // the minor value
+                int minor = ((scanRecord[27] & 0xFF) << 8) | (scanRecord[28] & 0xFF);
+                /*Log.d("TAG", "device" + device + " Serial Number is " + serialNumber + " major" + major + " minor" + minor + " rssi" + rssi);*/
+                Preference.getInstance().savePreferenceData(Constants.Preferences.Keys.OLD_UUID_KEY, String.valueOf(UUIDHex));
+                Preference.getInstance().savePreferenceData(Constants.Preferences.Keys.OLD_MAJOR_KEY, String.valueOf(major));
+                Preference.getInstance().savePreferenceData(Constants.Preferences.Keys.OLD_MINOR_KEY, String.valueOf(minor));
+
+                if (msg.contains(ContactFragment.TEST_UUID) || msg.contains(ContactFragment.TEST_UUID_PREVIOUS)) {
+                    bleService.sendPushNotification();
+                }
+            }
+        };
+    }
+
+
+    @SuppressLint("NewApi")
+    public BLEHelper(final LocationBroadcastServiceNew LocationbleService, final boolean isSetting) {
+        if (ActivityCompat.checkSelfPermission(LocationbleService, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+            // Permission is not granted, handle accordingly
+            return;
+        }
+        mLeScanCallback = (device, rssi, scanRecord) -> {
+            String msg = "";
+            IsFirst = isSetting;
+
+            for (byte b : scanRecord)
+                msg += String.format("%02x ", b);
+
+            msg = msg.replaceAll("\\s+", "");
+            ContactFragment.TEST_UUID = ContactFragment.TEST_UUID.toLowerCase();
+            ContactFragment.TEST_UUID_PREVIOUS = ContactFragment.TEST_UUID_PREVIOUS.toLowerCase();
+
+
+            // Log.v("rss", "" + String.valueOf(rssi));
+
+            // Log.v("Device", "" + device);
+            int serialNumber = (scanRecord[25] & 0xFF) << 24 | (scanRecord[26] & 0xFF) << 16 | (scanRecord[27] & 0xFF) << 8 | scanRecord[28] & 0xFF;
+
+            //Log.e("serial number", "Serial Number is " + serialNumber);
+
+            String UUIDHex = convertBytesToHex(Arrays.copyOfRange(scanRecord, 9, 25));
+            //Log.d("UUID", UUIDHex);
+
+
+            if (IsFirst) {
                 if (UUIDHex.equalsIgnoreCase(Constants.NEW_UUID)) {
-
-
+                    IsFirst = false;
                     Log.d("tigerlight", "found");
 
                     //if (UUIDHex.equals(GELO_UUID)) {
@@ -134,20 +211,23 @@ public class BLEHelper {
                     // Bytes 27 and 28 of the advertisement packet represent
                     // the minor
                     int minor = ((scanRecord[27] & 0xFF) << 8) | (scanRecord[28] & 0xFF);
-                    /*Log.d("TAG", "device" + device + " Serial Number is " + serialNumber + " major" + major + " minor" + minor + " rssi" + rssi + "label: " + device.getName());*/
-                    Preference.getInstance().savePreferenceData(Constants.Preferences.Keys.NEW_UUID_KEY, String.valueOf(UUIDHex));
-                    Preference.getInstance().savePreferenceData(Constants.Preferences.Keys.NEW_MAJOR_KEY, String.valueOf(major));
-                    Preference.getInstance().savePreferenceData(Constants.Preferences.Keys.NEW_MINOR_KEY, String.valueOf(minor));
+                    Log.d("TAG", "device" + device + " Serial Number is " + serialNumber + " major" + major + " minor" + minor + " rssi" + rssi);
 
+                    Preference.getInstance().savePreferenceData(Constants.Preferences.Keys.UUID_KEY, String.valueOf(UUIDHex));
+                    Preference.getInstance().savePreferenceData(Constants.Preferences.Keys.MAJOR_KEY, String.valueOf(major));
+                    Preference.getInstance().savePreferenceData(Constants.Preferences.Keys.MINOR_KEY, String.valueOf(minor));
 
-                    if (msg.contains(ContactFragment.TEST_UUID) || msg.contains(ContactFragment.TEST_UUID)) {
-                        bleService.sendPushNotification();
-                        //Log.d("ss", "2");
-
+                    if (getActivity() != null) //TODO:  Band-aid (per Rod) for unknown NPE
+                    {
+                        LocationbleService.sendPushNotification();
+                        getActivity().startActivity(new Intent(getActivity(), MainActivity.class));
+                    } else {
+                        Log.e(TAG, "getActivity() = null");
                     }
-
-
                 }
+            }
+
+            if (IsFirst) {
 
                 if (getActivity() != null && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
                     return;
@@ -155,125 +235,36 @@ public class BLEHelper {
                 if (UUIDHex.equalsIgnoreCase(Constants.OLD_UUID) && Constants.LAIRD_BEACON_LABEL.equals(device.getName())) {
                     //if (UUIDHex.equalsIgnoreCase(Constants.OLD_UUID)) {
 
-                    Log.d("Laird iBeacon", "found");
+                    IsFirst = false;
+                    Preference.getInstance().mSharedPreferences.getString("IsSecond", "true");
+
+
+                    Log.d("tigerlight", "found");
+
+
                     //if (UUIDHex.equals(GELO_UUID)) {
                     // Bytes 25 and 26 of the advertisement packet represent
                     // the major value
                     int major = (scanRecord[25] << 8) | (scanRecord[26] << 0);
                     //Log.e("Major", "Serial Number is " + major);
+
                     // Bytes 27 and 28 of the advertisement packet represent
                     // the minor value
                     int minor = ((scanRecord[27] & 0xFF) << 8) | (scanRecord[28] & 0xFF);
-                    /*Log.d("TAG", "device" + device + " Serial Number is " + serialNumber + " major" + major + " minor" + minor + " rssi" + rssi);*/
-                    Preference.getInstance().savePreferenceData(Constants.Preferences.Keys.OLD_UUID_KEY, String.valueOf(UUIDHex));
-                    Preference.getInstance().savePreferenceData(Constants.Preferences.Keys.OLD_MAJOR_KEY, String.valueOf(major));
-                    Preference.getInstance().savePreferenceData(Constants.Preferences.Keys.OLD_MINOR_KEY, String.valueOf(minor));
+                    Log.d("TAG", "device" + device + " Serial Number is " + serialNumber + " major" + major + " minor" + minor + " rssi" + rssi);
 
-                    if (msg.contains(ContactFragment.TEST_UUID_PREVIOUS) || msg.contains(ContactFragment.TEST_UUID_PREVIOUS)) {
-                        bleService.sendPushNotification();
+                    Preference.getInstance().savePreferenceData(Constants.Preferences.Keys.UUID_KEY, String.valueOf(UUIDHex));
+                    Preference.getInstance().savePreferenceData(Constants.Preferences.Keys.MAJOR_KEY, String.valueOf(major));
+                    Preference.getInstance().savePreferenceData(Constants.Preferences.Keys.MINOR_KEY, String.valueOf(minor));
+
+                    if (getActivity() != null) {
+                        LocationbleService.sendPushNotification();
+                        getActivity().startActivity(new Intent(getActivity(), MainActivity.class));
+                    } else {
+                        Log.e(TAG, "getActivity() = null");
                     }
                 }
             }
-        };
-    }
-
-
-    @SuppressLint("NewApi")
-    public BLEHelper(final LocationBroadcastServiceNew LocationbleService, final boolean isSetting) {
-        mLeScanCallback = new BluetoothAdapter.LeScanCallback() {
-            @Override
-            public void onLeScan(final BluetoothDevice device, int rssi, final byte[] scanRecord) {
-                String msg = "";
-                IsFirst = isSetting;
-
-                for (byte b : scanRecord)
-                    msg += String.format("%02x ", b);
-
-                msg = msg.replaceAll("\\s+", "");
-                ContactFragment.TEST_UUID = ContactFragment.TEST_UUID.toLowerCase();
-                ContactFragment.TEST_UUID_PREVIOUS = ContactFragment.TEST_UUID_PREVIOUS.toLowerCase();
-
-
-                // Log.v("rss", "" + String.valueOf(rssi));
-
-                // Log.v("Device", "" + device);
-                int serialNumber = (scanRecord[25] & 0xFF) << 24 | (scanRecord[26] & 0xFF) << 16 | (scanRecord[27] & 0xFF) << 8 | scanRecord[28] & 0xFF;
-
-                //Log.e("serial number", "Serial Number is " + serialNumber);
-
-                String UUIDHex = convertBytesToHex(Arrays.copyOfRange(scanRecord, 9, 25));
-                //Log.d("UUID", UUIDHex);
-
-
-                if (IsFirst) {
-                    if (UUIDHex.equalsIgnoreCase(Constants.NEW_UUID)) {
-                        IsFirst = false;
-                        Log.d("tigerlight", "found");
-
-                        //if (UUIDHex.equals(GELO_UUID)) {
-                        // Bytes 25 and 26 of the advertisement packet represent
-                        // the major value
-                        int major = (scanRecord[25] << 8) | (scanRecord[26] << 0);
-                        //Log.e("Major", "Serial Number is " + major);
-
-
-                        // Bytes 27 and 28 of the advertisement packet represent
-                        // the minor
-                        int minor = ((scanRecord[27] & 0xFF) << 8) | (scanRecord[28] & 0xFF);
-                        Log.d("TAG", "device" + device + " Serial Number is " + serialNumber + " major" + major + " minor" + minor + " rssi" + rssi);
-
-                        Preference.getInstance().savePreferenceData(Constants.Preferences.Keys.UUID_KEY, String.valueOf(UUIDHex));
-                        Preference.getInstance().savePreferenceData(Constants.Preferences.Keys.MAJOR_KEY, String.valueOf(major));
-                        Preference.getInstance().savePreferenceData(Constants.Preferences.Keys.MINOR_KEY, String.valueOf(minor));
-
-                        if (getActivity() != null) //TODO:  Band-aid (per Rod) for unknown NPE
-                        {
-                            getActivity().startActivity(new Intent(getActivity(), MainActivity.class));
-                        } else {
-                            Log.e(TAG, "getActivity() = null");
-                        }
-                    }
-                }
-
-                if (IsFirst) {
-
-                    if (getActivity() != null && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
-                        return;
-                    }
-                    if (UUIDHex.equalsIgnoreCase(Constants.OLD_UUID) && Constants.LAIRD_BEACON_LABEL.equals(device.getName())) {
-                        //if (UUIDHex.equalsIgnoreCase(Constants.OLD_UUID)) {
-
-                        IsFirst = false;
-                        Preference.getInstance().mSharedPreferences.getString("IsSecond", "true");
-
-
-                        Log.d("tigerlight", "found");
-
-
-                        //if (UUIDHex.equals(GELO_UUID)) {
-                        // Bytes 25 and 26 of the advertisement packet represent
-                        // the major value
-                        int major = (scanRecord[25] << 8) | (scanRecord[26] << 0);
-                        //Log.e("Major", "Serial Number is " + major);
-
-                        // Bytes 27 and 28 of the advertisement packet represent
-                        // the minor value
-                        int minor = ((scanRecord[27] & 0xFF) << 8) | (scanRecord[28] & 0xFF);
-                        Log.d("TAG", "device" + device + " Serial Number is " + serialNumber + " major" + major + " minor" + minor + " rssi" + rssi);
-
-                        Preference.getInstance().savePreferenceData(Constants.Preferences.Keys.UUID_KEY, String.valueOf(UUIDHex));
-                        Preference.getInstance().savePreferenceData(Constants.Preferences.Keys.MAJOR_KEY, String.valueOf(major));
-                        Preference.getInstance().savePreferenceData(Constants.Preferences.Keys.MINOR_KEY, String.valueOf(minor));
-
-                        if (getActivity() != null) {
-                            getActivity().startActivity(new Intent(getActivity(), MainActivity.class));
-                        } else {
-                            Log.e(TAG, "getActivity() = null");
-                        }
-                    }
-                }
-            }
-
         };
 
     }

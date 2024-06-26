@@ -1,10 +1,23 @@
 package com.dad;
 
+import com.dad.settings.webservices.WsCallDADTest;
+import com.dad.settings.webservices.WsCallSendDanger;
+import com.dad.util.CheckForeground;
+import com.dad.util.GPSTracker;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationResult;
+
+import android.app.Activity;
+import android.app.Dialog;
+import android.bluetooth.le.BluetoothLeScanner;
+import android.bluetooth.le.ScanCallback;
+import android.bluetooth.le.ScanResult;
 
 import com.dad.recievers.BLEHelper;
 import com.dad.registration.util.Constant;
@@ -23,20 +36,28 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.content.res.AssetFileDescriptor;
 import android.location.Location;
+import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import static android.bluetooth.BluetoothAdapter.ACTION_DISCOVERY_FINISHED;
 import static android.bluetooth.BluetoothAdapter.ACTION_DISCOVERY_STARTED;
+import static android.bluetooth.BluetoothAdapter.ACTION_SCAN_MODE_CHANGED;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
+import java.io.IOException;
 
 /**
  * Created on 23/11/16.
@@ -44,6 +65,7 @@ import androidx.core.app.ActivityCompat;
 
 public class LocationBroadcastServiceNew extends Service implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
+    private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 1000;
     public final String TAG = getClass().getSimpleName();
     /**
      * The desired interval for location updates. Inexact. Updates may be more or less frequent.
@@ -65,6 +87,17 @@ public class LocationBroadcastServiceNew extends Service implements GoogleApiCli
     private AsyncTaskUpdateLocation asyncTaskUpdateLocation;
 
     private float mSmallestDisplacementValue = DEFAULT_SMALLEST_DISPLACEMENT_DISTANCE_IN_METERS;
+    private FusedLocationProviderClient fusedLocationClient;
+    private LocationCallback locationCallback;
+    private BluetoothLeScanner bluetoothLeScanner;
+    private ScanCallback leScanCallback;
+    private BluetoothAdapter mBluetoothAdapter;
+    private Handler mHandler;
+
+    // Stops scanning after 10 seconds.
+    private static final long SCAN_PERIOD = 1000;
+    private static final long MIN_ALERT_TIME_INTERVEL = 2 * 60 * 1000;
+//    public static String TEST_UUID = "E2C56DB5DFFB48D2B060D0F5A71096E0";
 
     //private SocketClient socketClient;
 
@@ -76,12 +109,51 @@ public class LocationBroadcastServiceNew extends Service implements GoogleApiCli
         IntentFilter filter2 = new IntentFilter();
         filter2.addAction(ACTION_DISCOVERY_STARTED);
         filter2.addAction(ACTION_DISCOVERY_FINISHED);
-        filter2.addAction(BluetoothAdapter.ACTION_SCAN_MODE_CHANGED);
+        filter2.addAction(ACTION_SCAN_MODE_CHANGED);
         registerReceiver(mBroadcastReceiver2, filter2);
         buildGoogleApiClient();
 
         //socketClient = new SocketClient();
         //socketClient.initializeSocket();
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        locationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                if (locationResult == null) {
+                    return;
+                }
+                for (Location location : locationResult.getLocations()) {
+                    onLocationChanged(location);
+                }
+            }
+        };
+
+        // Initialize BluetoothLeScanner
+        final BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
+        mBluetoothAdapter = bluetoothManager.getAdapter();
+        bleHelper = new BLEHelper(this, true);
+        mHandler = new Handler();
+        if (mBluetoothAdapter != null) {
+            isBleSupported = true;
+            bluetoothLeScanner = mBluetoothAdapter.getBluetoothLeScanner();
+            leScanCallback = new ScanCallback() {
+                @Override
+                public void onScanResult(int callbackType, ScanResult result) {
+                    super.onScanResult(callbackType, result);
+                    // Handle scan result
+                }
+
+                @Override
+                public void onScanFailed(int errorCode) {
+                    super.onScanFailed(errorCode);
+                    // Handle scan failure
+                }
+            };
+        } else {
+            isBleSupported = false;
+            Log.e(TAG, "Bluetooth is not supported on this device.");
+        }
     }
 
 
@@ -102,7 +174,11 @@ public class LocationBroadcastServiceNew extends Service implements GoogleApiCli
         super.onDestroy();
         Log.e(TAG, "onDestroy");
         stopLocationUpdates();
-        unregisterReceiver(mBroadcastReceiver2);
+        try {
+            unregisterReceiver(mBroadcastReceiver2);
+        } catch (IllegalArgumentException e) {
+            Log.e(TAG, "Receiver not registered", e);
+        }
     }
 
     @Nullable
@@ -136,10 +212,11 @@ public class LocationBroadcastServiceNew extends Service implements GoogleApiCli
 
     private void startListeningForLocationRequests() {
         final LocationRequest locationRequest = createLocationRequest();
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        // Use FusedLocationProviderClient instead of deprecated FusedLocationApi
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-        LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
+        fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null);
     }
 
     @Override
@@ -165,8 +242,8 @@ public class LocationBroadcastServiceNew extends Service implements GoogleApiCli
 
     private LocationRequest createLocationRequest() {
         final LocationRequest locationRequest = new LocationRequest();
-        locationRequest.setInterval(1000);
-//        locationRequest.setFastestInterval(1000);
+        locationRequest.setInterval(UPDATE_INTERVAL_IN_MILLISECONDS);
+        locationRequest.setFastestInterval(FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS);
         locationRequest.setSmallestDisplacement(mSmallestDisplacementValue);
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         /*Log.d(TAG, String.format(Locale.US, "createLocationRequest: smallestDisplacement = %1$f, interval = %2$d", locationRequest.getSmallestDisplacement(), locationRequest.getInterval()));*/
@@ -177,10 +254,9 @@ public class LocationBroadcastServiceNew extends Service implements GoogleApiCli
 
     private void stopLocationUpdates() {
 //        Utills.writeFile("\n\n" + "AT " + new Date() + "   " + "stopLocationUpdates", this);
-        if (googleApiClient.isConnected())
-        {
+        if (googleApiClient.isConnected()) {
             //Log.d(TAG, "Stopping Location Updates");
-            LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, this);
+            fusedLocationClient.removeLocationUpdates(locationCallback);
             googleApiClient.disconnect();
         }
     }
@@ -278,6 +354,10 @@ public class LocationBroadcastServiceNew extends Service implements GoogleApiCli
 
             }
 
+            if (action.equals(ACTION_SCAN_MODE_CHANGED)) {
+                serchiBeaconAvailability();
+            }
+
 
         }
     };
@@ -296,10 +376,14 @@ public class LocationBroadcastServiceNew extends Service implements GoogleApiCli
         }
 
         final BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
-        mBluetoothAdapter = bluetoothManager.getAdapter();
-        isBleSupported = true;
-        bleHelper = new BLEHelper(this, true);
         mHandler = new Handler();
+        if (bluetoothManager != null) {
+            mBluetoothAdapter = bluetoothManager.getAdapter();
+            if (mBluetoothAdapter != null && !mBluetoothAdapter.isEnabled()) {
+                bleHelper = new BLEHelper(this, true);
+                scanLeDevice(true);
+            }
+        }
 
 
         if (mBluetoothAdapter != null && isBleSupported && !mBluetoothAdapter.isEnabled()) {
@@ -309,43 +393,413 @@ public class LocationBroadcastServiceNew extends Service implements GoogleApiCli
         scanLeDevice(true);
     }
 
-    private BluetoothAdapter mBluetoothAdapter;
-    private Handler mHandler;
-
-    // Stops scanning after 10 seconds.
-    private static final long SCAN_PERIOD = 1000;
-    private static final long MIN_ALERT_TIME_INTERVEL = 2 * 60 * 1000;
-//    public static String TEST_UUID = "E2C56DB5DFFB48D2B060D0F5A71096E0";
-
     @SuppressLint("NewApi")
     private void scanLeDevice(final boolean enable) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
         if (enable) {
             // Stops scanning after a pre-defined scan period. Please Note that
             // this period should be same time as it is defined in Recieving
             // list screen for bleReciever.
-            mHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if (mBluetoothAdapter != null) {
-                        if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
-                            return;
-                        }
-                        mBluetoothAdapter.stopLeScan(bleHelper.getmLeScanCallback());
-                    }
+            mHandler.postDelayed(() -> {
+                if (mBluetoothAdapter != null) {
+                    bluetoothLeScanner.stopScan(leScanCallback);
                 }
-
             }, 2 * 60 * SCAN_PERIOD);
-            if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.BLUETOOTH_SCAN) ==
-                    PackageManager.PERMISSION_GRANTED && mBluetoothAdapter != null) {
-                mBluetoothAdapter.startLeScan(bleHelper.getmLeScanCallback());
+            if (mBluetoothAdapter != null) {
+                bluetoothLeScanner.startScan(leScanCallback);
             }
         } else {
-            if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.BLUETOOTH_SCAN) ==
-                    PackageManager.PERMISSION_GRANTED && mBluetoothAdapter != null) {
-                mBluetoothAdapter.stopLeScan(bleHelper.getmLeScanCallback());
+            if (mBluetoothAdapter != null) {
+                bluetoothLeScanner.stopScan(leScanCallback);
             }
         }
     }
 
+    private String latitude;
+    private String longitude;
+    private int accuracy;
+    private String timezoneID;
+    private Handler handler;
+    private AsyncTaskSendPush asyncTaskSendPush;
+    private AsyncTaskTestMode asyncTaskTestMode;
+    private AsyncTestMode asyncTestMode;
 
+    private void getLatLong() {
+        GPSTracker gpsTracker = new GPSTracker(getApplicationContext());
+        if (gpsTracker.canGetLocation()) {
+            latitude = String.valueOf(gpsTracker.getLatitude());
+            longitude = String.valueOf(gpsTracker.getLongitude());
+            accuracy = (int) gpsTracker.getAccuracy();
+
+            Log.d(TAG, latitude);
+            Log.d(TAG, longitude);
+            Log.d(TAG, String.valueOf(accuracy));
+        }
+
+    }
+
+    private class PushForReciever extends Thread {
+        @Override
+        public void run() {
+            String userId = Preference.getInstance().mSharedPreferences.getString(Constant.USER_ID, "");
+//            new ServerResponseHelper().requestToPush(, longitude, userId, timezoneID);
+            callSenDangerServiceRecievingListScreen();
+        }
+
+    }
+
+    private class PushForCrowdAlert extends Thread {
+        @Override
+        public void run() {
+//            String userId = Preference.getInstance().mSharedPreferences.getString(C.USER_ID, "");
+//            new ServerResponseHelper().requestToPushForCrowdAlert(latitude, longitude, userId, timezoneID);
+            callSenDangerServiceRecievingListScreen();
+
+        }
+    }
+
+
+    private class TestModeService extends Thread {
+        @Override
+        public void run() {
+//            String userId = Preference.getInstance().mSharedPreferences.getString(C.USER_ID, "");
+//            new ServerResponseHelper().requestToPushForCrowdAlert(latitude, longitude, userId, timezoneID);
+//            callTestModeService();
+            callTestMode();
+        }
+    }
+
+
+    @SuppressLint("NewApi")
+    public void sendPushNotification() {
+        if (Preference.getInstance().mSharedPreferences.getBoolean(Constant.IS_TEST_MODE, false)) {
+
+            if (Preference.getInstance().mSharedPreferences.getBoolean(Constant.IS_ON_SETTING, false)) {
+                return;
+            }
+
+            if (!isAMinuteOver()) {
+                return;
+            }
+
+            Preference.getInstance().savePreferenceData(Constant.LAST_LOG_TIME, "" + System.currentTimeMillis());
+
+            new TestModeService().start();
+//            new PushForCrowdAlert().start();
+
+            if (mBluetoothAdapter != null) {
+                if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.BLUETOOTH_SCAN) == PackageManager.PERMISSION_GRANTED) {
+                    mBluetoothAdapter.stopLeScan(bleHelper.getmLeScanCallback());
+                }
+
+            }
+
+            if (!CheckForeground.isInForeGround()) {
+                return;
+            }
+            handler.post(() -> Toast.makeText(getApplicationContext(), getString(R.string.TAG_SENDING_ALERT), Toast.LENGTH_SHORT).show());
+
+        } else {
+
+            if (Preference.getInstance().mSharedPreferences.getBoolean(Constant.IS_ON_SETTING, false)) {
+                return;
+            }
+
+            if (!isAMinuteOver()) {
+                return;
+            }
+
+            Preference.getInstance().savePreferenceData(Constant.LAST_LOG_TIME, "" + System.currentTimeMillis());
+
+            new PushForReciever().start();
+//            new PushForCrowdAlert().start();
+
+            if (mBluetoothAdapter != null) {
+                mBluetoothAdapter.stopLeScan(bleHelper.getmLeScanCallback());
+            }
+
+            if (!CheckForeground.isInForeGround()) {
+                return;
+            }
+            handler.post(() -> Toast.makeText(getApplicationContext(), getString(R.string.TAG_SENDING_ALERT), Toast.LENGTH_SHORT).show());
+        }
+
+
+    }
+
+    private void callTestModeService() {
+        if (Utills.isInternetConnected((Activity) getApplicationContext())) {
+            if (asyncTaskTestMode != null && asyncTaskTestMode.getStatus() == AsyncTask.Status.PENDING) {
+                asyncTaskTestMode.execute();
+            } else if (asyncTaskTestMode == null || asyncTaskTestMode.getStatus() == AsyncTask.Status.FINISHED) {
+                asyncTaskTestMode = new AsyncTaskTestMode();
+                asyncTaskTestMode.execute();
+            }
+        } else {
+            Utills.displayDialogNormalMessage(getString(R.string.app_name), getString(R.string.TAG_INTERNET_AVAILABILITY), (Activity) getApplicationContext());
+        }
+
+    }
+
+    private class AsyncTaskTestMode extends AsyncTask<Void, Void, Void> {
+        private WsCallDADTest wsCallDADTest;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            wsCallDADTest = new WsCallDADTest((Activity) getApplicationContext());
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            wsCallDADTest.executeService();
+            return null;
+        }
+
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            if (!isCancelled()) {
+                if (wsCallDADTest.isSuccess()) {
+                    // From here do further logic
+                    //Toast.makeText((Activity) getApplicationContext(), "Successfully ON Test Mode ", Toast.LENGTH_SHORT).show();
+                    Utills.displayDialog((Activity) getApplicationContext(), getString(R.string.app_name), getString(R.string.TAG_TEST_MODE_ON), getString(R.string.ok), "", false, false);
+                } else {
+                    Toast.makeText((Activity) getApplicationContext(), getString(R.string.TAG_SOME_WENT_WRONG_MSG), Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+
+
+    }
+
+
+    private boolean isAMinuteOver() {
+        long currentTimeMillis = System.currentTimeMillis();
+        String lastLoggedTimeString = Preference.getInstance().mSharedPreferences.getString(Constant.LAST_LOG_TIME, "");
+        long lastLoggedTime = 0;
+        try {
+            lastLoggedTime = Long.parseLong(lastLoggedTimeString);
+        } catch (Exception e) {
+        }
+        if ((currentTimeMillis - lastLoggedTime) <= MIN_ALERT_TIME_INTERVEL) {
+            return false;
+        }
+        Log.d("BleService", "isAMinuteOver()");
+
+        return true;
+    }
+
+
+    private void callSenDangerServiceRecievingListScreen() {
+
+//        asyncTaskSendPush = new AsyncTaskSendCrowdAlert();
+
+        if (asyncTaskSendPush != null && asyncTaskSendPush.getStatus() == AsyncTask.Status.PENDING) {
+            asyncTaskSendPush.execute();
+        } else if (asyncTaskSendPush == null || asyncTaskSendPush.getStatus() == AsyncTask.Status.FINISHED) {
+            asyncTaskSendPush = new AsyncTaskSendPush();
+            asyncTaskSendPush.execute();
+        }
+    }
+
+    private void callTestMode() {
+
+//        asyncTaskSendPush = new AsyncTaskSendCrowdAlert();
+
+        if (asyncTestMode != null && asyncTestMode.getStatus() == AsyncTask.Status.PENDING) {
+            asyncTestMode.execute();
+        } else if (asyncTestMode == null || asyncTestMode.getStatus() == AsyncTask.Status.FINISHED) {
+            asyncTestMode = new AsyncTestMode();
+            asyncTestMode.execute();
+        }
+    }
+
+    private void playAlarmSound() {
+        final AssetFileDescriptor audioFile = getApplicationContext().getResources().openRawResourceFd(R.raw.tigerlightsound);
+
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                MediaPlayer mediaPlayer = new MediaPlayer();
+                try {
+                    mediaPlayer.setDataSource(audioFile.getFileDescriptor(), audioFile.getStartOffset(), audioFile.getLength());
+
+                    mediaPlayer.prepare();
+                    mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                        @Override
+                        public void onCompletion(MediaPlayer mp) {
+                            mp.release();
+                        }
+                    });
+                    mediaPlayer.start();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        thread.run();
+    }
+
+
+    @SuppressLint("StaticFieldLeak")
+    class AsyncTaskSendPush extends AsyncTask<Void, Void, Void> {
+
+        private WsCallSendDanger wsCallSendDanger;
+        String lat = Preference.getInstance().mSharedPreferences.getString(Constant.COMMON_LATITUDE, "0.01");
+        String log = Preference.getInstance().mSharedPreferences.getString(Constant.COMMON_LONGITUDE, "0.01");
+        int accuracy = Preference.getInstance().mSharedPreferences.getInt(Constant.COMMON_ACCURACY, 0);
+//        private ProgressDialog progressDialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            wsCallSendDanger = new WsCallSendDanger(getApplicationContext());
+            wsCallSendDanger.executeService(Double.parseDouble(lat), Double.parseDouble(log), timezoneID, accuracy);
+            playAlarmSound();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            if (!isCancelled()) {
+                if (wsCallSendDanger.isSuccess())
+                {
+                    // From here do further logic
+
+                    if (getApplicationContext() != null) //TODO:  Band-aid (per Rod) for unknown NPE
+                    {
+                        final Dialog dialog = new Dialog(getApplicationContext(), R.style.AppDialogTheme);
+                        dialog.setContentView(R.layout.custom_progress_layout);
+                        final TextView tvTitlee = (TextView) dialog.findViewById(R.id.dialog_tvTitlee);
+                        final TextView tvMessagee = (TextView) dialog.findViewById(R.id.dialog_tvMessagee);
+                        final TextView tvMsgLeve = (TextView) dialog.findViewById(R.id.dialog_tvMsgLevel);
+                        final TextView tvPosButtonn = (TextView) dialog.findViewById(R.id.dialog_tvPosButtonn);
+
+                        tvTitlee.setText(getString(R.string.custom_progess_dialog_tv_title));
+                        tvMessagee.setText(getString(R.string.custom_progess_dialog_tv_msg));
+                        tvPosButtonn.setText(getString(R.string.custom_progess_dialog_tv_ok));
+
+                        Log.d("Al_UUID", Preference.getInstance().mSharedPreferences.getString("UUIDHex", ""));
+                        Preference preference = Preference.getInstance();
+                        if (preference != null)
+                        {
+                            if (Preference.getInstance().mSharedPreferences.getString(Constants.Preferences.Keys.NEW_UUID_KEY, "").equalsIgnoreCase(Constants.NEW_UUID))
+                            {
+
+                                final String major = preference.mSharedPreferences.getString(Constants.Preferences.Keys.NEW_MAJOR_KEY, "");
+                                final String minor = preference.mSharedPreferences.getString(Constants.Preferences.Keys.NEW_MINOR_KEY, "");
+
+                                if (!minor.equals("") && !major.equals(""))
+                                {
+                                    double doubleminor = Double.parseDouble(minor) / 1000;
+                                    double doublemajor = Double.parseDouble(major) / 1000;
+
+                                    if (doubleminor >= -3.0 && doublemajor >= 2.5)
+                                    {
+
+                                        tvMsgLeve.setText(getString(R.string.battery_level_good));
+                                        tvMsgLeve.setBackgroundColor(getResources().getColor(R.color.color_green));
+                                        preference.clearPreferenceItem(Constants.Preferences.Keys.NEW_UUID_KEY);
+                                        preference.clearPreferenceItem(Constants.Preferences.Keys.NEW_MAJOR_KEY);
+                                        preference.clearPreferenceItem(Constants.Preferences.Keys.NEW_MINOR_KEY);
+
+                                    }
+                                    else if (doubleminor >= -2.499 && doublemajor >= 2.0)
+                                    {
+
+                                        tvMsgLeve.setText(getString(R.string.battery_level_low));
+                                        tvMsgLeve.setBackgroundColor(getResources().getColor(R.color.color_yello));
+                                        preference.clearPreferenceItem(Constants.Preferences.Keys.NEW_UUID_KEY);
+                                        preference.clearPreferenceItem(Constants.Preferences.Keys.NEW_MAJOR_KEY);
+                                        preference.clearPreferenceItem(Constants.Preferences.Keys.NEW_MINOR_KEY);
+                                    }
+                                    else if (doubleminor < 2.0 && doublemajor < 2.0)
+                                    {
+                                        tvMsgLeve.setText(getString(R.string.battery_level_replace));
+                                        tvMsgLeve.setBackgroundColor(getResources().getColor(R.color.color_alert_red));
+                                        preference.clearPreferenceItem(Constants.Preferences.Keys.NEW_UUID_KEY);
+                                        preference.clearPreferenceItem(Constants.Preferences.Keys.NEW_MAJOR_KEY);
+                                        preference.clearPreferenceItem(Constants.Preferences.Keys.NEW_MINOR_KEY);
+                                    }
+                                    else
+                                    {
+                                        tvMsgLeve.setText(getString(R.string.battery_level_good));
+                                        tvMsgLeve.setBackgroundColor(getResources().getColor(R.color.color_green));
+                                        preference.clearPreferenceItem(Constants.Preferences.Keys.NEW_UUID_KEY);
+                                        preference.clearPreferenceItem(Constants.Preferences.Keys.NEW_MAJOR_KEY);
+                                        preference.clearPreferenceItem(Constants.Preferences.Keys.NEW_MINOR_KEY);
+                                    }
+
+
+                                }
+                            }
+                        }
+
+                        tvPosButtonn.setOnClickListener(view -> {
+                            dialog.dismiss();
+                            sendAlertBroadcast();
+
+                        });
+
+                        dialog.show();
+                    }
+                }
+            }
+        }
+
+    }
+
+    class AsyncTestMode extends AsyncTask<Void, Void, Void> {
+
+        private WsCallDADTest wsCallDADTest;
+//        private ProgressDialog progressDialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            playAlarmSound();
+//            progressDialog = new ProgressDialog((Activity) getApplicationContext());
+//            progressDialog.show();
+//            progressDialog.setContentView(R.layout.progress_layout);
+//            progressDialog.setCancelable(false);
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            wsCallDADTest = new WsCallDADTest(getApplicationContext());
+            wsCallDADTest.executeService();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+//            if (progressDialog != null && progressDialog.isShowing()) {
+//                progressDialog.dismiss();
+//            }
+            if (!isCancelled()) {
+                if (wsCallDADTest.isSuccess()) {
+                    // From here do further logic
+                    sendAlertBroadcast();
+                }
+            }
+        }
+
+    }
+
+    private void sendAlertBroadcast()
+    {
+        Intent intent = new Intent();
+        intent.setAction(Constants.Actions.SENT_ALERT_ACTION);
+        sendBroadcast(intent);
+    }
 }

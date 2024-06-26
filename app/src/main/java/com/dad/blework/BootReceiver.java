@@ -17,9 +17,11 @@ public class BootReceiver extends BroadcastReceiver {
             return;
         }
         AlarmManager alarmManagerForBLE = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        Intent bleIntent = new Intent(context, BleReceiver.class);
-        PendingIntent broadcastIntentBle = PendingIntent.getBroadcast(context, 0, bleIntent, PendingIntent.FLAG_IMMUTABLE);
-        alarmManagerForBLE.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(), 2 * 60 * 1000, broadcastIntentBle);
+        if (alarmManagerForBLE != null) {
+            Intent bleIntent = new Intent(context, BleReceiver.class);
+            PendingIntent broadcastIntentBle = PendingIntent.getBroadcast(context, 0, bleIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+            alarmManagerForBLE.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(), 2 * 60 * 1000, broadcastIntentBle);
+        }
     }
 
 }

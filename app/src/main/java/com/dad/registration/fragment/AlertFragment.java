@@ -25,6 +25,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -35,13 +36,18 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -63,6 +69,7 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
     private static final String TAG = AlertFragment.class.getSimpleName();
 
     public static final int MAXIMUM_ACCURACY_WAIT = 30000;
+    private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 1000;
 
     private TextView tvSendDanger;
     private TextView tvEmptyAlert;
@@ -236,59 +243,56 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
         }
     }
 
-    private CompoundButton.OnCheckedChangeListener mTestModeOnCheckChangeListener = new CompoundButton.OnCheckedChangeListener() {
-        @Override
-        public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-            if (b) {
-                final Dialog dialog = new Dialog(getActivity(), R.style.AppDialogTheme);
-                dialog.setContentView(R.layout.custom_dialog_test_mode);
-                final TextView tvTitle = (TextView) dialog.findViewById(R.id.dialog_tvTitle);
-                final TextView tvMessage = (TextView) dialog.findViewById(R.id.dialog_tvMessage);
-                final TextView tvPosButton = (TextView) dialog.findViewById(R.id.dialog_tvPosButton);
-                final TextView tvNegButton = (TextView) dialog.findViewById(R.id.dialog_tvNegButton);
+    private CompoundButton.OnCheckedChangeListener mTestModeOnCheckChangeListener = (compoundButton, b) -> {
+        if (b) {
+            final Dialog dialog = new Dialog(getActivity(), R.style.AppDialogTheme);
+            dialog.setContentView(R.layout.custom_dialog_test_mode);
+            final TextView tvTitle = (TextView) dialog.findViewById(R.id.dialog_tvTitle);
+            final TextView tvMessage = (TextView) dialog.findViewById(R.id.dialog_tvMessage);
+            final TextView tvPosButton = (TextView) dialog.findViewById(R.id.dialog_tvPosButton);
+            final TextView tvNegButton = (TextView) dialog.findViewById(R.id.dialog_tvNegButton);
 
 
-                tvTitle.setText(getString(R.string.dialog_test_mode_title));
-                tvMessage.setText(getString(R.string.dialog_test_mode_msg));
-                tvPosButton.setText(getString(R.string.dialog_test_mode_pos_btn));
-                tvNegButton.setText(getString(R.string.dialog_test_mode_neg_btn));
+            tvTitle.setText(getString(R.string.dialog_test_mode_title));
+            tvMessage.setText(getString(R.string.dialog_test_mode_msg));
+            tvPosButton.setText(getString(R.string.dialog_test_mode_pos_btn));
+            tvNegButton.setText(getString(R.string.dialog_test_mode_neg_btn));
 
-                tvPosButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        dialog.dismiss();
-                        updateTestModeValue(true);
-                        Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_TEST_MODE_ON), getString(R.string.ok), "", false, false);
+            tvPosButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dialog.dismiss();
+                    updateTestModeValue(true);
+                    Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_TEST_MODE_ON), getString(R.string.ok), "", false, false);
 //                            callTestModeService();
 
 
 //                            Toast.makeText(getActivity(), "positive", Toast.LENGTH_SHORT).show();
 
-                    }
-                });
+                }
+            });
 
-                tvNegButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Preference.getInstance().savePreferenceData(Constant.IS_TEST_MODE, false);
-                        dialog.dismiss();
+            tvNegButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Preference.getInstance().savePreferenceData(Constant.IS_TEST_MODE, false);
+                    dialog.dismiss();
 //                            Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_TEST_MODE_OFF), getString(R.string.ok), "", false, false);
-                        Preference.getInstance().mSharedPreferences.edit().putBoolean(Constant.IS_TEST_MODE, false);
-                        updateTestModeSwitch();
+                    Preference.getInstance().mSharedPreferences.edit().putBoolean(Constant.IS_TEST_MODE, false);
+                    updateTestModeSwitch();
 //                            Toast.makeText(getActivity(), "Negative", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                }
+            });
 
-                dialog.show();
+            dialog.show();
 
 
-            } else {
+        } else {
 
-                Preference.getInstance().savePreferenceData(Constant.IS_TEST_MODE, false);
-                Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_TEST_MODE_OFF), getString(R.string.ok), "", false, false);
-            }
-
+            Preference.getInstance().savePreferenceData(Constant.IS_TEST_MODE, false);
+            Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_TEST_MODE_OFF), getString(R.string.ok), "", false, false);
         }
+
     };
 
 
@@ -341,7 +345,9 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            getActivity().runOnUiThread(new AlertListDataHandler(null));
+            if (getActivity() != null) {
+                getActivity().runOnUiThread(new AlertListDataHandler(null));
+            }
         }
     }
 
@@ -381,7 +387,9 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
                     e.printStackTrace();
                 }
             }
-            progressDialog.cancel();
+            if (progressDialog != null && progressDialog.isShowing()) {
+                progressDialog.dismiss();
+            }
         }
 
     }
@@ -473,8 +481,8 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
     private void callSenDangerServiceRecievingListScreen() {
         if (Utills.isInternetConnected(getActivity())) {
             if (asyncTaskSendPush != null && asyncTaskSendPush.getStatus() == AsyncTask.Status.PENDING) {
-                //asyncTaskSendPush.execute();
-                sendAlert(asyncTaskSendPush);
+                asyncTaskSendPush.execute();
+//                sendAlert(asyncTaskSendPush);
             } else if (asyncTaskSendPush == null || asyncTaskSendPush.getStatus() == AsyncTask.Status.FINISHED) {
                 asyncTaskSendPush = new AsyncTaskSendPush();
                 sendAlert(asyncTaskSendPush);
@@ -600,11 +608,10 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
         progressDialog = ProgressDialog.show(getActivity(), "", getString(R.string.TAG_SENDING_ALERT));
         progressDialog.show();
 
-        final Intent serviceIntent = new Intent(getActivity(), LocationBroadcastServiceNew.class);
-        serviceIntent.putExtra(Constants.Extras.SMALLEST_DISPLACEMENT_VALUE, 0f);
+        if (!checkPermissions()) {
+            requestPermissions();
 
-        getActivity().stopService(serviceIntent);
-        getActivity().startService(serviceIntent);
+        }
         final CountDownTimer countDownTimer = new CountDownTimer(MAXIMUM_ACCURACY_WAIT, 1000)
         {
             @Override
@@ -631,16 +638,6 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
                 {
                     task.execute();
                 }
-                //Stop the LocationService after allowing a few seconds to ensure that the service has time connect. This is necessary since the accuracy could already meet the criteria from a request. It will automatically be restarted by the repeating AlarmManager every 1 minute.
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        getActivity().stopService(serviceIntent);
-                    }
-                }, 3000);
             }
         };
 
@@ -688,12 +685,7 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
         androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(getActivity());
         builder.setTitle(R.string.test_message_title)
                 .setMessage(R.string.test_message_body)
-                .setPositiveButton(R.string.nice, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        }).show();
+                .setPositiveButton(R.string.nice, (dialog, which) -> dialog.dismiss()).show();
 }
 
     private void playAlarmSound() {
@@ -707,19 +699,14 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
                         mediaPlayer.setDataSource(audioFile.getFileDescriptor(), audioFile.getStartOffset(), audioFile.getLength());
 
                     mediaPlayer.prepare();
-                    mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                        @Override
-                        public void onCompletion(MediaPlayer mp) {
-                            mp.release();
-                        }
-                    });
+                    mediaPlayer.setOnCompletionListener(mp -> mp.release());
                     mediaPlayer.start();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
             });
-            thread.run();
+            thread.start();
     }
 
     private void callCrowdAlertModeServiceON(int status) {
@@ -813,36 +800,30 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
      * Setup swipe menu on listview and apply click event on it
      */
     private void setSwipeMenu() {
-        final SwipeMenuCreator creator = new SwipeMenuCreator() {
-            @Override
-            public void create(SwipeMenu menu) {
-                // create "delete" item
-                final SwipeMenuItem swipeMenuItemDelete = new SwipeMenuItem(getActivity());
-                swipeMenuItemDelete.setBackground(new ColorDrawable(ContextCompat.getColor(getActivity(), R.color.color_alert_red)));
-                swipeMenuItemDelete.setWidth(Utills.dpToPx(getActivity(), 100));
-                swipeMenuItemDelete.setIcon(R.drawable.img_notification_delete);
-                swipeMenuItemDelete.setTitleColor(ContextCompat.getColor(getActivity(), R.color.colorWhite));
-                menu.addMenuItem(swipeMenuItemDelete);
-            }
+        final SwipeMenuCreator creator = menu -> {
+            // create "delete" item
+            final SwipeMenuItem swipeMenuItemDelete = new SwipeMenuItem(getActivity());
+            swipeMenuItemDelete.setBackground(new ColorDrawable(ContextCompat.getColor(getActivity(), R.color.color_alert_red)));
+            swipeMenuItemDelete.setWidth(Utills.dpToPx(getActivity(), 100));
+            swipeMenuItemDelete.setIcon(R.drawable.img_notification_delete);
+            swipeMenuItemDelete.setTitleColor(ContextCompat.getColor(getActivity(), R.color.colorWhite));
+            menu.addMenuItem(swipeMenuItemDelete);
         };
         lvAlerts.setMenuCreator(creator);
-        lvAlerts.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
-                try {
-                    jsonobjectToChange = (JSONObject) jsonArray.get(position);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                switch (index) {
-                    case 0:
-                        if (menu.getMenuItems().size() == 1) {
-                            displayDeleteDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_IS_SURE_ALERT), getString(R.string.TAG_OK), getString(R.string.fragment_create_account_tv_cancel), position);
-                        }
-                        break;
-                }
-                return false;
+        lvAlerts.setOnMenuItemClickListener((position, menu, index) -> {
+            try {
+                jsonobjectToChange = (JSONObject) jsonArray.get(position);
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
+            switch (index) {
+                case 0:
+                    if (menu.getMenuItems().size() == 1) {
+                        displayDeleteDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_IS_SURE_ALERT), getString(R.string.TAG_OK), getString(R.string.fragment_create_account_tv_cancel), position);
+                    }
+                    break;
+            }
+            return false;
         });
         lvAlerts.setOnSwipeListener(new SwipeMenuListView.OnSwipeListener() {
             @Override
@@ -863,22 +844,16 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
         dialog.setTitle(title);
         dialog.setCancelable(false);
         dialog.setMessage(msg);
-        dialog.setPositiveButton(strPositiveText, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                dialog.dismiss();
-                if (Utills.isOnline(getActivity(), true)) {
-                    deleteUsingThread(position);
-                    //callDeleteNotificationService(position, notificationListDataModel.getMType(), notificationListDataModel.getMMemberMessageBoardId());
-                } else {
-                    Utills.displayDialogNormalMessage(getString(R.string.app_name), getString(R.string.TAG_INTERNET_AVAILABILITY), getActivity());
-                }
+        dialog.setPositiveButton(strPositiveText, (dialog1, id) -> {
+            dialog1.dismiss();
+            if (Utills.isOnline(getActivity(), true)) {
+                deleteUsingThread(position);
+                //callDeleteNotificationService(position, notificationListDataModel.getMType(), notificationListDataModel.getMMemberMessageBoardId());
+            } else {
+                Utills.displayDialogNormalMessage(getString(R.string.app_name), getString(R.string.TAG_INTERNET_AVAILABILITY), getActivity());
             }
         });
-        dialog.setNegativeButton(strNegativeText, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                dialog.dismiss();
-            }
-        });
+        dialog.setNegativeButton(strNegativeText, (dialog12, id) -> dialog12.dismiss());
         dialog.show();
     }
 
@@ -895,7 +870,7 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
 
     private void updateTestModeValue(boolean isChecked)
     {
-        Preference.getInstance().mSharedPreferences.edit().putBoolean(Constant.IS_TEST_MODE, isChecked).commit();
+        Preference.getInstance().mSharedPreferences.edit().putBoolean(Constant.IS_TEST_MODE, isChecked).apply();
         updateTestModeSwitch();
     }
 
@@ -905,5 +880,73 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
         swTestMode.setOnCheckedChangeListener(null);
         swTestMode.setChecked(isInTestMode);
         swTestMode.setOnCheckedChangeListener(mTestModeOnCheckChangeListener);
+    }
+
+    private boolean checkPermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            return ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+                    ContextCompat.checkSelfPermission(getContext(), Manifest.permission.FOREGROUND_SERVICE) == PackageManager.PERMISSION_GRANTED &&
+                    ContextCompat.checkSelfPermission(getContext(), Manifest.permission.BLUETOOTH_SCAN) == PackageManager.PERMISSION_GRANTED &&
+                    ContextCompat.checkSelfPermission(getContext(), Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED;
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            return ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+                    ContextCompat.checkSelfPermission(getContext(), Manifest.permission.FOREGROUND_SERVICE) == PackageManager.PERMISSION_GRANTED &&
+                    ContextCompat.checkSelfPermission(getContext(), Manifest.permission.BLUETOOTH) == PackageManager.PERMISSION_GRANTED &&
+                    ContextCompat.checkSelfPermission(getContext(), Manifest.permission.BLUETOOTH_ADMIN) == PackageManager.PERMISSION_GRANTED;
+        } else {
+            return ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+                    ContextCompat.checkSelfPermission(getContext(), Manifest.permission.BLUETOOTH) == PackageManager.PERMISSION_GRANTED &&
+                    ContextCompat.checkSelfPermission(getContext(), Manifest.permission.BLUETOOTH_ADMIN) == PackageManager.PERMISSION_GRANTED;
+        }
+    }
+
+    private void requestPermissions() {
+        String[] permissions;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            permissions = new String[]{
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.FOREGROUND_SERVICE,
+                    Manifest.permission.BLUETOOTH_SCAN,
+                    Manifest.permission.BLUETOOTH_CONNECT
+            };
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            permissions = new String[]{
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.FOREGROUND_SERVICE,
+                    Manifest.permission.BLUETOOTH,
+                    Manifest.permission.BLUETOOTH_ADMIN,
+            };
+        } else {
+            permissions = new String[]{
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.BLUETOOTH,
+                    Manifest.permission.BLUETOOTH_ADMIN,
+            };
+        }
+
+        ActivityCompat.requestPermissions(getActivity(), permissions, REQUEST_PERMISSIONS_REQUEST_CODE);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_PERMISSIONS_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                startLocationBroadcastService();
+            } else {
+                Toast.makeText(getActivity(), "Permissions denied", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void startLocationBroadcastService() {
+        final Intent serviceIntent = new Intent(getActivity(), LocationBroadcastServiceNew.class);
+        serviceIntent.putExtra(Constants.Extras.SMALLEST_DISPLACEMENT_VALUE, 0f);
+
+        getActivity().stopService(serviceIntent);
+        getActivity().startService(serviceIntent);
+
+        Handler handler = new Handler();
+        handler.postDelayed(() -> getActivity().stopService(serviceIntent), 3000);
     }
 }

@@ -2,7 +2,6 @@ package com.dad.registration.fragment;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import com.dad.LocationBroadcastServiceNew;
 import com.dad.R;
@@ -67,7 +66,6 @@ public class LoginToYourAccountFragment extends BaseFragment implements Compound
     private GetUserInfoModel profileModel;
     private AsyncTaskGetUserInfo asyncTaskGetUserInfo;
     //gcm
-    private GoogleCloudMessaging gcm;
     private String deviceToken;
     public static final String PROPERTY_REG_ID = "registration_id";
     private static final String PROPERTY_APP_VERSION = "appVersion";
@@ -99,7 +97,6 @@ public class LoginToYourAccountFragment extends BaseFragment implements Compound
 
         lat = ((BaseActivity) getActivity()).getLatitude();
         log = ((BaseActivity) getActivity()).getLongitude();
-        gcmRegistrationProcess();
 
         startRefreshTimeTimer();
 
@@ -154,7 +151,7 @@ public class LoginToYourAccountFragment extends BaseFragment implements Compound
 
 
     private void startRefreshTimeTimer() {
-        if (broadcast != null) {
+        if (broadcast != null && alarmManager != null) {
             alarmManager.cancel(broadcast);
         }
         int refreshTimeInterval = Preference.getInstance().mSharedPreferences.getInt(Constant.KEY_REFRESH_LOC, 5000);
@@ -162,7 +159,9 @@ public class LoginToYourAccountFragment extends BaseFragment implements Compound
             alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
             Intent intent = new Intent(getActivity(), AlarmReceiver.class);
             broadcast = PendingIntent.getBroadcast(getActivity(), 0, intent, PendingIntent.FLAG_IMMUTABLE);
-            alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(), refreshTimeInterval * 60 * 1000, broadcast);
+            if (alarmManager != null) {
+                alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(), refreshTimeInterval * 60 * 1000, broadcast);
+            }
         }
     }
 
@@ -286,9 +285,9 @@ public class LoginToYourAccountFragment extends BaseFragment implements Compound
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-//            if (progressDialog != null && progressDialog.isShowing()) {
-//                progressDialog.dismiss();
-//            }
+            if (progressDialog != null && progressDialog.isShowing()) {
+                progressDialog.dismiss();
+            }
             if (!isCancelled()) {
                 if (wsLogin.isSuccess()) {
 //                    final boolean isAccepted = Preference.getInstance().mSharedPreferences.getBoolean(Constant.IS_ACCEPT, false);
@@ -427,122 +426,5 @@ public class LoginToYourAccountFragment extends BaseFragment implements Compound
         PendingIntent broadcastIntentBle = PendingIntent.getBroadcast(getActivity(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         alarmManagerForBLE.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(), 2 * 60 * SCAN_PERIOD, broadcastIntentBle);
     }
-
-
-    // ////////////// GCM Implementation/////////////////////
-    private void gcmRegistrationProcess() {
-        if (checkPlayServices()) {
-            gcm = GoogleCloudMessaging.getInstance(getActivity());
-            deviceToken = getRegistrationId(getActivity());
-            if (deviceToken.isEmpty()) {
-                registerInBackground();
-            } else {
-                storeRegistrationId(getActivity(), deviceToken);
-            }
-            Log.i(TAG, "Device Token : " + deviceToken);
-        } else {
-            Log.i(TAG, "No valid Google Play Services APK found.");
-        }
-    }
-
-    private boolean checkPlayServices() {
-        int googlePlayServicesAvailable = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getActivity());
-        return googlePlayServicesAvailable == ConnectionResult.SUCCESS;
-    }
-
-    private void registerInBackground() {
-        new GcmRegistrationtask().execute();
-    }
-
-    /**
-     * Gets the current registration ID for application on GCM service.
-     * <p>
-     * If result is empty, the app needs to register.
-     *
-     * @return registration ID, or empty string if there is no existing
-     * registration ID.
-     */
-    private String getRegistrationId(Context context) {
-        final SharedPreferences prefs = getGCMPreferences(context);
-        String registrationId = prefs.getString(PROPERTY_REG_ID, "");
-        if (registrationId.isEmpty()) {
-            Log.i(TAG, "Registration not found.");
-            return "";
-        }
-        // Check if app was updated; if so, it must clear the registration ID
-        // since the existing regID is not guaranteed to work with the new
-        // app version.
-        int registeredVersion = prefs.getInt(PROPERTY_APP_VERSION, Integer.MIN_VALUE);
-        int currentVersion = getAppVersion(context);
-        if (registeredVersion != currentVersion) {
-            Log.i(TAG, "App version changed.");
-            return "";
-        }
-        return registrationId;
-    }
-
-    /**
-     * @return Application's {@code SharedPreferences}.
-     */
-    private SharedPreferences getGCMPreferences(Context context) {
-        // This sample app persists the registration ID in shared preferences,
-        // but
-        // how you store the regID in your app is up to you.
-        return getActivity().getSharedPreferences(LoginToYourAccountFragment.class.getSimpleName(), Context.MODE_PRIVATE);
-    }
-
-    /**
-     * @return Application's version code from the {@code PackageManager}.
-     */
-    private static int getAppVersion(Context context) {
-        try {
-            PackageInfo packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
-            return packageInfo.versionCode;
-        } catch (PackageManager.NameNotFoundException e) {
-            // should never happen
-            throw new RuntimeException("Could not get package name: " + e);
-        }
-    }
-
-    private class GcmRegistrationtask extends AsyncTask<Void, Void, Void> {
-        @Override
-        protected Void doInBackground(Void... params) {
-            try {
-                if (gcm == null) {
-                    gcm = GoogleCloudMessaging.getInstance(getActivity());
-                }
-                deviceToken = gcm.register(SENDER_ID);
-                Log.i(TAG, "Device Token found: " + deviceToken);
-                storeRegistrationId(getActivity(), deviceToken);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-    }
-
-    /**
-     * Stores the registration ID and app versionCode in the application's
-     * {@code SharedPreferences}.
-     *
-     * @param context application's context.
-     * @param regId   registration ID
-     */
-    private void storeRegistrationId(Context context, String regId) {
-        final int appVersion = getAppVersion(context);
-        Preference preference = Preference.getInstance();
-        preference.savePreferenceData(preference.KEY_DEVICE_TOKEN, regId);
-        preference.savePreferenceData(PROPERTY_APP_VERSION, appVersion);
-
-//        final SharedPreferences prefs = getGCMPreferences(context);
-//        int appVersion = getAppVersion(context);
-//        SharedPreferences.Editor editor = prefs.edit();
-//        editor.putString(PROPERTY_REG_ID, regId);
-//        editor.putInt(PROPERTY_APP_VERSION, appVersion);
-//        editor.commit();
-//        Preference.getInstance().savePreferenceData(C.DEVICE_TOKEN, regId);
-    }
-
-
 }
 

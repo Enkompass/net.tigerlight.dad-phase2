@@ -9,7 +9,9 @@ import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Log;
@@ -66,6 +68,7 @@ public class AmOkFragmentI extends BaseFragment {
     private GPSTracker gpsTracker;
     private String lattdLastKnown;
     private String longtdLastKnown;
+    private ActivityResultLauncher<String> requestPermissionLauncher;
 
     private boolean isPinCreated = false;
     protected static final String SUCCESS = "success";
@@ -241,7 +244,7 @@ public class AmOkFragmentI extends BaseFragment {
                 progressDialog.dismiss();
             }
 
-            if (!isCancelled()) {
+            if (!isCancelled() && isAdded()) {
                 if (wsCreatePin.isSuccess()) {
                     Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_NEW_PIN_CREATED_MSG), getString(R.string.ok), "", false, false);
                     isPinCreated = true;
@@ -278,7 +281,9 @@ public class AmOkFragmentI extends BaseFragment {
     }
 
     public void updateLatLong() {
-        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED ||
+            ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             gpsTracker = new GPSTracker(getActivity());
             if (gpsTracker.canGetLocation()) {
@@ -290,7 +295,10 @@ public class AmOkFragmentI extends BaseFragment {
 
             }
         } else {
-            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_LOCATION);
+            requestPermissions(new String[]{
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+            }, MY_PERMISSIONS_REQUEST_LOCATION);
         }
     }
 
@@ -323,7 +331,7 @@ public class AmOkFragmentI extends BaseFragment {
 
         @Override
         protected JSONObject doInBackground(String... params) {
-            if (params.length > 0) {
+            if (params.length > 0 && lattdLastKnown != null && longtdLastKnown != null) {
                 return wsCallSendOk.executeService(params[0], Double.parseDouble(lattdLastKnown), Double.parseDouble(longtdLastKnown));
             } else {
                 return null;
@@ -334,7 +342,7 @@ public class AmOkFragmentI extends BaseFragment {
         protected void onPostExecute(JSONObject jsonObject) {
             super.onPostExecute(jsonObject);
             progressDialog.cancel();
-            if (!isCancelled()) {
+            if (!isCancelled() && isAdded()) {
                 if (jsonObject != null) {
                     if (wsCallSendOk.isSuccess()) {
                         Utills.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.TAG_IM_OK_ALERT_SENT), getString(R.string.ok), "", false, false);
@@ -538,23 +546,24 @@ public class AmOkFragmentI extends BaseFragment {
         @Override
         protected void onPostExecute(String result) {
             dialog.cancel();
-            switch (response) {
-                case 0:
-                    Toast.makeText(getActivity(), getString(R.string.TAG_PIN_CAN_NOT_GET), Toast.LENGTH_SHORT).show();
-                    break;
+            if (!isCancelled() && isAdded()) {
+                switch (response) {
+                    case 0:
+                        Toast.makeText(getActivity(), getString(R.string.TAG_PIN_CAN_NOT_GET), Toast.LENGTH_SHORT).show();
+                        break;
 
-                case 1:
-                    Toast.makeText(getActivity(), getString(R.string.TAG_EMAIL_HAS_SENT_MSG), Toast.LENGTH_SHORT).show();
-                    break;
+                    case 1:
+                        Toast.makeText(getActivity(), getString(R.string.TAG_EMAIL_HAS_SENT_MSG), Toast.LENGTH_SHORT).show();
+                        break;
 
-                case 2:
-                    Toast.makeText(getActivity(), getString(R.string.TAG_SOME_WENT_WRONG_MSG), Toast.LENGTH_SHORT).show();
-                    break;
+                    case 2:
+                        Toast.makeText(getActivity(), getString(R.string.TAG_SOME_WENT_WRONG_MSG), Toast.LENGTH_SHORT).show();
+                        break;
 
-                default:
-                    break;
+                    default:
+                        break;
+                }
             }
-
         }
     }
 
@@ -580,7 +589,7 @@ public class AmOkFragmentI extends BaseFragment {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            if (!isCancelled()) {
+            if (!isCancelled() && isAdded()) {
                 if (wsResetCount.isSuccess()) {
 //                    progressDialog.dismiss();
                     Log.d("Count", "Updated");

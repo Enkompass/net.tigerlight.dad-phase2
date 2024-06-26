@@ -10,19 +10,21 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import androidx.core.app.NotificationCompat;
-import androidx.legacy.content.WakefulBroadcastReceiver;
 
 import static com.dad.registration.fragment.AlertFragment.jsonobjectToChange;
 
-public class GcmBroadcastReceiver extends WakefulBroadcastReceiver {
+public class MyFirebaseMessagingReceiver extends BroadcastReceiver { // Changed from WakefulBroadcastReceiver
 
     public static final int DELAY_MILLIS = 5000;
 
@@ -47,20 +49,10 @@ public class GcmBroadcastReceiver extends WakefulBroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         if (CheckForeground.isInForeGround() && !CheckForeground.isThreatScreenVisible()) {
             updateInFront(context, intent);
-//            showNotification(context, intent);
             return;
         } else {
-
             showNotification(context, intent);
         }
-
-        //        if (CheckForeground.isInForeGround() && !CheckForeground.isThreatScreenVisible()) {
-//            updateInFront(context, intent);
-//            return;
-//        }
-//        showNotification(context, intent);
-
-
     }
 
     private void updateInFront(Context context, Intent intent) {
@@ -107,13 +99,11 @@ public class GcmBroadcastReceiver extends WakefulBroadcastReceiver {
     }
 
     private void showNotification(Context context, Intent intentData) {
-//        int alertCount = Preference.getInstance().mSharedPreferences.getInt("alert_count", 0);
-//        alertCount += 1;
-//        Preference.getInstance().savePreferenceData("alert_count", alertCount);
-
         Bundle extras = intentData.getExtras();
+        if (extras == null) {
+            return;
+        }
         data = extras.getString("gcm.notification.data");
-        //String message = extras.getString("message");
         String sound = extras.getString("gcm.notification.sound");
 
         if (data == null) {
@@ -122,7 +112,6 @@ public class GcmBroadcastReceiver extends WakefulBroadcastReceiver {
         String userName = "";
         String safeDangerString = " is in danger!";
         try {
-            jsonobjectToChange = null;
             jsonobjectToChange = new JSONObject(data);
             userName = jsonobjectToChange.optString(TAG_USER_NAME);
             if (jsonobjectToChange.optInt("status") == 1) {
@@ -138,25 +127,26 @@ public class GcmBroadcastReceiver extends WakefulBroadcastReceiver {
         final Intent intent = new Intent(context, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         intent.putExtra(Constant.JSON_OBJECT, jsonObject);
-        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_ONE_SHOT);
+        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
-
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, "default_channel_id")
                 .setSmallIcon(R.drawable.app_icon)
                 .setContentTitle("D.A.D.")
-                .setContentText(safeDangerString);
-        mBuilder.setContentIntent(contentIntent);
+                .setContentText(safeDangerString)
+                .setContentIntent(contentIntent)
+                .setAutoCancel(true);
 
         if (!"default".equals(sound)) {
-            mBuilder.setSound(Uri.parse(("android.resource://" + context.getPackageName() + "/" + Util.getResourceId(context, sound))));
+            mBuilder.setSound(Uri.parse("android.resource://" + context.getPackageName() + "/" + Util.getResourceId(context, sound)));
         } else {
             mBuilder.setDefaults(Notification.DEFAULT_SOUND);
         }
 
-        mBuilder.setAutoCancel(true);
         NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel("default_channel_id", "Default Channel", NotificationManager.IMPORTANCE_DEFAULT);
+            mNotificationManager.createNotificationChannel(channel);
+        }
         mNotificationManager.notify(1, mBuilder.build());
     }
 }
-
-
