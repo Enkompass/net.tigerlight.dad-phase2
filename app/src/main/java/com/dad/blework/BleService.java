@@ -15,6 +15,9 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.IntentService;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.le.BluetoothLeScanner;
@@ -28,7 +31,7 @@ import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
-import android.view.View;
+import android.os.IBinder;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,6 +45,7 @@ import static com.dad.util.CheckForeground.getActivity;
 import androidx.core.app.ActivityCompat;
 
 public class BleService extends IntentService {
+    private static final String CHANNEL_ID = "default";
     private String TAG = BleService.class.getName();
     private String latitude;
     private String longitude;
@@ -59,10 +63,17 @@ public class BleService extends IntentService {
         handler = new Handler(Looper.getMainLooper());
     }
 
+    @SuppressLint("ForegroundServiceType")
     @Override
     public void onCreate() {
         super.onCreate();
-
+        createNotificationChannel();
+        Notification notification = new Notification.Builder(this, CHANNEL_ID)
+                .setContentTitle("BleService")
+                .setContentText("Running...")
+                .setSmallIcon(R.drawable.app_icon)
+                .build();
+        startForeground(1, notification);
         if (isInternetConnected(getApplicationContext())) {
             getLatLong();
             if (!Preference.getInstance().mSharedPreferences.getBoolean(Constant.ISLOGEDD_OUT, false)) {
@@ -72,6 +83,30 @@ public class BleService extends IntentService {
         Calendar cal = Calendar.getInstance();
         TimeZone tz = cal.getTimeZone();
         timezoneID = tz.getID();
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        super.onStartCommand(intent, flags, startId);
+        Log.d(TAG, "StartCommand");
+        return START_STICKY;
+    }
+
+    private void createNotificationChannel() {
+        NotificationChannel serviceChannel = new NotificationChannel(
+                CHANNEL_ID,
+                "BleService Channel",
+                NotificationManager.IMPORTANCE_DEFAULT
+        );
+        NotificationManager manager = getSystemService(NotificationManager.class);
+        if (manager != null) {
+            manager.createNotificationChannel(serviceChannel);
+        }
+    }
+
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
     }
 
     private void getLatLong() {
@@ -91,13 +126,6 @@ public class BleService extends IntentService {
     public void onStart(Intent intent, int startId) {
         super.onStart(intent, startId);
         Log.d(TAG, "onStart");
-    }
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        super.onStartCommand(intent, flags, startId);
-        Log.d(TAG, "StartCommand");
-        return START_STICKY;
     }
 
     @Override

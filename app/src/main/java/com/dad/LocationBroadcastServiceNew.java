@@ -1,5 +1,7 @@
 package com.dad;
 
+import com.dad.registration.activity.MainActivity;
+import com.dad.registration.fragment.ContactFragment;
 import com.dad.settings.webservices.WsCallDADTest;
 import com.dad.settings.webservices.WsCallSendDanger;
 import com.dad.util.CheckForeground;
@@ -15,11 +17,14 @@ import com.google.android.gms.location.LocationResult;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.bluetooth.BluetoothDevice;
 import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanResult;
 
-import com.dad.recievers.BLEHelper;
 import com.dad.registration.util.Constant;
 import com.dad.registration.util.Utills;
 import com.dad.settings.webservices.WsCallUpdateLocation;
@@ -45,7 +50,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
-import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,11 +57,14 @@ import static android.bluetooth.BluetoothAdapter.ACTION_DISCOVERY_FINISHED;
 import static android.bluetooth.BluetoothAdapter.ACTION_DISCOVERY_STARTED;
 import static android.bluetooth.BluetoothAdapter.ACTION_SCAN_MODE_CHANGED;
 
+import static com.dad.util.CheckForeground.getActivity;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 /**
  * Created on 23/11/16.
@@ -66,6 +73,8 @@ import java.io.IOException;
 public class LocationBroadcastServiceNew extends Service implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 1000;
+    final static char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
+    private static final String CHANNEL_ID = "default";
     public final String TAG = getClass().getSimpleName();
     /**
      * The desired interval for location updates. Inexact. Updates may be more or less frequent.
@@ -91,7 +100,6 @@ public class LocationBroadcastServiceNew extends Service implements GoogleApiCli
     private LocationCallback locationCallback;
     private BluetoothLeScanner bluetoothLeScanner;
     private ScanCallback leScanCallback;
-    private BluetoothAdapter mBluetoothAdapter;
     private Handler mHandler;
 
     // Stops scanning after 10 seconds.
@@ -101,9 +109,17 @@ public class LocationBroadcastServiceNew extends Service implements GoogleApiCli
 
     //private SocketClient socketClient;
 
+    @SuppressLint("ForegroundServiceType")
     @Override
     public void onCreate() {
         super.onCreate();
+        createNotificationChannel();
+        Notification notification = new Notification.Builder(this, CHANNEL_ID)
+                .setContentTitle("BleService")
+                .setContentText("Running...")
+                .setSmallIcon(R.drawable.app_icon)
+                .build();
+        startForeground(1, notification);
         Log.d(TAG, "onCreate");
 
         IntentFilter filter2 = new IntentFilter();
@@ -119,10 +135,7 @@ public class LocationBroadcastServiceNew extends Service implements GoogleApiCli
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         locationCallback = new LocationCallback() {
             @Override
-            public void onLocationResult(LocationResult locationResult) {
-                if (locationResult == null) {
-                    return;
-                }
+            public void onLocationResult(@NonNull LocationResult locationResult) {
                 for (Location location : locationResult.getLocations()) {
                     onLocationChanged(location);
                 }
@@ -131,17 +144,16 @@ public class LocationBroadcastServiceNew extends Service implements GoogleApiCli
 
         // Initialize BluetoothLeScanner
         final BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
-        mBluetoothAdapter = bluetoothManager.getAdapter();
-        bleHelper = new BLEHelper(this, true);
+        BluetoothAdapter mBluetoothAdapter = bluetoothManager.getAdapter();
         mHandler = new Handler();
         if (mBluetoothAdapter != null) {
-            isBleSupported = true;
             bluetoothLeScanner = mBluetoothAdapter.getBluetoothLeScanner();
             leScanCallback = new ScanCallback() {
                 @Override
                 public void onScanResult(int callbackType, ScanResult result) {
                     super.onScanResult(callbackType, result);
                     // Handle scan result
+                    handleScanResult(result);
                 }
 
                 @Override
@@ -151,8 +163,113 @@ public class LocationBroadcastServiceNew extends Service implements GoogleApiCli
                 }
             };
         } else {
-            isBleSupported = false;
             Log.e(TAG, "Bluetooth is not supported on this device.");
+        }
+    }
+
+    private void createNotificationChannel() {
+        NotificationChannel serviceChannel = new NotificationChannel(
+                CHANNEL_ID,
+                "BleService Channel",
+                NotificationManager.IMPORTANCE_DEFAULT
+        );
+        NotificationManager manager = getSystemService(NotificationManager.class);
+        if (manager != null) {
+            manager.createNotificationChannel(serviceChannel);
+        }
+    }
+
+    private String convertBytesToHex(byte[] bytes) {
+        char[] hex = new char[bytes.length * 2];
+        for (int i = 0; i < bytes.length; i++) {
+            int v = bytes[i] & 0xFF;
+            hex[i * 2] = HEX_ARRAY[v >>> 4];
+            hex[i * 2 + 1] = HEX_ARRAY[v & 0x0F];
+        }
+
+        return new String(hex);
+    }
+
+    private void handleScanResult(ScanResult result) {
+        if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        String msg = "";
+
+        byte[] scanRecord = result.getScanRecord().getBytes();
+        BluetoothDevice device = result.getDevice();
+        int rssi = result.getRssi();
+        for (byte b : scanRecord)
+            msg += String.format("%02x ", b);
+
+        msg = msg.replaceAll("\\s+", "");
+        ContactFragment.TEST_UUID = ContactFragment.TEST_UUID.toLowerCase();
+        ContactFragment.TEST_UUID_PREVIOUS = ContactFragment.TEST_UUID_PREVIOUS.toLowerCase();
+
+
+         Log.v("rss", "" + rssi);
+         Log.v("Device", "" + device);
+        int serialNumber = (scanRecord[25] & 0xFF) << 24 | (scanRecord[26] & 0xFF) << 16 | (scanRecord[27] & 0xFF) << 8 | scanRecord[28] & 0xFF;
+        Log.e("serial number", "Serial Number is " + serialNumber);
+        String UUIDHex = convertBytesToHex(Arrays.copyOfRange(scanRecord, 9, 25));
+        Log.d("UUID", UUIDHex);
+
+        if (UUIDHex.equalsIgnoreCase(Constants.NEW_UUID)) {
+            Log.d("tigerlight", "found");
+
+            //if (UUIDHex.equals(GELO_UUID)) {
+            // Bytes 25 and 26 of the advertisement packet represent
+            // the major value
+            int major = (scanRecord[25] << 8) | (scanRecord[26]);
+            //Log.e("Major", "Serial Number is " + major);
+
+
+            // Bytes 27 and 28 of the advertisement packet represent
+            // the minor
+            int minor = ((scanRecord[27] & 0xFF) << 8) | (scanRecord[28] & 0xFF);
+            Log.d("TAG", "device" + device + " Serial Number is " + serialNumber + " major" + major + " minor" + minor + " rssi" + rssi);
+
+            Preference.getInstance().savePreferenceData(Constants.Preferences.Keys.UUID_KEY, String.valueOf(UUIDHex));
+            Preference.getInstance().savePreferenceData(Constants.Preferences.Keys.MAJOR_KEY, String.valueOf(major));
+            Preference.getInstance().savePreferenceData(Constants.Preferences.Keys.MINOR_KEY, String.valueOf(minor));
+
+            if (getActivity() != null) //TODO:  Band-aid (per Rod) for unknown NPE
+            {
+                sendPushNotification();
+                getActivity().startActivity(new Intent(getActivity(), MainActivity.class));
+            } else {
+                Log.e(TAG, "getActivity() = null");
+            }
+        } else if (UUIDHex.equalsIgnoreCase(Constants.OLD_UUID) && Constants.LAIRD_BEACON_LABEL.equals(device.getName())) {
+            //if (UUIDHex.equalsIgnoreCase(Constants.OLD_UUID)) {
+
+            Preference.getInstance().mSharedPreferences.getString("IsSecond", "true");
+
+
+            Log.d("tigerlight", "found");
+
+
+            //if (UUIDHex.equals(GELO_UUID)) {
+            // Bytes 25 and 26 of the advertisement packet represent
+            // the major value
+            int major = (scanRecord[25] << 8) | (scanRecord[26]);
+            Log.e("Major", "Serial Number is " + major);
+
+            // Bytes 27 and 28 of the advertisement packet represent
+            // the minor value
+            int minor = ((scanRecord[27] & 0xFF) << 8) | (scanRecord[28] & 0xFF);
+            Log.d("TAG", "device" + device + " Serial Number is " + serialNumber + " major" + major + " minor" + minor + " rssi" + rssi);
+
+            Preference.getInstance().savePreferenceData(Constants.Preferences.Keys.UUID_KEY, String.valueOf(UUIDHex));
+            Preference.getInstance().savePreferenceData(Constants.Preferences.Keys.MAJOR_KEY, String.valueOf(major));
+            Preference.getInstance().savePreferenceData(Constants.Preferences.Keys.MINOR_KEY, String.valueOf(minor));
+
+            if (getActivity() != null) {
+                sendPushNotification();
+                getActivity().startActivity(new Intent(getActivity(), MainActivity.class));
+            } else {
+                Log.e(TAG, "getActivity() = null");
+            }
         }
     }
 
@@ -166,7 +283,8 @@ public class LocationBroadcastServiceNew extends Service implements GoogleApiCli
             mSmallestDisplacementValue = intent.getFloatExtra(Constants.Extras.SMALLEST_DISPLACEMENT_VALUE, DEFAULT_SMALLEST_DISPLACEMENT_DISTANCE_IN_METERS);
         }
 
-        return super.onStartCommand(intent, flags, startId);
+        super.onStartCommand(intent, flags, startId);
+        return START_STICKY;
     }
 
     @Override
@@ -236,7 +354,7 @@ public class LocationBroadcastServiceNew extends Service implements GoogleApiCli
     }
 
     @Override
-    public void onLocationChanged(Location location) {
+    public void onLocationChanged(@NonNull Location location) {
         sendLocationUpdate(location);
     }
 
@@ -282,8 +400,6 @@ public class LocationBroadcastServiceNew extends Service implements GoogleApiCli
 
     public void callLocationUpdateService(double latitude, double longitude) {
         if (Utills.isInternetConnected(this)) {
-
-
             if (asyncTaskUpdateLocation != null && asyncTaskUpdateLocation.getStatus() == AsyncTask.Status.PENDING) {
                 asyncTaskUpdateLocation.execute();
             } else if (asyncTaskUpdateLocation == null || asyncTaskUpdateLocation.getStatus() == AsyncTask.Status.FINISHED) {
@@ -297,7 +413,6 @@ public class LocationBroadcastServiceNew extends Service implements GoogleApiCli
         }
     }
 
-
     private class AsyncTaskUpdateLocation extends AsyncTask<Void, Void, Void> {
         private WsCallUpdateLocation wsCallUpdateLocation;
         double latitude;
@@ -305,7 +420,6 @@ public class LocationBroadcastServiceNew extends Service implements GoogleApiCli
 
 
         public AsyncTaskUpdateLocation(double latitude, double longitude) {
-
             this.latitude = latitude;
             this.longitude = longitude;
         }
@@ -347,11 +461,7 @@ public class LocationBroadcastServiceNew extends Service implements GoogleApiCli
                 Log.d("DIS_START", "ACTION_DISCOVERY_STARTED");
             }
             if (action.equals(ACTION_DISCOVERY_FINISHED)) {
-
-
-                BLEHelper.IsFirst = false;
-                Log.d("DIS_STOP", "ACTION_DISCOVERY_FINISHED" + BLEHelper.IsFirst);
-
+                Log.d("DIS_STOP", "ACTION_DISCOVERY_FINISHED");
             }
 
             if (action.equals(ACTION_SCAN_MODE_CHANGED)) {
@@ -361,9 +471,6 @@ public class LocationBroadcastServiceNew extends Service implements GoogleApiCli
 
         }
     };
-
-    private boolean isBleSupported;
-    private BLEHelper bleHelper;
 
     /**
      * @author Ambujesh Tripathi - To be used to check the availability of BLE
@@ -378,19 +485,10 @@ public class LocationBroadcastServiceNew extends Service implements GoogleApiCli
         final BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
         mHandler = new Handler();
         if (bluetoothManager != null) {
-            mBluetoothAdapter = bluetoothManager.getAdapter();
-            if (mBluetoothAdapter != null && !mBluetoothAdapter.isEnabled()) {
-                bleHelper = new BLEHelper(this, true);
+            if (bluetoothLeScanner != null) {
                 scanLeDevice(true);
             }
         }
-
-
-        if (mBluetoothAdapter != null && isBleSupported && !mBluetoothAdapter.isEnabled()) {
-            return;
-        }
-
-        scanLeDevice(true);
     }
 
     @SuppressLint("NewApi")
@@ -403,25 +501,14 @@ public class LocationBroadcastServiceNew extends Service implements GoogleApiCli
             // this period should be same time as it is defined in Recieving
             // list screen for bleReciever.
             mHandler.postDelayed(() -> {
-                if (mBluetoothAdapter != null) {
-                    bluetoothLeScanner.stopScan(leScanCallback);
-                }
-            }, 2 * 60 * SCAN_PERIOD);
-            if (mBluetoothAdapter != null) {
-                bluetoothLeScanner.startScan(leScanCallback);
-            }
-        } else {
-            if (mBluetoothAdapter != null) {
                 bluetoothLeScanner.stopScan(leScanCallback);
-            }
+            }, 2 * 60 * SCAN_PERIOD);
+            bluetoothLeScanner.startScan(leScanCallback);
+        } else {
+            bluetoothLeScanner.stopScan(leScanCallback);
         }
     }
 
-    private String latitude;
-    private String longitude;
-    private int accuracy;
-    private String timezoneID;
-    private Handler handler;
     private AsyncTaskSendPush asyncTaskSendPush;
     private AsyncTaskTestMode asyncTaskTestMode;
     private AsyncTestMode asyncTestMode;
@@ -429,9 +516,9 @@ public class LocationBroadcastServiceNew extends Service implements GoogleApiCli
     private void getLatLong() {
         GPSTracker gpsTracker = new GPSTracker(getApplicationContext());
         if (gpsTracker.canGetLocation()) {
-            latitude = String.valueOf(gpsTracker.getLatitude());
-            longitude = String.valueOf(gpsTracker.getLongitude());
-            accuracy = (int) gpsTracker.getAccuracy();
+            String latitude = String.valueOf(gpsTracker.getLatitude());
+            String longitude = String.valueOf(gpsTracker.getLongitude());
+            int accuracy = (int) gpsTracker.getAccuracy();
 
             Log.d(TAG, latitude);
             Log.d(TAG, longitude);
@@ -489,9 +576,9 @@ public class LocationBroadcastServiceNew extends Service implements GoogleApiCli
             new TestModeService().start();
 //            new PushForCrowdAlert().start();
 
-            if (mBluetoothAdapter != null) {
+            if (bluetoothLeScanner != null) {
                 if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.BLUETOOTH_SCAN) == PackageManager.PERMISSION_GRANTED) {
-                    mBluetoothAdapter.stopLeScan(bleHelper.getmLeScanCallback());
+                    bluetoothLeScanner.stopScan(leScanCallback);
                 }
 
             }
@@ -499,7 +586,7 @@ public class LocationBroadcastServiceNew extends Service implements GoogleApiCli
             if (!CheckForeground.isInForeGround()) {
                 return;
             }
-            handler.post(() -> Toast.makeText(getApplicationContext(), getString(R.string.TAG_SENDING_ALERT), Toast.LENGTH_SHORT).show());
+            mHandler.post(() -> Toast.makeText(getApplicationContext(), getString(R.string.TAG_SENDING_ALERT), Toast.LENGTH_SHORT).show());
 
         } else {
 
@@ -516,14 +603,14 @@ public class LocationBroadcastServiceNew extends Service implements GoogleApiCli
             new PushForReciever().start();
 //            new PushForCrowdAlert().start();
 
-            if (mBluetoothAdapter != null) {
-                mBluetoothAdapter.stopLeScan(bleHelper.getmLeScanCallback());
+            if (bluetoothLeScanner != null) {
+                bluetoothLeScanner.stopScan(leScanCallback);
             }
 
             if (!CheckForeground.isInForeGround()) {
                 return;
             }
-            handler.post(() -> Toast.makeText(getApplicationContext(), getString(R.string.TAG_SENDING_ALERT), Toast.LENGTH_SHORT).show());
+            mHandler.post(() -> Toast.makeText(getApplicationContext(), getString(R.string.TAG_SENDING_ALERT), Toast.LENGTH_SHORT).show());
         }
 
 
@@ -583,7 +670,7 @@ public class LocationBroadcastServiceNew extends Service implements GoogleApiCli
         long lastLoggedTime = 0;
         try {
             lastLoggedTime = Long.parseLong(lastLoggedTimeString);
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
         if ((currentTimeMillis - lastLoggedTime) <= MIN_ALERT_TIME_INTERVEL) {
             return false;
@@ -621,27 +708,19 @@ public class LocationBroadcastServiceNew extends Service implements GoogleApiCli
     private void playAlarmSound() {
         final AssetFileDescriptor audioFile = getApplicationContext().getResources().openRawResourceFd(R.raw.tigerlightsound);
 
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                MediaPlayer mediaPlayer = new MediaPlayer();
-                try {
-                    mediaPlayer.setDataSource(audioFile.getFileDescriptor(), audioFile.getStartOffset(), audioFile.getLength());
+        Thread thread = new Thread(() -> {
+            MediaPlayer mediaPlayer = new MediaPlayer();
+            try {
+                mediaPlayer.setDataSource(audioFile.getFileDescriptor(), audioFile.getStartOffset(), audioFile.getLength());
 
-                    mediaPlayer.prepare();
-                    mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                        @Override
-                        public void onCompletion(MediaPlayer mp) {
-                            mp.release();
-                        }
-                    });
-                    mediaPlayer.start();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                mediaPlayer.prepare();
+                mediaPlayer.setOnCompletionListener(MediaPlayer::release);
+                mediaPlayer.start();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         });
-        thread.run();
+        thread.start();
     }
 
 
@@ -662,7 +741,7 @@ public class LocationBroadcastServiceNew extends Service implements GoogleApiCli
         @Override
         protected Void doInBackground(Void... params) {
             wsCallSendDanger = new WsCallSendDanger(getApplicationContext());
-            wsCallSendDanger.executeService(Double.parseDouble(lat), Double.parseDouble(log), timezoneID, accuracy);
+            wsCallSendDanger.executeService(Double.parseDouble(lat), Double.parseDouble(log), "", accuracy);
             playAlarmSound();
             return null;
         }
@@ -698,7 +777,7 @@ public class LocationBroadcastServiceNew extends Service implements GoogleApiCli
                                 final String major = preference.mSharedPreferences.getString(Constants.Preferences.Keys.NEW_MAJOR_KEY, "");
                                 final String minor = preference.mSharedPreferences.getString(Constants.Preferences.Keys.NEW_MINOR_KEY, "");
 
-                                if (!minor.equals("") && !major.equals(""))
+                                if (!minor.isEmpty() && !major.isEmpty())
                                 {
                                     double doubleminor = Double.parseDouble(minor) / 1000;
                                     double doublemajor = Double.parseDouble(major) / 1000;

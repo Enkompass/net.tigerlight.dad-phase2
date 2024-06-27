@@ -118,7 +118,6 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
         //		mLocationClient.connect();
 
         callResetCount();
-        new AlertListLoaderThread().start();
         mHandler = new Handler();
 
         final BluetoothManager bluetoothManager = (BluetoothManager) getActivity().getSystemService(Context.BLUETOOTH_SERVICE);
@@ -126,8 +125,10 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
 
         if (mBluetoothAdapter == null) {
             Toast.makeText(getActivity(), R.string.error_bluetooth_not_supported, Toast.LENGTH_SHORT).show();
+            buildAlertDialogBLENotSupported();
             return;
         }
+        new AlertListLoaderThread().start();
 //        dashBoardWithSwipableFragment.updateCount();
     }
 
@@ -228,11 +229,7 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
     private void buildAlertDialogBLENotSupported() {
         isBleDialogShown = true;
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage(Constant.NO_BEACON_FUNCTION).setCancelable(false).setPositiveButton(getString(R.string.TAG_OK), new DialogInterface.OnClickListener() {
-            public void onClick(final DialogInterface dialog, final int id) {
-                dialog.dismiss();
-            }
-        });
+        builder.setMessage(Constant.NO_BEACON_FUNCTION).setCancelable(false).setPositiveButton(getString(R.string.TAG_OK), (dialog, id) -> dialog.dismiss());
         final AlertDialog alert = builder.create();
         alert.show();
     }
@@ -304,51 +301,45 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
             progressDialog = ProgressDialog.show(getActivity(), "", getString(R.string.TAG_Loading));
         }
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                final WsCallGetAllContacts wsCallGetAllContacts = new WsCallGetAllContacts(getActivity());
-                JSONObject recieverList = wsCallGetAllContacts.executeService();
-                if (recieverList != null) {
-                    if (wsCallGetAllContacts.isSuccess()) {
-                        isDataAvailable = true;
-                        jsonArray = recieverList.optJSONArray("data");
-                        listSize = jsonArray.length();
-                    } else {
-                        isDataAvailable = false;
-                    }
+        new Thread(() -> {
+            final WsCallGetAllContacts wsCallGetAllContacts = new WsCallGetAllContacts(getActivity());
+            JSONObject recieverList = wsCallGetAllContacts.executeService();
+            if (recieverList != null) {
+                if (wsCallGetAllContacts.isSuccess()) {
+                    isDataAvailable = true;
+                    jsonArray = recieverList.optJSONArray("data");
+                    listSize = jsonArray.length();
+                } else {
+                    isDataAvailable = false;
                 }
-
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            if ((isDataAvailable || isJustDataDeleted) && jsonArray != null) {
-                                isJustDataDeleted = false;
-                                recieveElementAdapter = new RecieveElementAdapter(getActivity(), ContactFragment.this, jsonArray, isDataAvailable);
-                                listView.setAdapter(recieveElementAdapter);
-                                recieveElementAdapter.notifyDataSetChanged();
-
-                                if (jsonArray.length() == 0) {
-                                    tvEmptyView.setVisibility(View.VISIBLE);
-                                    tvEmptyView.setText(getString(R.string.TAG_DATA_NA_MSG));
-                                    llMain.setVisibility(View.GONE);
-                                } else {
-                                    llMain.setVisibility(View.VISIBLE);
-                                    tvEmptyView.setVisibility(View.GONE);
-                                }
-
-                                listView.setOnItemClickListener(ContactFragment.this);
-                            }
-                            if (progressDialog != null && progressDialog.isShowing()) {
-                                progressDialog.dismiss();
-                            }
-                        } catch (Exception ex) {
-                            Log.e(TAG, ex.getMessage());
-                        }
-                    }
-                });
             }
+
+            handler.post(() -> {
+                try {
+                    if ((isDataAvailable || isJustDataDeleted) && jsonArray != null) {
+                        isJustDataDeleted = false;
+                        recieveElementAdapter = new RecieveElementAdapter(getActivity(), ContactFragment.this, jsonArray, isDataAvailable);
+                        listView.setAdapter(recieveElementAdapter);
+                        recieveElementAdapter.notifyDataSetChanged();
+
+                        if (jsonArray.length() == 0) {
+                            tvEmptyView.setVisibility(View.VISIBLE);
+                            tvEmptyView.setText(getString(R.string.TAG_DATA_NA_MSG));
+                            llMain.setVisibility(View.GONE);
+                        } else {
+                            llMain.setVisibility(View.VISIBLE);
+                            tvEmptyView.setVisibility(View.GONE);
+                        }
+
+                        listView.setOnItemClickListener(ContactFragment.this);
+                    }
+                    if (progressDialog != null && progressDialog.isShowing()) {
+                        progressDialog.dismiss();
+                    }
+                } catch (Exception ex) {
+                    Log.e(TAG, ex.getMessage());
+                }
+            });
         }).start();
     }
 
@@ -447,32 +438,26 @@ public class ContactFragment extends BaseFragment implements AdapterView.OnItemC
 
     private void deleteByThread() {
         progressDialog = ProgressDialog.show(getActivity(), "", getString(R.string.TAG_Loading));
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                String contact_user_id = jsonobjectToChange.optString("userid");
-                WsCallDeleteContact wsCallDeleteContact = new WsCallDeleteContact(getActivity());
-                wsCallDeleteContact.executeService(contact_user_id);
-                if (wsCallDeleteContact.isSuccess()) {
-                    String email = jsonobjectToChange.optString(new WsConstants().PARAMS_EMAIL);
-                    BitMapHelper.deleteImageFromStorage(getActivity(), "" + email, Preference.getInstance().mSharedPreferences.getString(email, ""));
-                    isJustDataDeleted = true;
-                }
-
-                handlerDelete.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (isJustDataDeleted) {
-                            if (!isInternetConnected(getActivity())) {
-                                Toast.makeText(getActivity(), getString(R.string.alert_check_connection), Toast.LENGTH_SHORT).show();
-                                return;
-                            }
-                            loadRecieversListUsingThread(false);
-                        }
-                    }
-                });
-
+        new Thread(() -> {
+            String contact_user_id = jsonobjectToChange.optString("userid");
+            WsCallDeleteContact wsCallDeleteContact = new WsCallDeleteContact(getActivity());
+            wsCallDeleteContact.executeService(contact_user_id);
+            if (wsCallDeleteContact.isSuccess()) {
+                String email = jsonobjectToChange.optString(new WsConstants().PARAMS_EMAIL);
+                BitMapHelper.deleteImageFromStorage(getActivity(), "" + email, Preference.getInstance().mSharedPreferences.getString(email, ""));
+                isJustDataDeleted = true;
             }
+
+            handlerDelete.post(() -> {
+                if (isJustDataDeleted) {
+                    if (!isInternetConnected(getActivity())) {
+                        Toast.makeText(getActivity(), getString(R.string.alert_check_connection), Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    loadRecieversListUsingThread(false);
+                }
+            });
+
         }).start();
 
     }
