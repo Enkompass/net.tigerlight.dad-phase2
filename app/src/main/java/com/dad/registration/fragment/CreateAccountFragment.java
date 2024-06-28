@@ -366,16 +366,16 @@ public class CreateAccountFragment extends BaseFragment {
                     preference.savePreferenceData(Constant.IS_FIRST_ACCOUNT, true);
                     preference.savePreferenceData(Constant.USER_NAME, etUserNameStr);
                     Preference.getInstance().savePreferenceData(Constant.IS_LOGIN, true);
-                    startBackgroundThreadForBLE();
+//                    startBackgroundThreadForBLE();
 
                     long time = 1000 * 3;  //For repiting 30 second
 
-                    if (!Utills.isMyServiceRunning(LocationBroadcastServiceNew.class, getActivity())) {
-                        Intent serviceIntent = new Intent(getActivity(), LocationBroadcastServiceNew.class);
-                        PendingIntent pendingIntent = PendingIntent.getService(getActivity(), 1001, serviceIntent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-                        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
-                        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), time, pendingIntent);
-                    }
+//                    if (!Utills.isMyServiceRunning(LocationBroadcastServiceNew.class, getActivity())) {
+//                        Intent serviceIntent = new Intent(getActivity(), LocationBroadcastServiceNew.class);
+//                        PendingIntent pendingIntent = PendingIntent.getService(getActivity(), 1001, serviceIntent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+//                        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+//                        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), time, pendingIntent);
+//                    }
 
                     if (isImageUpdated) {
                         new updateProfilePicture().execute();

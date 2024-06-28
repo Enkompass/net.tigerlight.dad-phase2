@@ -1,5 +1,6 @@
 package com.dad.registration.fragment;
 
+import com.dad.registration.activity.MainActivity;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -99,7 +100,7 @@ public class AlertDetailFragment extends BaseFragment implements OnClickListener
     private ImageView fragment_alert_detail_img_testalert;
     public String imagePath = "";
     String testStr;
-    String imgUrl = "http://tigerlight.images.s3-website-us-west-2.amazonaws.com/";
+    String imgUrl = "https://tigerlight.images.s3-website-us-west-2.amazonaws.com/";
 
     SqlLiteDbHelper dbHelper;
     CountryModel contacts;
@@ -358,7 +359,14 @@ public class AlertDetailFragment extends BaseFragment implements OnClickListener
             });
             dialog.show();
         } else if (fragmentId == R.id.fragment_alert_detail_tvBackAlerts) {
-            getFragmentManager().popBackStack();
+            if (getFragmentManager().getBackStackEntryCount() > 0) {
+                getFragmentManager().popBackStack();
+            } else {
+                // Open AlertFragment directly
+                MainActivity activity = (MainActivity) getActivity();
+                DashBoardWithSwipableFragment fragment = new DashBoardWithSwipableFragment();
+                activity.replaceFragment(fragment);
+            }
         }
     }
 

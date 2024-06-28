@@ -64,7 +64,7 @@ public class AlertAdapter extends BaseAdapter {
     private ArrayList<String> lat = new ArrayList();
     private ArrayList<String> longi = new ArrayList();
     final Preference preference = Preference.getInstance();
-    String imgUrl = "http://tigerlight.images.s3-website-us-west-2.amazonaws.com/";
+    String imgUrl = "https://tigerlight.images.s3-website-us-west-2.amazonaws.com/";
 
 
     HashMap<String, Drawable> bmpArray = new HashMap<String, Drawable>();

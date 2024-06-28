@@ -125,13 +125,13 @@ public class MyFirebaseMessagingReceiver extends BroadcastReceiver { // Changed 
 
         final String jsonObject = jsonobjectToChange.toString();
         final Intent intent = new Intent(context, MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra(Constant.JSON_OBJECT, jsonObject);
         PendingIntent contentIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, "default_channel_id")
                 .setSmallIcon(R.drawable.app_icon)
-                .setContentTitle("D.A.D.")
+                .setContentTitle("D.A.D. Danger Alert")
                 .setContentText(safeDangerString)
                 .setContentIntent(contentIntent)
                 .setAutoCancel(true);

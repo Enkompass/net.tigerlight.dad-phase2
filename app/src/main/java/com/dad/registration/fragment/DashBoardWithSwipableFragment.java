@@ -88,6 +88,10 @@ public class DashBoardWithSwipableFragment extends BaseFragment implements TabLa
 
     }
 
+    public void selectAlertsTab() {
+        setCurrentTabFragment(1);
+    }
+
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getChildFragmentManager());

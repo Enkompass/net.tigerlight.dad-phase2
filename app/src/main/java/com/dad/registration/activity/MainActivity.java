@@ -38,6 +38,7 @@ public class MainActivity extends BaseActivity {
 
         final Intent intent = getIntent();
         String jsonObject = intent.getStringExtra(Constant.JSON_OBJECT);
+        boolean openAlertFragmentDirectly = intent.getBooleanExtra("OPEN_ALERT_FRAGMENT_DIRECTLY", false);
         Log.d("notification", "oncreate ----json object:" + intent.getStringExtra(Constant.JSON_OBJECT));
         if (jsonObject != null) {
             if (getFragmentManager().getBackStackEntryCount() > 0) {

@@ -3,10 +3,14 @@ package com.dad;
 import static android.bluetooth.BluetoothAdapter.ACTION_DISCOVERY_FINISHED;
 import static android.bluetooth.BluetoothAdapter.ACTION_DISCOVERY_STARTED;
 import static android.bluetooth.BluetoothAdapter.ACTION_SCAN_MODE_CHANGED;
+import static android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_CONNECTED_DEVICE;
+import static android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION;
+import static android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_SHORT_SERVICE;
 import static com.dad.util.CheckForeground.getActivity;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -22,7 +26,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.content.pm.ServiceInfo;
 import android.location.Location;
+import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
@@ -31,10 +38,12 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
 import androidx.work.Data;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 
+import com.dad.home.SplashActivity;
 import com.dad.registration.activity.MainActivity;
 import com.dad.registration.fragment.ContactFragment;
 import com.dad.registration.util.Constant;
@@ -45,16 +54,28 @@ import com.dad.settings.webservices.UpdateLocationWorker;
 import com.dad.util.CheckForeground;
 import com.dad.util.Constants;
 import com.dad.util.Preference;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.Arrays;
 import java.util.List;
+import java.util.TimeZone;
 
-public class LocationService extends Service implements LocationListener {
+public class LocationService extends Service implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
+
+    private static final int PERMISSION_REQUEST_CODE = 1002;
+    public static final long UPDATE_INTERVAL_IN_MILLISECONDS = 5 * 1000;
+    public static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS = UPDATE_INTERVAL_IN_MILLISECONDS / 2;
+    public static final float DEFAULT_SMALLEST_DISPLACEMENT_DISTANCE_IN_METERS = 100f;
 
     public final String TAG = getClass().getSimpleName();
     private static final long MIN_ALERT_TIME_INTERVAL = 2 * 60 * 1000;
@@ -79,19 +100,22 @@ public class LocationService extends Service implements LocationListener {
             if (action.equals(ACTION_DISCOVERY_FINISHED)) {
                 Log.d("DIS_STOP", "ACTION_DISCOVERY_FINISHED");
             }
-            if (action.equals(ACTION_SCAN_MODE_CHANGED)) {
-                searchIBeaconAvailability();
-            }
         }
     };
+    private boolean isScanning = false;
 
     @SuppressLint("ForegroundServiceType")
     @Override
     public void onCreate() {
         super.onCreate();
+        Log.d(TAG, "onCreate");
         createNotificationChannel();
         startForegroundService();
-        Log.d(TAG, "onCreate");
+        IntentFilter filter2 = new IntentFilter();
+        filter2.addAction(ACTION_DISCOVERY_STARTED);
+        filter2.addAction(ACTION_DISCOVERY_FINISHED);
+        filter2.addAction(ACTION_SCAN_MODE_CHANGED);
+        registerReceiver(mBroadcastReceiver2, filter2);
     }
 
     private void createNotificationChannel() {
@@ -107,16 +131,39 @@ public class LocationService extends Service implements LocationListener {
     }
 
     private void startForegroundService() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                ActivityCompat.requestPermissions((Activity) getApplicationContext(), new String[]{
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.BLUETOOTH_CONNECT,
+                        Manifest.permission.BLUETOOTH_SCAN
+                }, PERMISSION_REQUEST_CODE);
+            } else {
+                ActivityCompat.requestPermissions((Activity) getApplicationContext(), new String[]{
+                        Manifest.permission.ACCESS_FINE_LOCATION
+                }, PERMISSION_REQUEST_CODE);
+            }
+            return;
+        }
         Intent notificationIntent = new Intent(this, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE);
 
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setContentTitle("Location Service")
-                .setContentText("Running location service")
+                .setContentTitle("D.A.D App")
+                .setContentText("Running location services")
                 .setSmallIcon(R.drawable.app_icon)
                 .setContentIntent(pendingIntent);
 
-        startForeground(1, notificationBuilder.build());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            startForeground(1, notificationBuilder.build(), FOREGROUND_SERVICE_TYPE_LOCATION | FOREGROUND_SERVICE_TYPE_CONNECTED_DEVICE | FOREGROUND_SERVICE_TYPE_SHORT_SERVICE);
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            startForeground(1, notificationBuilder.build(), FOREGROUND_SERVICE_TYPE_LOCATION | FOREGROUND_SERVICE_TYPE_CONNECTED_DEVICE);
+        } else {
+            startForeground(1, notificationBuilder.build());
+        }
     }
 
     @Override
@@ -135,39 +182,40 @@ public class LocationService extends Service implements LocationListener {
     }
 
     private void setupBluetoothScans() {
-        if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
         final BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
         BluetoothAdapter mBluetoothAdapter = bluetoothManager.getAdapter();
         if (mBluetoothAdapter != null) {
-            bluetoothLeScanner = mBluetoothAdapter.getBluetoothLeScanner();
-            leScanCallback = new ScanCallback() {
-                @Override
-                public void onScanResult(int callbackType, ScanResult result) {
-                    super.onScanResult(callbackType, result);
-                    // Handle scan result
-                    handleScanResult(result);
-                }
-
-                @Override
-                public void onBatchScanResults(List<ScanResult> results) {
-                    for (ScanResult result: results) {
+            if (bluetoothLeScanner == null) {
+                bluetoothLeScanner = mBluetoothAdapter.getBluetoothLeScanner();
+            }
+            if (mBluetoothAdapter.isEnabled() && leScanCallback == null) {
+                leScanCallback = new ScanCallback() {
+                    @Override
+                    public void onScanResult(int callbackType, ScanResult result) {
+                        super.onScanResult(callbackType, result);
+                        // Handle scan result
                         handleScanResult(result);
                     }
-                }
 
-                @Override
-                public void onScanFailed(int errorCode) {
-                    super.onScanFailed(errorCode);
-                    // Handle scan failure
-                }
-            };
-            IntentFilter filter2 = new IntentFilter();
-            filter2.addAction(ACTION_DISCOVERY_STARTED);
-            filter2.addAction(ACTION_DISCOVERY_FINISHED);
-            filter2.addAction(ACTION_SCAN_MODE_CHANGED);
-            registerReceiver(mBroadcastReceiver2, filter2);
+                    @Override
+                    public void onBatchScanResults(List<ScanResult> results) {
+                        for (ScanResult result : results) {
+                            handleScanResult(result);
+                        }
+                    }
+
+                    @Override
+                    public void onScanFailed(int errorCode) {
+                        super.onScanFailed(errorCode);
+                        // Handle scan failure
+                    }
+                };
+            }
+            searchIBeaconAvailability();
         } else {
             Log.e(TAG, "Bluetooth is not supported on this device.");
         }
@@ -200,13 +248,13 @@ public class LocationService extends Service implements LocationListener {
         ContactFragment.TEST_UUID = ContactFragment.TEST_UUID.toLowerCase();
         ContactFragment.TEST_UUID_PREVIOUS = ContactFragment.TEST_UUID_PREVIOUS.toLowerCase();
 
-        Log.v(TAG, "msg:" + msg);
-        Log.v(TAG, "rss:" + rssi);
-        Log.v(TAG, "device:" + device);
+//        Log.v(TAG, "msg:" + msg);
+//        Log.v(TAG, "rss:" + rssi);
+//        Log.v(TAG, "device:" + device);
         int serialNumber = (scanRecord[25] & 0xFF) << 24 | (scanRecord[26] & 0xFF) << 16 | (scanRecord[27] & 0xFF) << 8 | scanRecord[28] & 0xFF;
-        Log.e(TAG, "Serial Number is " + serialNumber);
+//        Log.e(TAG, "Serial Number is " + serialNumber);
         String UUIDHex = convertBytesToHex(Arrays.copyOfRange(scanRecord, 9, 25));
-        Log.d(TAG, "UUID: " + UUIDHex);
+//        Log.d(TAG, "UUID: " + UUIDHex);
 
         if (UUIDHex.equalsIgnoreCase(Constants.NEW_UUID)) {
             Log.d(TAG, "found beacon");
@@ -221,7 +269,7 @@ public class LocationService extends Service implements LocationListener {
             // Bytes 27 and 28 of the advertisement packet represent
             // the minor
             int minor = ((scanRecord[27] & 0xFF) << 8) | (scanRecord[28] & 0xFF);
-            Log.d("TAG", "device" + device + " Serial Number is " + serialNumber + " major" + major + " minor" + minor + " rssi" + rssi);
+//            Log.d("TAG", "device" + device + " Serial Number is " + serialNumber + " major" + major + " minor" + minor + " rssi" + rssi);
 
             Preference.getInstance().savePreferenceData(Constants.Preferences.Keys.UUID_KEY, UUIDHex);
             Preference.getInstance().savePreferenceData(Constants.Preferences.Keys.MAJOR_KEY, String.valueOf(major));
@@ -230,7 +278,6 @@ public class LocationService extends Service implements LocationListener {
             if (getActivity() != null) //TODO:  Band-aid (per Rod) for unknown NPE
             {
                 sendPushNotification();
-                getActivity().startActivity(new Intent(getActivity(), MainActivity.class));
             } else {
                 Log.e(TAG, "getActivity() = null");
             }
@@ -238,8 +285,6 @@ public class LocationService extends Service implements LocationListener {
             //if (UUIDHex.equalsIgnoreCase(Constants.OLD_UUID)) {
 
             Preference.getInstance().mSharedPreferences.getString("IsSecond", "true");
-
-
             Log.d(TAG, "found beacon");
 
 
@@ -260,7 +305,7 @@ public class LocationService extends Service implements LocationListener {
 
             if (getActivity() != null) {
                 sendPushNotification();
-                getActivity().startActivity(new Intent(getActivity(), MainActivity.class));
+//                getActivity().startActivity(new Intent(getActivity(), MainActivity.class));
             } else {
                 Log.e(TAG, "getActivity() = null");
             }
@@ -283,11 +328,32 @@ public class LocationService extends Service implements LocationListener {
         return true;
     }
 
+    public void startScan() {
+        try {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED || isScanning) {
+                return;
+            }
+            bluetoothLeScanner.startScan(leScanCallback);
+            isScanning = true;
+        } catch (Exception ignored) {}
+    }
+
+    public void stopScan() {
+        try {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED || !isScanning) {
+                return;
+            }
+            bluetoothLeScanner.stopScan(leScanCallback);
+            leScanCallback = null;
+            isScanning = false;
+        } catch (Exception ignored) {
+
+        }
+    }
+
     @SuppressLint("NewApi")
     public void sendPushNotification() {
-        if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.BLUETOOTH_SCAN) == PackageManager.PERMISSION_GRANTED) {
-            bluetoothLeScanner.stopScan(leScanCallback);
-        }
+        new Handler().postDelayed(this::stopScan, 250);
         if (!isAMinuteOver()) {
             return;
         }
@@ -300,7 +366,6 @@ public class LocationService extends Service implements LocationListener {
             callTestAlert();
         } else {
             callPushAlert();
-            sendAlertBroadcast();
         }
     }
 
@@ -336,13 +401,52 @@ public class LocationService extends Service implements LocationListener {
                 return;
             }
             Handler mHandler = new Handler();
-            mHandler.postDelayed(() -> bluetoothLeScanner.stopScan(leScanCallback), 2 * 60 * SCAN_PERIOD);
-            bluetoothLeScanner.startScan(leScanCallback);
+            mHandler.postDelayed(this::stopScan, 2 * 60 * SCAN_PERIOD);
+            mHandler.postDelayed(this::startScan, 500);
         }
     }
 
+    private LocationRequest createLocationRequest() {
+        final LocationRequest locationRequest = new LocationRequest();
+        locationRequest.setInterval(UPDATE_INTERVAL_IN_MILLISECONDS);
+        locationRequest.setFastestInterval(FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS);
+        locationRequest.setSmallestDisplacement(DEFAULT_SMALLEST_DISPLACEMENT_DISTANCE_IN_METERS);
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        /*Log.d(TAG, String.format(Locale.US, "createLocationRequest: smallestDisplacement = %1$f, interval = %2$d", locationRequest.getSmallestDisplacement(), locationRequest.getInterval()));*/
+
+        return locationRequest;
+    }
+
+    private void startListeningForLocationRequests() {
+        final LocationRequest locationRequest = createLocationRequest();
+        // Use FusedLocationProviderClient instead of deprecated FusedLocationApi
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null);
+    }
+
+    @Override
+    public void onConnected(Bundle connectionHint) {
+        startListeningForLocationRequests();
+    }
+
+    @Override
+    public void onConnectionSuspended(int cause) {
+//        Utills.writeFile("\n\n" + "AT " + new Date() + "   " + "onConnectionSuspended", this);
+        Log.d(TAG, "Connection to Google API suspended");
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult result) {
+//        Utills.writeFile("\n\n" + "AT " + new Date() + "   " + "onConnectionFailed", this);
+        // Refer to the javadoc for ConnectionResult to see what error codes might be returned in
+        // onConnectionFailed.
+        Log.i(TAG, "Connection failed: ConnectionResult.getErrorCode() = " + result.getErrorCode());
+    }
+
     private void setupLocationUpdates() {
-        if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
         if (fusedLocationClient == null) {
@@ -355,6 +459,7 @@ public class LocationService extends Service implements LocationListener {
                     }
                 }
             };
+            startListeningForLocationRequests();
         }
     }
 
@@ -397,7 +502,14 @@ public class LocationService extends Service implements LocationListener {
 
     public void callPushAlert() {
         if (Utills.isInternetConnected(this)) {
+            String lat = Preference.getInstance().mSharedPreferences.getString(Constant.COMMON_LATITUDE, "0.01");
+            String log = Preference.getInstance().mSharedPreferences.getString(Constant.COMMON_LONGITUDE, "0.01");
+            int accuracy = Preference.getInstance().mSharedPreferences.getInt(Constant.COMMON_ACCURACY, 0);
             Data inputData = new Data.Builder()
+                    .putDouble("latitude", Double.parseDouble(lat))
+                    .putDouble("longitude", Double.parseDouble(log))
+                    .putString("timezoneId", TimeZone.getDefault().getID())
+                    .putInt("accuracy", accuracy)
                     .build();
 
             OneTimeWorkRequest workRequest = new OneTimeWorkRequest.Builder(PushAlertWorker.class)
@@ -405,6 +517,7 @@ public class LocationService extends Service implements LocationListener {
                     .build();
 
             WorkManager.getInstance(this).enqueue(workRequest);
+            sendAlertBroadcast();
         }
     }
 
@@ -412,6 +525,29 @@ public class LocationService extends Service implements LocationListener {
     {
         Intent intent = new Intent();
         intent.setAction(Constants.Actions.SENT_ALERT_ACTION);
-        sendBroadcast(intent);
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("key1", "value1"); // Add your key-value pairs here
+            jsonObject.put("key2", "value2");
+            // Add other required fields
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        // Add the JSON object as a string extra
+        intent.putExtra(Constant.JSON_OBJECT, jsonObject.toString());
+        if (!CheckForeground.isInForeGround()) {
+            // Create an intent to open the main activity
+            Intent launchIntent = new Intent(getApplicationContext(), SplashActivity.class);
+            launchIntent.setClassName("com.tigerlight.dad", "home.SplashActivity");
+            launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            launchIntent.setAction(Intent.ACTION_MAIN);
+            launchIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+            startActivity(launchIntent);
+            // Delay the broadcast to ensure the app is brought to the foreground
+//            new Handler().postDelayed(() -> sendBroadcast(intent), 1000);
+        } else {
+            sendBroadcast(intent);
+        }
     }
 }

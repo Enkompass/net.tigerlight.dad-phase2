@@ -98,7 +98,7 @@ public class LoginToYourAccountFragment extends BaseFragment implements Compound
         lat = ((BaseActivity) getActivity()).getLatitude();
         log = ((BaseActivity) getActivity()).getLongitude();
 
-        startRefreshTimeTimer();
+//        startRefreshTimeTimer();
 
         setLogIndetails();
 
@@ -310,10 +310,10 @@ public class LoginToYourAccountFragment extends BaseFragment implements Compound
 
                     if (!Utills.isMyServiceRunning(LocationBroadcastServiceNew.class, getActivity())) {
 
-                        Intent serviceIntent = new Intent(getActivity(), LocationBroadcastServiceNew.class);
-                        PendingIntent pendingIntent = PendingIntent.getService(getActivity(), 1001, serviceIntent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-                        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
-                        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), time, pendingIntent);
+//                        Intent serviceIntent = new Intent(getActivity(), LocationBroadcastServiceNew.class);
+//                        PendingIntent pendingIntent = PendingIntent.getService(getActivity(), 1001, serviceIntent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+//                        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+//                        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), time, pendingIntent);
 
 
 //                getActivity().startService(intent);

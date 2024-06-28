@@ -932,21 +932,21 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == REQUEST_PERMISSIONS_REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                startLocationBroadcastService();
+//                startLocationBroadcastService();
             } else {
                 Toast.makeText(getActivity(), "Permissions denied", Toast.LENGTH_SHORT).show();
             }
         }
     }
 
-    private void startLocationBroadcastService() {
-        final Intent serviceIntent = new Intent(getActivity(), LocationBroadcastServiceNew.class);
-        serviceIntent.putExtra(Constants.Extras.SMALLEST_DISPLACEMENT_VALUE, 0f);
-
-        getActivity().stopService(serviceIntent);
-        getActivity().startService(serviceIntent);
-
-        Handler handler = new Handler();
-        handler.postDelayed(() -> getActivity().stopService(serviceIntent), 3000);
-    }
+//    private void startLocationBroadcastService() {
+//        final Intent serviceIntent = new Intent(getActivity(), LocationBroadcastServiceNew.class);
+//        serviceIntent.putExtra(Constants.Extras.SMALLEST_DISPLACEMENT_VALUE, 0f);
+//
+//        getActivity().stopService(serviceIntent);
+//        getActivity().startService(serviceIntent);
+//
+//        Handler handler = new Handler();
+//        handler.postDelayed(() -> getActivity().stopService(serviceIntent), 3000);
+//    }
 }

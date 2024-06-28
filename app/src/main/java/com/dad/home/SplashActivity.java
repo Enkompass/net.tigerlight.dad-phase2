@@ -1,7 +1,11 @@
 package com.dad.home;
 
+import static com.dad.util.AlarmUtils.cancelPeriodicService;
+import static com.dad.util.AlarmUtils.setupPeriodicService;
+
 import android.Manifest;
 import com.dad.LocationBroadcastServiceNew;
+import com.dad.LocationService;
 import com.dad.R;
 import com.dad.registration.activity.MainActivity;
 import com.dad.registration.util.Constant;
@@ -99,7 +103,11 @@ public class SplashActivity extends AppCompatActivity {
                 requestPermissions();
                 return;
             }
-            startLocationBroadcastService();
+//            startLocationBroadcastService();
+//            Intent serviceIntent = new Intent(this, LocationService.class);
+//            startService(serviceIntent);
+            cancelPeriodicService(this);
+            setupPeriodicService(this);
 
             // Uncomment and update if needed
             // Intent serviceBle = new Intent(getApplicationContext(), BleService.class);
@@ -119,22 +127,22 @@ public class SplashActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == REQUEST_PERMISSIONS_REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                startLocationBroadcastService();
+//                startLocationBroadcastService();
             } else {
                 Toast.makeText(this, "Permissions denied", Toast.LENGTH_SHORT).show();
             }
         }
     }
 
-    private void startLocationBroadcastService() {
-        long time = 1000 * 3;  //For repeating 30 seconds
-        Intent serviceIntent = new Intent(this, LocationBroadcastServiceNew.class);
-        PendingIntent pendingIntent = PendingIntent.getService(this, 1001, serviceIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        if (alarmManager != null) {
-            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), time, pendingIntent);
-        }
-    }
+//    private void startLocationBroadcastService() {
+//        long time = 1000 * 3;  //For repeating 30 seconds
+//        Intent serviceIntent = new Intent(this, LocationBroadcastServiceNew.class);
+//        PendingIntent pendingIntent = PendingIntent.getService(this, 1001, serviceIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+//        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+//        if (alarmManager != null) {
+//            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), time, pendingIntent);
+//        }
+//    }
 
     @Override
     protected void onDestroy() {

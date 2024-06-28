@@ -140,7 +140,7 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
             // for ActivityCompat#requestPermissions for more details.
             return;
         } else {
-            createLocationRequest();
+//            createLocationRequest();
         }
     }
 
@@ -187,10 +187,10 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
 //        }
     }
 
-    public void createLocationRequest()
-    {
-        createLocationRequest(LocationBroadcastServiceNew.UPDATE_INTERVAL_IN_MILLISECONDS, LocationBroadcastServiceNew.FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS, LocationBroadcastServiceNew.DEFAULT_SMALLEST_DISPLACEMENT_DISTANCE_IN_METERS);
-    }
+//    public void createLocationRequest()
+//    {
+//        createLocationRequest(LocationBroadcastServiceNew.UPDATE_INTERVAL_IN_MILLISECONDS, LocationBroadcastServiceNew.FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS, LocationBroadcastServiceNew.DEFAULT_SMALLEST_DISPLACEMENT_DISTANCE_IN_METERS);
+//    }
 
     /**
      * Sets up the location request. Android has two location request settings:
@@ -205,52 +205,52 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
      * These settings are appropriate for mapping applications that show real-time location
      * updates.
      */
-    public void createLocationRequest(long interval, long fastestInterval, float smallestDisplacement) {
-        final LocationRequest locationRequest = new LocationRequest();
-
-        // Sets the desired interval for active location updates. This interval is
-        // inexact. You may not receive updates at all if no location sources are available, or
-        // you may receive them slower than requested. You may also receive updates faster than
-        // requested if other applications are requesting location at a faster interval.
-        locationRequest.setInterval(interval);
-
-        // Sets the fastest rate for active location updates. This interval is exact, and your
-        // application will never receive updates faster than this value.
-        locationRequest.setFastestInterval(fastestInterval);
-        locationRequest.setSmallestDisplacement(smallestDisplacement);
-
-        //locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        final LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder().addLocationRequest(locationRequest);
-        builder.setAlwaysShow(true);
-        final PendingResult<LocationSettingsResult> result = LocationServices.SettingsApi.checkLocationSettings(googleApiClient, builder.build());
-
-        result.setResultCallback(result1 -> {
-            final Status status = result1.getStatus();
-            final LocationSettingsStates state = result1.getLocationSettingsStates();
-            switch (status.getStatusCode()) {
-                case LocationSettingsStatusCodes.SUCCESS:
-                    // All location settings are satisfied. The client can initialize location
-                    // requests here.
-                    break;
-                case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
-                    // Location settings are not satisfied. But could be fixed by showing the user
-                    // a dialog.
-                    try {
-                        // Show the dialog by calling startResolutionForResult(),
-                        // and check the result in onActivityResult().
-                        status.startResolutionForResult(BaseActivity.this, LOCATION_REQUEST_CHECK_SETTINGS);
-                    } catch (IntentSender.SendIntentException e) {
-                        // Ignore the error.
-                    }
-                    break;
-                case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
-                    // Location settings are not satisfied. However, we have no way to fix the
-                    // settings so we won't show the dialog.
-                    break;
-            }
-        });
-
-    }
+//    public void createLocationRequest(long interval, long fastestInterval, float smallestDisplacement) {
+//        final LocationRequest locationRequest = new LocationRequest();
+//
+//        // Sets the desired interval for active location updates. This interval is
+//        // inexact. You may not receive updates at all if no location sources are available, or
+//        // you may receive them slower than requested. You may also receive updates faster than
+//        // requested if other applications are requesting location at a faster interval.
+//        locationRequest.setInterval(interval);
+//
+//        // Sets the fastest rate for active location updates. This interval is exact, and your
+//        // application will never receive updates faster than this value.
+//        locationRequest.setFastestInterval(fastestInterval);
+//        locationRequest.setSmallestDisplacement(smallestDisplacement);
+//
+//        //locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+//        final LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder().addLocationRequest(locationRequest);
+//        builder.setAlwaysShow(true);
+//        final PendingResult<LocationSettingsResult> result = LocationServices.SettingsApi.checkLocationSettings(googleApiClient, builder.build());
+//
+//        result.setResultCallback(result1 -> {
+//            final Status status = result1.getStatus();
+//            final LocationSettingsStates state = result1.getLocationSettingsStates();
+//            switch (status.getStatusCode()) {
+//                case LocationSettingsStatusCodes.SUCCESS:
+//                    // All location settings are satisfied. The client can initialize location
+//                    // requests here.
+//                    break;
+//                case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+//                    // Location settings are not satisfied. But could be fixed by showing the user
+//                    // a dialog.
+//                    try {
+//                        // Show the dialog by calling startResolutionForResult(),
+//                        // and check the result in onActivityResult().
+//                        status.startResolutionForResult(BaseActivity.this, LOCATION_REQUEST_CHECK_SETTINGS);
+//                    } catch (IntentSender.SendIntentException e) {
+//                        // Ignore the error.
+//                    }
+//                    break;
+//                case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+//                    // Location settings are not satisfied. However, we have no way to fix the
+//                    // settings so we won't show the dialog.
+//                    break;
+//            }
+//        });
+//
+//    }
 
 
     /**
@@ -385,7 +385,7 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
         switch (requestCode) {
 
             case MY_PERMISSIONS_REQUEST_LOCATION:
-                createLocationRequest();
+//                createLocationRequest();
                 break;
             case LOCATION_REQUEST_CHECK_SETTINGS:
                 switch (resultCode) {

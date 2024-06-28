@@ -90,7 +90,7 @@ public class EditProfileFragment extends BaseFragment {
     private String email = "";
     private String croppedFile;
     //    String imgUrl = "http://52.33.140.142/admin/uploads/user_image/user_image_";
-    String imgUrl = "http://tigerlight.images.s3-website-us-west-2.amazonaws.com/user_image_";
+    String imgUrl = "https://tigerlight.images.s3-website-us-west-2.amazonaws.com/user_image_";
     private boolean isImageUpdated;
 
 
