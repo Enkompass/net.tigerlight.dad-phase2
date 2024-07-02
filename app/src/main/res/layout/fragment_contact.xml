@@ -43,7 +43,7 @@
         <!--android:divider="#b5b5b5"-->
         <!--android:dividerHeight="1dp" />-->
 
-        <com.dad.swipemenulistview.SwipeMenuListView
+        <com.tigerlight.dad.swipemenulistview.SwipeMenuListView
             android:id="@+id/listReciever"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -61,7 +61,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.dad.util.CustomTextViewSemiBold
+        <com.tigerlight.dad.util.CustomTextViewSemiBold
             android:id="@+id/fragment_contact_tvEmptyView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

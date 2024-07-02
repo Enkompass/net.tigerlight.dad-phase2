@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.dad.contacts.fragments.ContactListFragment">
+    tools:context="com.tigerlight.dad.contacts.fragments.ContactListFragment">
 
 
 </LinearLayout>

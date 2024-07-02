@@ -22,9 +22,9 @@ repositories {
 
 android {
 
-    namespace "com.dad"
+    namespace "com.tigerlight.dad"
     defaultConfig {
-        applicationId "com.dad"
+        applicationId "com.tigerlight.dad"
         minSdkVersion 26
         targetSdkVersion 34
         versionCode 1

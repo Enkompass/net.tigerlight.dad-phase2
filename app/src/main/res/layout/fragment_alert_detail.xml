@@ -13,7 +13,7 @@
         android:padding="@dimen/_10sdp"
             android:paddingStart="@dimen/_2sdp">
 
-        <com.dad.util.CustomTextViewBold
+        <com.tigerlight.dad.util.CustomTextViewBold
             android:id="@+id/fragment_alert_detail_tvBackAlerts"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -25,7 +25,7 @@
             android:drawableLeft="@drawable/ic_action_previous_item"
             android:textStyle="bold" />
 
-        <com.dad.util.CustomTextViewBold
+        <com.tigerlight.dad.util.CustomTextViewBold
             android:id="@+id/fragment_alert_detail_tvTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -38,7 +38,7 @@
             android:textSize="@dimen/_16sdp"
             android:textStyle="bold" />
 
-        <com.dad.util.CustomTextViewBold
+        <com.tigerlight.dad.util.CustomTextViewBold
             android:id="@+id/fragment_alert_detail_tvDial911"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -92,7 +92,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1">
 
-                <com.dad.util.CustomTextViewBold
+                <com.tigerlight.dad.util.CustomTextViewBold
                     android:id="@+id/fragment_alert_detail_tvUserName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -105,7 +105,7 @@
 
                     android:textStyle="bold" />
 
-                <com.dad.util.CustomTextViewRegular
+                <com.tigerlight.dad.util.CustomTextViewRegular
                     android:id="@+id/fragment_alert_detail_tvUserAddress"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -119,7 +119,7 @@
                     android:textAllCaps="false"
                     android:textSize="@dimen/_11sdp" />
 
-                <com.dad.util.CustomTextViewRegular
+                <com.tigerlight.dad.util.CustomTextViewRegular
                     android:id="@+id/fragment_alert_detail_tvDateTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -190,7 +190,7 @@
                 android:layout_weight="0.2"
                 android:contentDescription="@string/app_name" />
 
-            <!--<com.dad.util.CustomTextViewBold-->
+            <!--<com.tigerlight.dad.util.CustomTextViewBold-->
             <!--android:layout_width="0dp"-->
             <!--android:layout_height="wrap_content"-->
             <!--android:layout_weight="0.8"-->
@@ -218,7 +218,7 @@
                 android:contentDescription="@string/app_name"
                 android:src="@drawable/img_logo_white" />
 
-            <com.dad.util.CustomTextViewBold
+            <com.tigerlight.dad.util.CustomTextViewBold
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.8"
@@ -246,7 +246,7 @@
                 android:layout_weight="0.2"
                 android:contentDescription="@string/app_name" />
 
-            <!--<com.dad.util.CustomTextViewBold-->
+            <!--<com.tigerlight.dad.util.CustomTextViewBold-->
             <!--android:layout_width="0dp"-->
             <!--android:layout_height="wrap_content"-->
             <!--android:layout_weight="0.8"-->

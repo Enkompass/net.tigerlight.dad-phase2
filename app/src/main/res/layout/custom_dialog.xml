@@ -6,7 +6,7 @@
     android:gravity="center"
     android:orientation="vertical">
 
-    <com.dad.util.CustomTextViewSemiBold
+    <com.tigerlight.dad.util.CustomTextViewSemiBold
         android:id="@+id/dialog_tvTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -17,7 +17,7 @@
         android:textColor="@color/colorBlack"
         android:textSize="@dimen/_12sdp" />
 
-    <com.dad.util.CustomTextViewRegular
+    <com.tigerlight.dad.util.CustomTextViewRegular
         android:id="@+id/dialog_tvMessage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -33,7 +33,7 @@
         android:layout_height="@dimen/_1sdp"
         android:background="@color/color_separater" />
 
-    <com.dad.util.CustomTextViewSemiBold
+    <com.tigerlight.dad.util.CustomTextViewSemiBold
         android:id="@+id/dialog_tvPosButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -47,7 +47,7 @@
         android:layout_height="@dimen/_1sdp"
         android:background="@color/color_separater" />
 
-    <com.dad.util.CustomTextViewSemiBold
+    <com.tigerlight.dad.util.CustomTextViewSemiBold
         android:id="@+id/dialog_tvNegButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
