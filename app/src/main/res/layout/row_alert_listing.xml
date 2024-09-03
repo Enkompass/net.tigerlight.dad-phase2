@@ -56,7 +56,7 @@
         android:layout_gravity="center_vertical"
         android:layout_weight="1">
 
-        <com.tigerlight.dad.util.CustomTextViewBold
+        <net.tigerlight.dad.util.CustomTextViewBold
             android:id="@+id/elementNameAlert"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -69,7 +69,7 @@
 
             android:textStyle="bold" />
 
-        <com.tigerlight.dad.util.CustomTextViewRegular
+        <net.tigerlight.dad.util.CustomTextViewRegular
             android:id="@+id/elementAdressAlert"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -84,7 +84,7 @@
 
             android:textSize="@dimen/_13sdp" />
 
-        <com.tigerlight.dad.util.CustomTextViewRegular
+        <net.tigerlight.dad.util.CustomTextViewRegular
             android:id="@+id/elementTimeAlert"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

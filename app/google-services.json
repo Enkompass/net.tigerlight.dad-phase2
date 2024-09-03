@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:32989397760:android:b69d67d59bcd4ba9",
         "android_client_info": {
-          "package_name": "com.tigerlight.dad"
+          "package_name": "net.tigerlight.dad"
         }
       },
       "oauth_client": [

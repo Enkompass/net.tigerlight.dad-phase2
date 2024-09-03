@@ -9,7 +9,7 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/fragment_settings_iv_logo">
 
-        <com.tigerlight.dad.util.CustomTextViewSemiBold
+        <net.tigerlight.dad.util.CustomTextViewSemiBold
             android:id="@+id/fragment_settings_tvEditAccount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -21,7 +21,7 @@
             android:textColor="@color/color_blue"
             android:textSize="@dimen/_15sdp" />
 
-        <com.tigerlight.dad.util.CustomTextViewBold
+        <net.tigerlight.dad.util.CustomTextViewBold
             android:id="@+id/fragment_settings_tv_setting_up_another_device"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -32,7 +32,7 @@
             android:textColor="@color/colorBlack"
             android:textSize="@dimen/_17sdp" />
 
-        <com.tigerlight.dad.util.CustomTextViewBold
+        <net.tigerlight.dad.util.CustomTextViewBold
             android:id="@+id/fragment_settings_tvShowEula"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -45,7 +45,7 @@
             android:textColor="@color/color_blue"
             android:textSize="@dimen/_15sdp" />
 
-        <com.tigerlight.dad.util.CustomTextViewBold
+        <net.tigerlight.dad.util.CustomTextViewBold
             android:id="@+id/fragment_settings_tvLogOut"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -58,7 +58,7 @@
             android:textColor="@color/color_blue"
             android:textSize="@dimen/_15sdp" />
 
-        <com.tigerlight.dad.util.CustomTextViewBold
+        <net.tigerlight.dad.util.CustomTextViewBold
             android:id="@+id/fragment_settings_tvWelcome"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -69,7 +69,7 @@
             android:textSize="@dimen/_18sdp"
             android:textStyle="bold" />
 
-        <com.tigerlight.dad.util.CustomTextViewBold
+        <net.tigerlight.dad.util.CustomTextViewBold
             android:id="@+id/fragment_settings_tvLogin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -81,7 +81,7 @@
             android:textSize="@dimen/_14sdp"
             android:textStyle="bold" />
 
-        <com.tigerlight.dad.util.CustomTextViewSemiBold
+        <net.tigerlight.dad.util.CustomTextViewSemiBold
             android:id="@+id/fragment_settings_tvMsg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -104,7 +104,7 @@
         android:gravity="center"
         android:orientation="vertical">
 
-        <com.tigerlight.dad.util.CustomTextViewSemiBold
+        <net.tigerlight.dad.util.CustomTextViewSemiBold
                 android:id="@+id/tvBuild"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

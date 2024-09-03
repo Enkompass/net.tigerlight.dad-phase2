@@ -1,4 +1,4 @@
-package com.tigerlight.dad;
+package net.tigerlight.dad;
 
 import org.junit.Test;
 

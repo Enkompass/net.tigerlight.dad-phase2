@@ -6,7 +6,7 @@
 
     <view
         android:id="@+id/image"
-        class="com.tigerlight.dad.cropimage.CropImageView"
+        class="net.tigerlight.dad.cropimage.CropImageView"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_x="0dip"

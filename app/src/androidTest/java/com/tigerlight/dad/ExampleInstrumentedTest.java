@@ -1,4 +1,4 @@
-package com.tigerlight.dad;
+package net.tigerlight.dad;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
 
-        assertEquals("com.tigerlight.dad", appContext.getPackageName());
+        assertEquals("net.tigerlight.dad", appContext.getPackageName());
     }
 }

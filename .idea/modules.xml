@@ -4,7 +4,6 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/net.tigerlight.dad-phase2.iml" filepath="$PROJECT_DIR$/.idea/modules/net.tigerlight.dad-phase2.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/net.tigerlight.dad-phase2.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/net.tigerlight.dad-phase2.app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/net.tigerlight.dad-phase2.app.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/net.tigerlight.dad-phase2.app.androidTest.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/net.tigerlight.dad-phase2.app.main.iml" filepath="$PROJECT_DIR$/.idea/modules/app/net.tigerlight.dad-phase2.app.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/net.tigerlight.dad-phase2.app.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/net.tigerlight.dad-phase2.app.unitTest.iml" />
     </modules>

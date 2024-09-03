@@ -89,7 +89,7 @@
                             android:textColor="@color/colorBlack"
                             android:textStyle="bold" />
 
-                        <com.tigerlight.dad.util.CustomTextViewBold
+                        <net.tigerlight.dad.util.CustomTextViewBold
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="@string/fragment_add_more_tv_user_name_gine"
@@ -166,7 +166,7 @@
                             android:textColor="@color/colorBlack"
                             android:textStyle="bold" />
 
-                        <com.tigerlight.dad.util.CustomTextViewBold
+                        <net.tigerlight.dad.util.CustomTextViewBold
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="@string/fragment_add_more_tv_phone_no_hint_"
@@ -231,7 +231,7 @@
                             android:textColor="@color/colorBlack"
                             android:textStyle="bold" />
 
-                        <com.tigerlight.dad.util.CustomTextViewBold
+                        <net.tigerlight.dad.util.CustomTextViewBold
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="@string/fragment_add_more_tv_first_name_hint"
@@ -295,7 +295,7 @@
                             android:textColor="@color/colorBlack"
                             android:textStyle="bold" />
 
-                        <com.tigerlight.dad.util.CustomTextViewBold
+                        <net.tigerlight.dad.util.CustomTextViewBold
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="@string/fragment_add_more_tv_last_name_hint"
@@ -358,7 +358,7 @@
                             android:textColor="@color/colorBlack"
                             android:textStyle="bold" />
 
-                        <com.tigerlight.dad.util.CustomTextViewBold
+                        <net.tigerlight.dad.util.CustomTextViewBold
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="@string/fragment_add_more_tv_email_hint"
@@ -383,7 +383,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <com.tigerlight.dad.util.CustomTextViewBold
+                    <net.tigerlight.dad.util.CustomTextViewBold
                         android:id="@+id/fragment_add_more_tv_addressbook"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -394,7 +394,7 @@
                         android:textColor="#440AD0"
                         android:textStyle="bold" />
 
-                    <com.tigerlight.dad.util.CustomTextViewBold
+                    <net.tigerlight.dad.util.CustomTextViewBold
                         android:id="@+id/fragment_add_more_tv_save"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -406,7 +406,7 @@
                         android:textColor="#440AD0"
                         android:textStyle="bold" />
 
-                    <com.tigerlight.dad.util.CustomTextViewBold
+                    <net.tigerlight.dad.util.CustomTextViewBold
                         android:id="@+id/fragment_add_more_tv_cancel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

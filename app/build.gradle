@@ -22,9 +22,9 @@ repositories {
 
 android {
 
-    namespace "com.tigerlight.dad"
+    namespace "net.tigerlight.dad"
     defaultConfig {
-        applicationId "com.tigerlight.dad"
+        applicationId "net.tigerlight.dad"
         minSdkVersion 26
         targetSdkVersion 34
         versionCode 1
@@ -40,8 +40,9 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.debug
         }
     }
 
@@ -49,11 +50,11 @@ android {
 
     productFlavors {
         theme1 {
-            applicationId "com.tigerlight.dad"
+            applicationId "net.tigerlight.dad"
             minSdkVersion 26
             targetSdkVersion 34
-            versionCode 5265
-            versionName "5.2.6.5"
+            versionCode 101
+            versionName "1.0.1"
             dimension "version"
         }
     }

@@ -30,14 +30,14 @@
         android:orientation="vertical"
         android:padding="@dimen/_5sdp">
 
-        <com.tigerlight.dad.util.CustomTextViewSemiBold
+        <net.tigerlight.dad.util.CustomTextViewSemiBold
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/crowd_alerts_msg"
             android:textColor="@color/color_black"
             android:textSize="@dimen/_13sdp" />
 
-        <com.tigerlight.dad.util.CustomTextViewBold
+        <net.tigerlight.dad.util.CustomTextViewBold
             android:id="@+id/fragment_alert_tvSendDanger"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -55,7 +55,7 @@
             android:orientation="horizontal"
             android:padding="@dimen/_5sdp">
 
-            <com.tigerlight.dad.util.CustomTextViewBold
+            <net.tigerlight.dad.util.CustomTextViewBold
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -84,7 +84,7 @@
             android:orientation="horizontal"
             android:padding="@dimen/_5sdp">
 
-            <com.tigerlight.dad.util.CustomTextViewBold
+            <net.tigerlight.dad.util.CustomTextViewBold
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -129,7 +129,7 @@
         <!--android:divider="#b5b5b5"-->
         <!--android:dividerHeight="1dp" />-->
 
-        <com.tigerlight.dad.swipemenulistview.SwipeMenuListView
+        <net.tigerlight.dad.swipemenulistview.SwipeMenuListView
             android:id="@+id/fragment_alert_lvAlerts"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -140,7 +140,7 @@
 
             tools:listitem="@layout/row_alert_listing" />
 
-        <com.tigerlight.dad.util.CustomTextViewSemiBold
+        <net.tigerlight.dad.util.CustomTextViewSemiBold
             android:id="@+id/fragment_alert_tvEmptyView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <com.tigerlight.dad.util.CustomTextViewBold
+        <net.tigerlight.dad.util.CustomTextViewBold
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
@@ -31,7 +31,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <com.tigerlight.dad.util.CustomTextViewBold
+        <net.tigerlight.dad.util.CustomTextViewBold
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
@@ -54,7 +54,7 @@
 
         >
 
-        <com.tigerlight.dad.util.CustomTextViewBold
+        <net.tigerlight.dad.util.CustomTextViewBold
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
@@ -75,7 +75,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <com.tigerlight.dad.util.CustomTextViewBold
+        <net.tigerlight.dad.util.CustomTextViewBold
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"

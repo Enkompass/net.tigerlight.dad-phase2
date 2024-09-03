@@ -11,7 +11,7 @@
         android:background="@color/colorOrange_new"
         android:gravity="center">
 
-        <com.tigerlight.dad.util.CustomTextViewBold
+        <net.tigerlight.dad.util.CustomTextViewBold
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@color/colorOrange_new"
@@ -35,7 +35,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <com.tigerlight.dad.util.CustomTextViewSemiBold
+            <net.tigerlight.dad.util.CustomTextViewSemiBold
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:text="@string/TAGE_REQUIRE_PIN"
@@ -58,7 +58,7 @@
                 android:padding="@dimen/_10sdp"
                 android:weightSum="1">
 
-                <com.tigerlight.dad.util.CustomTextViewSemiBold
+                <net.tigerlight.dad.util.CustomTextViewSemiBold
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.4"
@@ -93,7 +93,7 @@
                 android:orientation="horizontal"
                 android:padding="@dimen/_10sdp">
 
-                <com.tigerlight.dad.util.CustomTextViewSemiBold
+                <net.tigerlight.dad.util.CustomTextViewSemiBold
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.4"
@@ -127,7 +127,7 @@
                 android:orientation="horizontal"
                 android:padding="@dimen/_10sdp">
 
-                <com.tigerlight.dad.util.CustomTextViewSemiBold
+                <net.tigerlight.dad.util.CustomTextViewSemiBold
                     android:id="@+id/fragment_iamok_llMain_tvValidatePin"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -138,7 +138,7 @@
                     android:textColor="@color/color_blue"
                     android:textSize="@dimen/_15sdp" />
 
-                <com.tigerlight.dad.util.CustomTextViewSemiBold
+                <net.tigerlight.dad.util.CustomTextViewSemiBold
                     android:id="@+id/fragment_iamok_llMain_tvSavePin"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -176,7 +176,7 @@
                 android:gravity="center"
                 android:orientation="vertical">
 
-                <com.tigerlight.dad.util.CustomTextViewSemiBold
+                <net.tigerlight.dad.util.CustomTextViewSemiBold
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_10sdp"
@@ -268,7 +268,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <com.tigerlight.dad.util.CustomTextViewSemiBold
+            <net.tigerlight.dad.util.CustomTextViewSemiBold
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:text="@string/TAGE_REQUIRE_PIN"
@@ -292,7 +292,7 @@
                 android:paddingEnd="@dimen/_10sdp"
                 android:paddingTop="@dimen/_10sdp">
 
-                <com.tigerlight.dad.util.CustomTextViewSemiBold
+                <net.tigerlight.dad.util.CustomTextViewSemiBold
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5"
@@ -327,7 +327,7 @@
                 android:padding="@dimen/_10sdp"
                 android:weightSum="1">
 
-                <com.tigerlight.dad.util.CustomTextViewSemiBold
+                <net.tigerlight.dad.util.CustomTextViewSemiBold
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5"
@@ -360,7 +360,7 @@
                 android:orientation="horizontal"
                 android:padding="@dimen/_10sdp">
 
-                <com.tigerlight.dad.util.CustomTextViewSemiBold
+                <net.tigerlight.dad.util.CustomTextViewSemiBold
                     android:id="@+id/customTextViewSemiBold"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -394,7 +394,7 @@
                 android:orientation="horizontal"
                 android:padding="@dimen/_10sdp">
 
-                <com.tigerlight.dad.util.CustomTextViewSemiBold
+                <net.tigerlight.dad.util.CustomTextViewSemiBold
                     android:id="@+id/fragment_iamok_tvValidatePin"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -405,7 +405,7 @@
                     android:textColor="@color/color_blue"
                     android:textSize="@dimen/_15sdp" />
 
-                <com.tigerlight.dad.util.CustomTextViewSemiBold
+                <net.tigerlight.dad.util.CustomTextViewSemiBold
                     android:id="@+id/fragment_iamok_tvSavePin"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -425,7 +425,7 @@
                 android:orientation="horizontal"
                 android:padding="@dimen/_10sdp">
 
-                <com.tigerlight.dad.util.CustomTextViewSemiBold
+                <net.tigerlight.dad.util.CustomTextViewSemiBold
                     android:id="@+id/fragment_iamok_tvCancel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
