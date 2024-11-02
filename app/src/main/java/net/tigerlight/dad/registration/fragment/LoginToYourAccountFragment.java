@@ -292,6 +292,10 @@ public class LoginToYourAccountFragment extends BaseFragment implements Compound
                     Preference.getInstance().savePreferenceData(Constant.KEY_PASSWORD, password);
                     Preference.getInstance().savePreferenceData(Constant.IS_LOGIN, true);
                     Preference.getInstance().savePreferenceData(Constant.USER_ID, wsLogin.getUser_id());
+                    Preference.getInstance().saveEncryptedPreferenceData(Constant.ACCESS_TOKEN, wsLogin.getAccessToken());
+                    Preference.getInstance().saveEncryptedPreferenceData(Constant.REFRESH_TOKEN, wsLogin.getRefreshToken());
+                    Preference.getInstance().mSharedPreferences.edit().putLong(Constant.EXPIRES_IN, wsLogin.getExpiresIn()).apply();
+
                     Log.d("Login_ID", wsLogin.getMessage());
 
 //                    if (!Utills.isMyServiceRunning(LocationBroadcastServiceNew.class, getActivity())) {

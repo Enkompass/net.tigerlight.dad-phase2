@@ -1,6 +1,7 @@
 package net.tigerlight.dad.registration.fragment;
 
 import net.tigerlight.dad.registration.activity.MainActivity;
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -15,6 +16,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+
 import net.tigerlight.dad.R;
 import net.tigerlight.dad.home.BaseFragment;
 import net.tigerlight.dad.registration.model.CountryModel;
@@ -27,17 +29,22 @@ import net.tigerlight.dad.util.Preference;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnGestureListener;
@@ -60,6 +67,7 @@ import java.util.TimeZone;
 import static net.tigerlight.dad.R.id.fragment_alert_detail_tvDial911;
 import static net.tigerlight.dad.R.id.fragment_alert_detail_tvUserAddress;
 import static net.tigerlight.dad.registration.fragment.AlertFragment.jsonobjectToChange;
+import static net.tigerlight.dad.util.WsConstants.ASSETS_DOMAIN;
 
 public class AlertDetailFragment extends BaseFragment implements OnClickListener, OnGestureListener, OnMapReadyCallback {
 
@@ -100,7 +108,7 @@ public class AlertDetailFragment extends BaseFragment implements OnClickListener
     private ImageView fragment_alert_detail_img_testalert;
     public String imagePath = "";
     String testStr;
-    String imgUrl = "https://tigerlight.images.s3-website-us-west-2.amazonaws.com/";
+    String imgUrl = ASSETS_DOMAIN;
 
     SqlLiteDbHelper dbHelper;
     CountryModel contacts;
@@ -137,13 +145,7 @@ public class AlertDetailFragment extends BaseFragment implements OnClickListener
         final TextView tvUsername = (TextView) view.findViewById(R.id.fragment_alert_detail_tvUserName);
         final TextView tvUserDateTime = (TextView) view.findViewById(R.id.fragment_alert_detail_tvDateTime);
         final ImageView imgUserprofile = (ImageView) view.findViewById(R.id.fragment_alert_detail_ivUserProfile);
-        imgUserprofile.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showDialog();
-
-            }
-        });
+        imgUserprofile.setOnClickListener(view1 -> showDialog());
 
         //TODO:  Band-aid (per Rod) for unknown NPE
         final String address = (jsonobjectToChange != null) ? jsonobjectToChange.optString(TAG_ADDRESS) : "";
@@ -158,7 +160,7 @@ public class AlertDetailFragment extends BaseFragment implements OnClickListener
         tvTitle.setText(userName);
 
 
-        if (jsonobjectToChange.optInt("status") == 1) {
+        if (jsonobjectToChange != null && jsonobjectToChange.optInt("status") == 1) {
 
             tvUsername.setText(String.format("%s " + getString(R.string.is_safe), userName));
         } else {
@@ -167,9 +169,12 @@ public class AlertDetailFragment extends BaseFragment implements OnClickListener
             tvUsername.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.color_allert_bg));
         }
 
-        imagePath = jsonobjectToChange.optString(TAG_IMAGE);
-        String lastWord = imagePath.substring(imagePath.lastIndexOf("/") + 1);;
-        imagePath=imgUrl+lastWord;
+        if (jsonobjectToChange != null) {
+            imagePath = jsonobjectToChange.optString(TAG_IMAGE);
+        }
+        String lastWord = imagePath.substring(imagePath.lastIndexOf("/") + 1);
+        ;
+        imagePath = imgUrl + lastWord;
         Glide.with(this)
                 .load(imagePath).diskCacheStrategy(DiskCacheStrategy.NONE)
                 .skipMemoryCache(true).transform(new CircleTransform(getActivity())) // Uri of the picture
@@ -447,16 +452,17 @@ public class AlertDetailFragment extends BaseFragment implements OnClickListener
         String userAdderss = null;
 
         try {
-            latitude = Double.valueOf(jsonobjectToChange.optString(TAG_LATITUDE));
-            longitude = Double.valueOf(jsonobjectToChange.optString(TAG_LONG));
+            if (jsonobjectToChange != null) {
+                latitude = Double.valueOf(jsonobjectToChange.optString(TAG_LATITUDE));
+                longitude = Double.valueOf(jsonobjectToChange.optString(TAG_LONG));
 
 //            String  cName= Utills.getCountryName(getActivity(),   48.8588377, 2.2775171);
 //            Preference.getInstance().savePreferenceData(Constant.COUNTRY_CODE,cName);
 
-            userName = jsonobjectToChange.optString(TAG_USER_NAME);
-            userAdderss = jsonobjectToChange.optString(TAG_ADDRESS);
+                userName = jsonobjectToChange.optString(TAG_USER_NAME);
+                userAdderss = jsonobjectToChange.optString(TAG_ADDRESS);
 
-
+            }
         } catch (NumberFormatException e) {
             e.printStackTrace();
             return;
@@ -479,15 +485,11 @@ public class AlertDetailFragment extends BaseFragment implements OnClickListener
         googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
         // googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLongPos, 13));
 
-        googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-
-            @Override
-            public boolean onMarkerClick(Marker arg0) {
-                String uri = String.format(Locale.ENGLISH, "geo:%f,%f", longitude, latitude);// i have chnaged lat long pos , new LatLng(latitude, longitude); bcz values are coming inverse
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
-                startActivity(intent);
-                return false;
-            }
+        googleMap.setOnMarkerClickListener(arg0 -> {
+            String uri = String.format(Locale.ENGLISH, "geo:%f,%f", longitude, latitude);// i have chnaged lat long pos , new LatLng(latitude, longitude); bcz values are coming inverse
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+            startActivity(intent);
+            return false;
         });
     }
 

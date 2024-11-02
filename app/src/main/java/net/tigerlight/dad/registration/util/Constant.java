@@ -11,6 +11,9 @@ public class Constant {
     public final static String IS_ACCEPT = "is_accept";
     public final static String IS_LOGIN = "is_login";
     public final static String USER_ID = "user_id";
+    public final static String ACCESS_TOKEN = "accessToken";
+    public final static String EXPIRES_IN = "expiresIn";
+    public final static String REFRESH_TOKEN = "refreshToken";
     public final static String USER_NAME = "user_name";
     public final static String PASSWORD = "password";
     public final static String IS_PIN_CREATED = "is_pin_created";

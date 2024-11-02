@@ -94,6 +94,7 @@ public class WsUploadImage {
         final MultipartBody.Builder multipartBuilder = new MultipartBody.Builder();
         multipartBuilder.setType(MultipartBody.FORM);
         multipartBuilder.addFormDataPart(wsConstants.PARAMS_USER_ID, preference.mSharedPreferences.getString(Constant.USER_ID, ""));
+//        multipartBuilder.addFormDataPart(wsConstants.PARAMS_USER_ID, "6047");
         if (!TextUtils.isEmpty(profileImageId)) {
             final File fileAvatarImage = new File(profileImageId);
 

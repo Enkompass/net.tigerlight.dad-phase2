@@ -1,6 +1,7 @@
 package net.tigerlight.dad.util;
 
 import net.tigerlight.dad.R;
+import net.tigerlight.dad.registration.util.Constant;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -13,6 +14,7 @@ import android.util.Log;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
+import okhttp3.FormBody;
 import okhttp3.Headers;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -28,6 +30,59 @@ import okhttp3.logging.HttpLoggingInterceptor;
 public class WSUtil {
     private Context mContext;
 
+    private String getValidAccessToken(Context context) throws IOException {
+        String accessToken = Preference.getInstance().getEncryptedPreferenceData(Constant.ACCESS_TOKEN);
+        if (TextUtils.isEmpty(accessToken) || isAccessTokenExpired(context)) {
+            accessToken = refreshAccessToken(context);
+        }
+        return accessToken;
+    }
+
+    private boolean isAccessTokenExpired(Context context) {
+        long expiresIn = Preference.getInstance().mSharedPreferences.getLong(Constant.EXPIRES_IN, 0);
+        return System.currentTimeMillis() > expiresIn;
+    }
+
+    private String refreshAccessToken(Context context) throws IOException {
+        // Assuming refreshToken is stored in SharedPreferences
+        String refreshToken = Preference.getInstance().getEncryptedPreferenceData(Constant.REFRESH_TOKEN);
+        String userId = Preference.getInstance().mSharedPreferences.getString(Constant.USER_ID, "");
+        if (TextUtils.isEmpty(refreshToken)) {
+            return null; // No refresh token available
+        }
+
+        String refreshUrl = WsConstants.MAIN_URL + "userid=" + userId;
+        OkHttpClient client = new OkHttpClient();
+        Request refreshRequest = new Request.Builder()
+                .url(refreshUrl)
+                .addHeader("Authorization", "Bearer " + refreshToken)
+                .get()
+                .build();
+
+        Response refreshResponse = client.newCall(refreshRequest).execute();
+        if (!refreshResponse.isSuccessful()) {
+            return null; // Unable to refresh token
+        }
+
+        String responseString = refreshResponse.body().string();
+        JSONObject jsonObject = null;
+        try {
+            jsonObject = new JSONObject(responseString);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
+        String newAccessToken = jsonObject.optString(Constant.ACCESS_TOKEN);
+        String newRefreshToken = jsonObject.optString(Constant.REFRESH_TOKEN);
+        long expiresIn  = jsonObject.optLong(Constant.EXPIRES_IN);
+
+        // Save the new access token and expiry time in SharedPreferences
+        Preference.getInstance().saveEncryptedPreferenceData(Constant.ACCESS_TOKEN, newAccessToken);
+        Preference.getInstance().saveEncryptedPreferenceData(Constant.REFRESH_TOKEN, newRefreshToken);
+        Preference.getInstance().mSharedPreferences.edit().putLong(Constant.EXPIRES_IN, expiresIn).apply();
+
+        return newAccessToken;
+    }
 
     public String callServiceHttpPost(final Context mContext, final String url, final RequestBody requestBody) {
         this.mContext = mContext;
@@ -35,6 +90,8 @@ public class WSUtil {
         Log.d(WSUtil.class.getSimpleName(), String.format("Request String : %s", requestBody.toString()));
         String responseString;
         try {
+            String accessToken = getValidAccessToken(mContext);
+
             final HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
             logging.setLevel(HttpLoggingInterceptor.Level.BODY);
             final OkHttpClient okHttpClient = new OkHttpClient.Builder()
@@ -42,10 +99,15 @@ public class WSUtil {
                     .connectTimeout(WsConstants.CONNECTION_TIMEOUT, TimeUnit.SECONDS)
                     .readTimeout(WsConstants.CONNECTION_TIMEOUT, TimeUnit.SECONDS)
                     .build();
-            Request request = new Request.Builder()
+            Request.Builder requestBuilder = new Request.Builder()
                     .url(url)
-                    .post(requestBody)
-                    .build();
+                    .post(requestBody);
+
+            if (!TextUtils.isEmpty(accessToken)) {
+                requestBuilder.addHeader("Authorization", "Bearer " + accessToken);
+            }
+            Request request = requestBuilder.build();
+
             final Response response = okHttpClient.newCall(request).execute();
 
             responseString = response.body().string();
@@ -84,22 +146,28 @@ public class WSUtil {
 
 //              .connectionSpecs(Collections.singletonList(spec))
 
-
             final OkHttpClient okHttpClient = new OkHttpClient.Builder()
                     .addInterceptor(logging)
                     .connectTimeout(WsConstants.CONNECTION_TIMEOUT, TimeUnit.SECONDS)
                     .readTimeout(WsConstants.CONNECTION_TIMEOUT, TimeUnit.SECONDS)
                     .build();
-            Request request = new Request.Builder()
+            Request.Builder requestBuilder = new Request.Builder()
                     .url(url)
                     .addHeader("Content-Type", "application/json; charset=utf-8")
-                    .get()
-
-                    .build();
-
-
+                    .get();
 //            Request request = new Request.Builder().url(url).head().build();
+            String accessToken = getValidAccessToken(mContext);
+            String refreshToken = Preference.getInstance().getEncryptedPreferenceData(Constant.REFRESH_TOKEN);
+            final WsConstants wsConstants = new WsConstants();
+            if (url.contains(wsConstants.PARAMS_COMMAND + "=" + WsConstants.METHOD_LOGOUT)) {
+                if (!TextUtils.isEmpty(refreshToken)) {
+                    requestBuilder.addHeader("Authorization", "Bearer " + refreshToken);
+                }
+            } else if (!TextUtils.isEmpty(accessToken)) {
+                requestBuilder.addHeader("Authorization", "Bearer " + accessToken);
+            }
 
+            Request request = requestBuilder.build();
             final Response response = okHttpClient.newCall(request).execute();
 
             Headers responseHeaders = response.headers();
@@ -107,7 +175,6 @@ public class WSUtil {
             for (int i = 0; i < responseHeaders.size(); i++) {
                 Log.d("Header", responseHeaders.name(i) + ": " + responseHeaders.value(i));
             }
-
 
             responseString = response.body().string();
 

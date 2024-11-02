@@ -3,6 +3,7 @@ package net.tigerlight.dad.registration.webservices;
 import android.content.Context;
 
 import net.tigerlight.dad.R;
+import net.tigerlight.dad.registration.util.Constant;
 import net.tigerlight.dad.util.Preference;
 import net.tigerlight.dad.util.WSUtil;
 import net.tigerlight.dad.util.WsConstants;
@@ -19,6 +20,9 @@ public class WsCallLogin {
     private String message;
     private boolean success;
     private String user_id;
+    private String accessToken;
+    private String refreshToken;
+    private Long expiresIn;
 
     public WsCallLogin(final Context context) {
         this.context = context;
@@ -35,6 +39,12 @@ public class WsCallLogin {
     public String getUser_id() {
         return user_id;
     }
+
+    public String getAccessToken() { return accessToken; }
+
+    public String getRefreshToken() { return refreshToken; }
+
+    public long getExpiresIn() { return expiresIn; }
 
     /**
      * Calls the api user Login.
@@ -66,6 +76,9 @@ public class WsCallLogin {
                 if (jsonObject.length() > 0) {
                     success = jsonObject.optString(wsConstants.PARAMS_SUCCESS).equals("1");
                     user_id = jsonObject.optString("id");
+                    accessToken = jsonObject.optString(Constant.ACCESS_TOKEN);
+                    refreshToken = jsonObject.optString(Constant.REFRESH_TOKEN);
+                    expiresIn = jsonObject.optLong(Constant.EXPIRES_IN);
                     if (jsonObject.optString(wsConstants.PARAMS_SUCCESS).equals("0")) {
                         message = context.getString(R.string.alert_invalid_login);
                     } else if (jsonObject.optString(wsConstants.PARAMS_SUCCESS).equals("2")) {

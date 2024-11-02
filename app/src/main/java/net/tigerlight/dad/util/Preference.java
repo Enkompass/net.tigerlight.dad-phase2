@@ -2,10 +2,10 @@ package net.tigerlight.dad.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-
 import net.tigerlight.dad.DADApplication;
 import net.tigerlight.dad.R;
-
+import androidx.security.crypto.EncryptedSharedPreferences;
+import androidx.security.crypto.MasterKey;
 
 /**
  * Created by M.T on 6 Oct, 2016.
@@ -16,6 +16,7 @@ import net.tigerlight.dad.R;
 public class Preference {
 
     private static Preference mPreference;
+    public SharedPreferences mEncryptedSharedPreferences;
     public SharedPreferences mSharedPreferences;
 
     public final String KEY_DEVICE_TOKEN = "KEY_DEVICE_TOKEN";
@@ -30,6 +31,20 @@ public class Preference {
 
     private Preference() {
         mSharedPreferences = DADApplication.mAppInstance.getSharedPreferences(DADApplication.mAppInstance.getString(R.string.app_name), Context.MODE_PRIVATE);
+
+        try {
+            MasterKey masterKey = new MasterKey.Builder(DADApplication.mAppInstance)
+                    .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+                    .build();
+
+            mEncryptedSharedPreferences = EncryptedSharedPreferences.create(
+                    DADApplication.mAppInstance,
+                    "secure_prefs", // Name for encrypted prefs file
+                    masterKey,
+                    EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+                    EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+            );
+        } catch (Exception ignored) {}
     }
 
     /**
@@ -40,6 +55,39 @@ public class Preference {
             mPreference = new Preference();
         }
         return mPreference;
+    }
+
+    /**
+     * Stores the {@link String} value in encrypted preferences
+     *
+     * @param key   {@link String} key for the value to store
+     * @param value {@link String} value to be stored
+     */
+    public void saveEncryptedPreferenceData(String key, String value) {
+        SharedPreferences.Editor editor = mEncryptedSharedPreferences.edit();
+        editor.putString(key, value);
+        editor.apply();
+    }
+
+    /**
+     * Retrieves the {@link String} value from encrypted preferences
+     *
+     * @param key {@link String} key for the value
+     * @return stored {@link String} value or null if not found
+     */
+    public String getEncryptedPreferenceData(String key) {
+        return mEncryptedSharedPreferences.getString(key, null);
+    }
+
+    /**
+     * To delete a particular value from the encrypted preference file
+     *
+     * @param key
+     */
+    public void clearEncryptedPreferenceItem(String key) {
+        SharedPreferences.Editor editor = mEncryptedSharedPreferences.edit();
+        editor.remove(key);
+        editor.apply();
     }
 
     /**

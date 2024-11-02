@@ -7,7 +7,9 @@ public class WsConstants {
 
     public final static int CONNECTION_TIMEOUT = 30;
     public final static int SUCCESS_1 = 1;
-    public static final String DOMAIN = "https://elasticbean.defensealertdevice.com/";  //Prod
+    public static final String DOMAIN = "https://dev.api.defensealertdevice.com/";
+    public static final String ASSETS_DOMAIN = "https://dev.assets.defensealertdevice.com.s3-website-us-west-2.amazonaws.com/";
+    //Prod
     //public static final String DOMAIN = "https://devbean.defensealertdevice.com/"; //Test
     //public static final String DOMAIN = "http://develop.defensealertdevice.com:8080/";
     /* Live URL	*/
@@ -23,7 +25,7 @@ public class WsConstants {
     public static final String MAIN_URL = DOMAIN + "TigerServlet?";
 
     //public static final String IMAGE_MAIN_URL = "http://52.33.140.142:8080/TigerServlet/FileTransfer?";
-    public static final String IMAGE_MAIN_URL = DOMAIN + "/FileTransfer1?";
+    public static final String IMAGE_MAIN_URL = DOMAIN + "FileTransfer1";
     public static final String IMAGE_MAIN_URL_AMAZONE = "https://tigerlight.images.s3-website-us-west-2.amazonaws.com/user_image_";
 
 

@@ -1,5 +1,6 @@
 package net.tigerlight.dad.registration.fragment;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -7,6 +8,7 @@ import android.content.ActivityNotFoundException;
 import android.content.ContentUris;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -17,6 +19,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
+
+import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
@@ -62,6 +66,7 @@ public class AddMoreFragment extends BaseFragment {
     private final String TAG_EMAIL = "email";
     private final String TAG_PHONE = "phone";
     private final String TAG_NICKNAME = "nickname";
+    private static final int REQUEST_READ_CONTACTS_PERMISSION = 100;
     private String userChoosenTask;
 
 
@@ -94,6 +99,7 @@ public class AddMoreFragment extends BaseFragment {
     private Bitmap thePic;
     private ContactFragment contactFragment;
     private File imageFile;
+    private Intent yourIntentData;
 
 
     public AddMoreFragment(ContactFragment contactFragment) {
@@ -109,6 +115,34 @@ public class AddMoreFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_add_more, container, false);
         return view;
+    }
+
+    private void checkAndRequestReadContactsPermission() {
+        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_CONTACTS)
+                != PackageManager.PERMISSION_GRANTED) {
+            // Permission is not granted, request it
+            requestPermissions(new String[]{Manifest.permission.READ_CONTACTS},
+                    REQUEST_READ_CONTACTS_PERMISSION);
+        } else {
+            // Permission has already been granted, proceed with your operation
+            toSetContactSelectedAjay(yourIntentData);
+        }
+    }
+
+    // Handle the permission request response
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_READ_CONTACTS_PERMISSION) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission granted, proceed with your operation
+                toSetContactSelectedAjay(yourIntentData);
+            } else {
+                // Permission denied, handle accordingly
+                Toast.makeText(getActivity(), "Permission denied to read contacts", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     @Override
@@ -237,7 +271,8 @@ public class AddMoreFragment extends BaseFragment {
                 break;
 
             case Constants.REQUEST_CONTACT_NUMBER:
-                toSetContactSelectedAjay(data);
+                yourIntentData = data;
+                checkAndRequestReadContactsPermission();
                 break;
 
 

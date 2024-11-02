@@ -557,6 +557,8 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
             if (!isCancelled()) {
                 if (wsCallSendDanger.isSuccess()) {
                     progressDialog.dismiss();
+                    playAlarmSound();
+                    new AlertListLoaderThread().start();
 
 
                     final Dialog dialog = new Dialog(getActivity(), R.style.AppDialogTheme);
@@ -568,12 +570,7 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
                     tvTitle.setText(getString(R.string.custom_progess_dialog_tv_title));
                     tvMessage.setText(getString(R.string.custom_progess_dialog_tv_msg));
                     tvPosButton.setText(getString(R.string.custom_progess_dialog_tv_ok));
-                    tvPosButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            dialog.dismiss();
-                        }
-                    });
+                    tvPosButton.setOnClickListener(view -> dialog.dismiss());
 
                     dialog.show();
                 } else {
@@ -676,9 +673,8 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
     }
 
     private void displayTestMessageDialog() {
-
         playAlarmSound();
-
+        new AlertListLoaderThread().start();
         androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(getActivity());
         builder.setTitle(R.string.test_message_title)
                 .setMessage(R.string.test_message_body)
@@ -688,19 +684,16 @@ public class AlertFragment extends BaseFragment implements AdapterView.OnItemCli
     private void playAlarmSound() {
             final AssetFileDescriptor audioFile = getActivity().getResources().openRawResourceFd(R.raw.tigerlightsound);
 
-            Thread thread = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    MediaPlayer mediaPlayer = new MediaPlayer();
-                    try {
-                        mediaPlayer.setDataSource(audioFile.getFileDescriptor(), audioFile.getStartOffset(), audioFile.getLength());
+            Thread thread = new Thread(() -> {
+                MediaPlayer mediaPlayer = new MediaPlayer();
+                try {
+                    mediaPlayer.setDataSource(audioFile.getFileDescriptor(), audioFile.getStartOffset(), audioFile.getLength());
 
-                    mediaPlayer.prepare();
-                    mediaPlayer.setOnCompletionListener(mp -> mp.release());
-                    mediaPlayer.start();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                mediaPlayer.prepare();
+                mediaPlayer.setOnCompletionListener(MediaPlayer::release);
+                mediaPlayer.start();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             });
             thread.start();

@@ -98,32 +98,39 @@ public class MyFirebaseMessagingReceiver extends BroadcastReceiver { // Changed 
         }, DELAY_MILLIS);
     }
 
+    private JSONObject bundleToJson(Bundle extras) {
+        JSONObject json = new JSONObject();
+        for (String key : extras.keySet()) {
+            Object value = extras.get(key);
+            try {
+                json.put(key, JSONObject.wrap(value));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return json;
+    }
+
     private void showNotification(Context context, Intent intentData) {
         Bundle extras = intentData.getExtras();
         if (extras == null) {
             return;
         }
-        data = extras.getString("gcm.notification.data");
+
+        JSONObject jsonFromBundle = bundleToJson(extras);
+        final String jsonObject = jsonFromBundle.toString();
+
         String sound = extras.getString("gcm.notification.sound");
 
-        if (data == null) {
-            return;
-        }
         String userName = "";
         String safeDangerString = " is in danger!";
-        try {
-            jsonobjectToChange = new JSONObject(data);
-            userName = jsonobjectToChange.optString(TAG_USER_NAME);
-            if (jsonobjectToChange.optInt("status") == 1) {
-                safeDangerString = userName + " is safe.";
-            } else {
-                safeDangerString = userName + " is in danger!";
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
+        userName = jsonFromBundle.optString(TAG_USER_NAME);
+        if (jsonFromBundle.optInt("status") == 1) {
+            safeDangerString = userName + " is safe.";
+        } else {
+            safeDangerString = userName + " is in danger!";
         }
 
-        final String jsonObject = jsonobjectToChange.toString();
         final Intent intent = new Intent(context, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra(Constant.JSON_OBJECT, jsonObject);
@@ -136,17 +143,15 @@ public class MyFirebaseMessagingReceiver extends BroadcastReceiver { // Changed 
                 .setContentIntent(contentIntent)
                 .setAutoCancel(true);
 
-        if (!"default".equals(sound)) {
+        if (sound != null && !"default".equals(sound)) {
             mBuilder.setSound(Uri.parse("android.resource://" + context.getPackageName() + "/" + Util.getResourceId(context, sound)));
         } else {
             mBuilder.setDefaults(Notification.DEFAULT_SOUND);
         }
 
         NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel("default_channel_id", "Default Channel", NotificationManager.IMPORTANCE_DEFAULT);
-            mNotificationManager.createNotificationChannel(channel);
-        }
+        NotificationChannel channel = new NotificationChannel("default_channel_id", "Default Channel", NotificationManager.IMPORTANCE_DEFAULT);
+        mNotificationManager.createNotificationChannel(channel);
         mNotificationManager.notify(1, mBuilder.build());
     }
 }

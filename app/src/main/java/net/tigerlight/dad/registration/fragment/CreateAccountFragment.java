@@ -1,7 +1,9 @@
 package net.tigerlight.dad.registration.fragment;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.bumptech.glide.request.transition.Transition;
 
 import net.tigerlight.dad.R;
 import net.tigerlight.dad.blework.BleReceiver;
@@ -31,6 +33,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.provider.MediaStore;
+
+import androidx.annotation.NonNull;
 import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.text.method.PasswordTransformationMethod;
@@ -193,15 +197,33 @@ public class CreateAccountFragment extends BaseFragment {
                 if (path == null) {
                     return;
                 }
-                Glide.with(this).load(imageFile).centerCrop().into(new BitmapImageViewTarget(imProfile) {
-                    @Override
-                    protected void setResource(Bitmap resource) {
-                        final RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(getResources(), resource);
-                        circularBitmapDrawable.setCircular(true);
-                        imProfile.setImageDrawable(circularBitmapDrawable);
-                        isImageUpdated = true;
-                    }
-                }.getView());
+                imageFile = new File(path);
+                if (imageFile.exists()) {
+                    Glide.with(this)
+                            .asBitmap()  // Ensure it's loading as Bitmap
+                            .load(imageFile.getAbsolutePath())
+                            .skipMemoryCache(true)
+                            .diskCacheStrategy(DiskCacheStrategy.NONE)
+                            .centerCrop()
+                            .into(new BitmapImageViewTarget(imProfile) {
+                                @Override
+                                protected void setResource(Bitmap resource) {
+                                    if (resource != null) {
+                                        RoundedBitmapDrawable circularBitmapDrawable =
+                                                RoundedBitmapDrawableFactory.create(getResources(), resource);
+                                        circularBitmapDrawable.setCircular(true);
+                                        imProfile.setImageDrawable(circularBitmapDrawable);
+                                        isImageUpdated = true;
+                                    }
+                                }
+
+                                @Override
+                                public void onResourceReady(@NonNull Bitmap resource, Transition<? super Bitmap> transition) {
+                                    super.onResourceReady(resource, transition); // Call the super to trigger setResource
+                                    Log.d("Glide", "Bitmap resource is ready");
+                                }
+                            });
+                }
                 break;
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -362,6 +384,10 @@ public class CreateAccountFragment extends BaseFragment {
                     preference.savePreferenceData(Constant.IS_FIRST_ACCOUNT, true);
                     preference.savePreferenceData(Constant.USER_NAME, etUserNameStr);
                     Preference.getInstance().savePreferenceData(Constant.IS_LOGIN, true);
+                    Preference.getInstance().saveEncryptedPreferenceData(Constant.ACCESS_TOKEN, wsCreateAccount.getAccessToken());
+                    Preference.getInstance().saveEncryptedPreferenceData(Constant.REFRESH_TOKEN, wsCreateAccount.getRefreshToken());
+                    Preference.getInstance().mSharedPreferences.edit().putLong(Constant.EXPIRES_IN, wsCreateAccount.getExpiresIn()).apply();
+
 //                    startBackgroundThreadForBLE();
 
                     long time = 1000 * 3;  //For repiting 30 second
@@ -377,6 +403,7 @@ public class CreateAccountFragment extends BaseFragment {
                         new updateProfilePicture().execute();
                     } else {
                         Toast.makeText(getActivity(), getString(R.string.TAG_REG_SUC_MSG), Toast.LENGTH_SHORT).show();
+                        ((MainActivity) getActivity()).replaceFragment(new DashBoardWithSwipableFragment());
                     }
                 } else {
                     if (progressDialog != null && progressDialog.isShowing()) {

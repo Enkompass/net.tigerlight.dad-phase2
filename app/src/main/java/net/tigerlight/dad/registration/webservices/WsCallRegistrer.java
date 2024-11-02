@@ -20,6 +20,9 @@ public class WsCallRegistrer {
     private String message;
     private boolean success;
     private String userid;
+    private String accessToken;
+    private String refreshToken;
+    private Long expiresIn;
 
     public WsCallRegistrer(final Context context) {
         this.context = context;
@@ -36,6 +39,12 @@ public class WsCallRegistrer {
     public String getUserid() {
         return userid;
     }
+
+    public String getAccessToken() { return accessToken; }
+
+    public String getRefreshToken() { return refreshToken; }
+
+    public long getExpiresIn() { return expiresIn; }
 
     /**
      * Calls the api user Login.
@@ -69,6 +78,9 @@ public class WsCallRegistrer {
                 final WsConstants wsConstants = new WsConstants();
                 if (jsonObject.length() > 0) {
                     userid = jsonObject.optString(wsConstants.PARAMS_ID);
+                    accessToken = jsonObject.optString(Constant.ACCESS_TOKEN);
+                    refreshToken = jsonObject.optString(Constant.REFRESH_TOKEN);
+                    expiresIn = jsonObject.optLong(Constant.EXPIRES_IN);
                     preference.savePreferenceData(Constant.USER_ID, userid);
                     success = jsonObject.optString(wsConstants.PARAMS_SUCCESS).equals("1");
                     message = jsonObject.optString(wsConstants.PARAMS_MESSAGE);

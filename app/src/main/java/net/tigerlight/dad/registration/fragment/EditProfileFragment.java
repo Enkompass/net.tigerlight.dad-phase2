@@ -3,6 +3,8 @@ package net.tigerlight.dad.registration.fragment;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.bumptech.glide.request.transition.Transition;
+
 import net.tigerlight.dad.DADApplication;
 import net.tigerlight.dad.R;
 import net.tigerlight.dad.cropimage.CropImage;
@@ -32,6 +34,8 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
+
+import androidx.annotation.NonNull;
 import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.text.method.PasswordTransformationMethod;
@@ -51,6 +55,7 @@ import java.io.InputStream;
 import java.util.Locale;
 
 import static android.app.Activity.RESULT_OK;
+import static net.tigerlight.dad.util.WsConstants.ASSETS_DOMAIN;
 
 public class EditProfileFragment extends BaseFragment {
 
@@ -90,7 +95,7 @@ public class EditProfileFragment extends BaseFragment {
     private String email = "";
     private String croppedFile;
     //    String imgUrl = "http://52.33.140.142/admin/uploads/user_image/user_image_";
-    String imgUrl = "https://tigerlight.images.s3-website-us-west-2.amazonaws.com/user_image_";
+    String imgUrl = ASSETS_DOMAIN + "user_image_";
     private boolean isImageUpdated;
 
 
@@ -452,15 +457,33 @@ public class EditProfileFragment extends BaseFragment {
                 if (path == null) {
                     return;
                 }
-                Glide.with(this).load(imageFile).centerCrop().into(new BitmapImageViewTarget(ivProfile) {
-                    @Override
-                    protected void setResource(Bitmap resource) {
-                        final RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(getResources(), resource);
-                        circularBitmapDrawable.setCircular(true);
-                        ivProfile.setImageDrawable(circularBitmapDrawable);
-                        isImageUpdated = true;
-                    }
-                }.getView());
+                imageFile = new File(path);
+                if (imageFile.exists()) {
+                    Glide.with(this)
+                            .asBitmap()  // Ensure it's loading as Bitmap
+                            .load(imageFile.getAbsolutePath())
+                            .skipMemoryCache(true)
+                            .diskCacheStrategy(DiskCacheStrategy.NONE)
+                            .centerCrop()
+                            .into(new BitmapImageViewTarget(ivProfile) {
+                                @Override
+                                protected void setResource(Bitmap resource) {
+                                    if (resource != null) {
+                                        RoundedBitmapDrawable circularBitmapDrawable =
+                                                RoundedBitmapDrawableFactory.create(getResources(), resource);
+                                        circularBitmapDrawable.setCircular(true);
+                                        ivProfile.setImageDrawable(circularBitmapDrawable);
+                                        isImageUpdated = true;
+                                    }
+                                }
+
+                                @Override
+                                public void onResourceReady(@NonNull Bitmap resource, Transition<? super Bitmap> transition) {
+                                    super.onResourceReady(resource, transition); // Call the super to trigger setResource
+                                    Log.d("Glide", "Bitmap resource is ready");
+                                }
+                            });
+                }
 
                 break;
         }
